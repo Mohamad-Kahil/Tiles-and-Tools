@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useCart } from "@/components/cart/CartContext";
+import { useWishlist } from "@/components/wishlist/WishlistContext";
 import {
   ChevronRight,
   Heart,
@@ -255,8 +256,13 @@ const ProductDetailPage = () => {
     }
   };
 
-  // Import useCart hook
+  // Import hooks
   const { addItem } = useCart();
+  const {
+    addItem: addToWishlist,
+    isInWishlist,
+    removeItem: removeFromWishlist,
+  } = useWishlist();
 
   // Handle add to cart
   const handleAddToCart = () => {
@@ -277,8 +283,16 @@ const ProductDetailPage = () => {
   // Handle add to wishlist
   const handleAddToWishlist = () => {
     if (product) {
-      console.log(`Added ${product.name} to wishlist`);
-      // In a real app, this would add the product to the wishlist
+      if (isInWishlist(product.id)) {
+        removeFromWishlist(product.id);
+      } else {
+        addToWishlist({
+          id: product.id,
+          name: product.name,
+          price: discountedPrice || product.price,
+          image: product.image,
+        });
+      }
     }
   };
 
@@ -509,12 +523,16 @@ const ProductDetailPage = () => {
                   Add to Cart
                 </Button>
                 <Button
-                  variant="outline"
+                  variant={isInWishlist(product.id) ? "default" : "outline"}
                   size="lg"
                   onClick={handleAddToWishlist}
                 >
-                  <Heart className="mr-2 h-5 w-5" />
-                  Add to Wishlist
+                  <Heart
+                    className={`mr-2 h-5 w-5 ${isInWishlist(product.id) ? "fill-current" : ""}`}
+                  />
+                  {isInWishlist(product.id)
+                    ? "Remove from Wishlist"
+                    : "Add to Wishlist"}
                 </Button>
               </div>
 

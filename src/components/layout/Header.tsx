@@ -8,6 +8,7 @@ import {
   Package,
   ShoppingBag,
   User,
+  Heart,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -49,6 +50,11 @@ const Header = ({
       name: language === "en" ? "Cart" : "عربة التسوق",
       href: "/cart",
       icon: <ShoppingBag className="h-4 w-4 mr-2" />,
+    },
+    {
+      name: language === "en" ? "Wishlist" : "المفضلة",
+      href: "/wishlist",
+      icon: <Heart className="h-4 w-4 mr-2" />,
     },
     {
       name: language === "en" ? "Sign In" : "تسجيل الدخول",

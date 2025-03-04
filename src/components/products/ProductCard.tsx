@@ -1,10 +1,11 @@
 import React from "react";
-import { Star, ShoppingCart, Eye } from "lucide-react";
+import { Star, ShoppingCart, Eye, Heart } from "lucide-react";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useCart } from "@/components/cart/CartContext";
+import { useWishlist } from "@/components/wishlist/WishlistContext";
 
 interface ProductCardProps {
   id?: string;
@@ -14,6 +15,8 @@ interface ProductCardProps {
   rating?: number;
   onAddToCart?: () => void;
   onQuickView?: () => void;
+  onToggleWishlist?: () => void;
+  showWishlistButton?: boolean;
 }
 
 const ProductCard = ({
@@ -24,9 +27,16 @@ const ProductCard = ({
   rating = 4.5,
   onAddToCart = () => {},
   onQuickView = () => console.log("Quick view clicked"),
+  onToggleWishlist = () => {},
+  showWishlistButton = true,
 }: ProductCardProps) => {
   const [isHovered, setIsHovered] = React.useState(false);
   const { addItem } = useCart();
+  const {
+    addItem: addToWishlist,
+    isInWishlist,
+    removeItem: removeFromWishlist,
+  } = useWishlist();
 
   const handleAddToCart = () => {
     addItem(
@@ -136,13 +146,40 @@ const ProductCard = ({
       </CardContent>
 
       <CardFooter className="p-4 pt-0">
-        <Button
-          variant="outline"
-          className="w-full gap-2"
-          onClick={handleAddToCart}
-        >
-          <ShoppingCart className="h-4 w-4" /> Add to Cart
-        </Button>
+        <div className="flex gap-2 w-full">
+          <Button
+            variant="outline"
+            className="flex-1 gap-2"
+            onClick={handleAddToCart}
+          >
+            <ShoppingCart className="h-4 w-4" /> Add to Cart
+          </Button>
+
+          {showWishlistButton && (
+            <Button
+              variant={isInWishlist(id) ? "default" : "outline"}
+              size="icon"
+              className="flex-shrink-0"
+              onClick={() => {
+                if (isInWishlist(id)) {
+                  removeFromWishlist(id);
+                } else {
+                  addToWishlist({
+                    id,
+                    name,
+                    price,
+                    image,
+                  });
+                }
+                onToggleWishlist();
+              }}
+            >
+              <Heart
+                className={`h-4 w-4 ${isInWishlist(id) ? "fill-current" : ""}`}
+              />
+            </Button>
+          )}
+        </div>
       </CardFooter>
     </Card>
   );
