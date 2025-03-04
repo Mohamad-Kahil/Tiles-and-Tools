@@ -187,11 +187,11 @@ const CategoryMenu = ({
   return (
     <div className={`w-full bg-background ${isRtl ? "rtl" : "ltr"}`}>
       <NavigationMenu className="mx-auto">
-        <NavigationMenuList className="flex-wrap">
+        <NavigationMenuList className="flex flex-row space-x-6">
           {displayCategories.map((category) => (
             <NavigationMenuItem key={category.href}>
               <NavigationMenuTrigger
-                className="text-base cursor-pointer"
+                className="text-base cursor-pointer px-2"
                 onClick={() => handleCategoryClick(category.href)}
               >
                 {category.name}

@@ -26,7 +26,7 @@ const Footer = ({ className }: FooterProps = {}) => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Company Information */}
           <div>
-            <h3 className="text-xl font-bold mb-4">Egyptian Home Decor</h3>
+            <h3 className="text-xl font-bold mb-4">Tiles & Tools</h3>
             <p className="text-slate-300 mb-4">
               Your premier destination for high-quality home decoration and
               finishing products in Egypt.
@@ -124,7 +124,7 @@ const Footer = ({ className }: FooterProps = {}) => {
               </li>
               <li className="flex items-center">
                 <Mail className="mr-2 h-5 w-5 text-primary flex-shrink-0" />
-                <span className="text-slate-300">info@egyptiandecor.com</span>
+                <span className="text-slate-300">info@tilesandtools.com</span>
               </li>
             </ul>
           </div>
@@ -184,7 +184,7 @@ const Footer = ({ className }: FooterProps = {}) => {
 
         {/* Copyright */}
         <div className="text-center text-slate-400 text-sm">
-          <p>© {currentYear} Egyptian Home Decor. All rights reserved.</p>
+          <p>© {currentYear} Tiles & Tools. All rights reserved.</p>
           <div className="mt-2 flex justify-center space-x-4">
             <Link
               to="/privacy-policy"

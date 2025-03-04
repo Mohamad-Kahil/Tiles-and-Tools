@@ -68,19 +68,14 @@ const Header = ({
         <div className="flex h-20 items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
-            <img src="/vite.svg" alt="Egyptian Decor" className="h-8 w-8" />
+            <img src="/vite.svg" alt="Tiles & Tools" className="h-8 w-8" />
             <span className="font-bold text-xl hidden sm:inline-block">
-              {language === "en" ? "Egyptian Decor" : "ديكور مصري"}
+              {language === "en" ? "Tiles & Tools" : "بلاط وأدوات"}
             </span>
           </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden lg:flex lg:flex-1 lg:justify-center px-6">
-            <CategoryMenu language={language} />
-          </div>
-
           {/* Main Navigation Links (Desktop) */}
-          <div className="hidden md:flex items-center space-x-4 mr-4">
+          <div className="hidden md:flex items-center space-x-4">
             {navigationLinks.map((link) => (
               <Button
                 key={link.href}
@@ -92,6 +87,11 @@ const Header = ({
                 <span>{link.name}</span>
               </Button>
             ))}
+          </div>
+
+          {/* Category Links in a single row */}
+          <div className="hidden lg:flex items-center space-x-6">
+            <CategoryMenu language={language} />
           </div>
 
           {/* Search, Language, Cart */}
