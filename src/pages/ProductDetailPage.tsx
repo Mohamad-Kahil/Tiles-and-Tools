@@ -512,6 +512,9 @@ const ProductDetailPage = () => {
     };
 
     fetchProduct();
+
+    // Scroll to top when product page loads
+    window.scrollTo(0, 0);
   }, [productId]);
 
   // Handle quantity changes

@@ -91,7 +91,11 @@ const Header = ({}: HeaderProps) => {
       <div className="container mx-auto px-4">
         <div className="flex h-20 items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
+          <Link
+            to="/"
+            className="flex items-center space-x-2"
+            onClick={() => window.scrollTo(0, 0)}
+          >
             <span className="font-bold text-xl static mx-10">Tiles&Tools</span>
           </Link>
 

@@ -1,7 +1,7 @@
 import React from "react";
 import { Star, ShoppingCart, Eye, Heart } from "lucide-react";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useCart } from "@/components/cart/CartContext";
@@ -42,6 +42,7 @@ const ProductCard = ({
   } = useWishlist();
   const { trackEvent } = useAnalytics();
   const { language } = useLanguage();
+  const navigate = useNavigate();
 
   const handleAddToCart = () => {
     addItem(
@@ -122,13 +123,14 @@ const ProductCard = ({
             variant="secondary"
             size="sm"
             className="w-3/4 gap-2"
-            onClick={onQuickView}
-            asChild
+            onClick={() => {
+              onQuickView();
+              navigate(`/product/${id}`);
+              window.scrollTo(0, 0);
+            }}
           >
-            <Link to={`/product/${id}`}>
-              <Eye className="h-4 w-4" />{" "}
-              {language === "en" ? "Quick View" : "عرض سريع"}
-            </Link>
+            <Eye className="h-4 w-4" />{" "}
+            {language === "en" ? "Quick View" : "عرض سريع"}
           </Button>
           <Button
             variant="default"
@@ -143,11 +145,17 @@ const ProductCard = ({
       </div>
 
       <CardContent className="p-4">
-        <Link to={`/product/${id}`} className="block">
+        <div
+          onClick={() => {
+            navigate(`/product/${id}`);
+            window.scrollTo(0, 0);
+          }}
+          className="block cursor-pointer"
+        >
           <h3 className="font-medium text-sm line-clamp-2 h-10 mb-1 hover:text-primary transition-colors">
             {name}
           </h3>
-        </Link>
+        </div>
         <div className="flex items-center gap-1 mb-2">
           {renderStars()}
           <span className="text-xs text-gray-500 ml-1">({rating})</span>
