@@ -68,9 +68,8 @@ const Header = ({
         <div className="flex h-20 items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
-            <img src="/vite.svg" alt="Tiles & Tools" className="h-8 w-8" />
             <span className="font-bold text-xl hidden sm:inline-block">
-              {language === "en" ? "Tiles & Tools" : "بلاط وأدوات"}
+              {language === "en" ? "Tiles&Tools" : "Tiles&Tools"}
             </span>
           </Link>
 
