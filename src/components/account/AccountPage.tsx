@@ -16,7 +16,7 @@ const AccountPage = () => {
   const { user, isAuthenticated, logout, updateProfile } = useAuth();
   const [activeTab, setActiveTab] = useState("profile");
   const [isUpdating, setIsUpdating] = useState(false);
-  
+
   // Redirect to login if not authenticated
   useEffect(() => {
     if (!isAuthenticated) {
@@ -25,70 +25,72 @@ const AccountPage = () => {
   }, [isAuthenticated, navigate]);
 
   // Use authenticated user data or fallback to mock data
-  const userData = user ? {
-    name: `${user.firstName} ${user.lastName}`,
-    email: user.email,
-    phone: user.phone || "+20 123 456 7890",
-    addresses: [
-      {
-        id: "addr1",
-        type: "Home",
-        address: "123 Tahrir Square",
-        city: "Cairo",
-        governorate: "Cairo",
-        postalCode: "11511",
-        isDefault: true,
-      },
-      {
-        id: "addr2",
-        type: "Work",
-        address: "456 Maadi Street",
-        city: "Cairo",
-        governorate: "Cairo",
-        postalCode: "11728",
-        isDefault: false,
-      },
-    ],
-    orders: [
-      {
-        id: "ORD-12345",
-        date: "2023-10-15",
-        total: 2499.99,
-        status: "Delivered",
-        items: 3,
-      },
-      {
-        id: "ORD-12346",
-        date: "2023-11-02",
-        total: 1899.5,
-        status: "Processing",
-        items: 2,
-      },
-      {
-        id: "ORD-12347",
-        date: "2023-11-10",
-        total: 3299.75,
-        status: "Shipped",
-        items: 4,
-      },
-    ],
-    paymentMethods: [
-      {
-        id: "pm1",
-        type: "Credit Card",
-        lastFour: "4242",
-        expiryDate: "05/25",
-        isDefault: true,
-      },
-      {
-        id: "pm2",
-        type: "Debit Card",
-        lastFour: "8765",
-        expiryDate: "09/24",
-        isDefault: false,
-      },
-    ],
-  };
+  const userData = user
+    ? {
+        name: `${user.firstName} ${user.lastName}`,
+        email: user.email,
+        phone: user.phone || "+20 123 456 7890",
+        addresses: [
+          {
+            id: "addr1",
+            type: "Home",
+            address: "123 Tahrir Square",
+            city: "Cairo",
+            governorate: "Cairo",
+            postalCode: "11511",
+            isDefault: true,
+          },
+          {
+            id: "addr2",
+            type: "Work",
+            address: "456 Maadi Street",
+            city: "Cairo",
+            governorate: "Cairo",
+            postalCode: "11728",
+            isDefault: false,
+          },
+        ],
+        orders: [
+          {
+            id: "ORD-12345",
+            date: "2023-10-15",
+            total: 2499.99,
+            status: "Delivered",
+            items: 3,
+          },
+          {
+            id: "ORD-12346",
+            date: "2023-11-02",
+            total: 1899.5,
+            status: "Processing",
+            items: 2,
+          },
+          {
+            id: "ORD-12347",
+            date: "2023-11-10",
+            total: 3299.75,
+            status: "Shipped",
+            items: 4,
+          },
+        ],
+        paymentMethods: [
+          {
+            id: "pm1",
+            type: "Credit Card",
+            lastFour: "4242",
+            expiryDate: "05/25",
+            isDefault: true,
+          },
+          {
+            id: "pm2",
+            type: "Debit Card",
+            lastFour: "8765",
+            expiryDate: "09/24",
+            isDefault: false,
+          },
+        ],
+      }
+    : null;
 
   // Format price
   const formatPrice = (price: number) => {
@@ -212,28 +214,42 @@ const AccountPage = () => {
                   </div>
                 </div>
 
-                <Button 
-                  className="mt-6" 
+                <Button
+                  className="mt-6"
                   onClick={async () => {
                     setIsUpdating(true);
                     try {
                       // Get form values
-                      const firstName = (document.getElementById('name') as HTMLInputElement).value.split(' ')[0];
-                      const lastName = (document.getElementById('name') as HTMLInputElement).value.split(' ')[1] || '';
-                      const email = (document.getElementById('email') as HTMLInputElement).value;
-                      const phone = (document.getElementById('phone') as HTMLInputElement).value;
-                      
-                      await updateProfile({ firstName, lastName, email, phone });
-                      alert('Profile updated successfully');
+                      const firstName = (
+                        document.getElementById("name") as HTMLInputElement
+                      ).value.split(" ")[0];
+                      const lastName =
+                        (
+                          document.getElementById("name") as HTMLInputElement
+                        ).value.split(" ")[1] || "";
+                      const email = (
+                        document.getElementById("email") as HTMLInputElement
+                      ).value;
+                      const phone = (
+                        document.getElementById("phone") as HTMLInputElement
+                      ).value;
+
+                      await updateProfile({
+                        firstName,
+                        lastName,
+                        email,
+                        phone,
+                      });
+                      alert("Profile updated successfully");
                     } catch (error) {
-                      alert('Failed to update profile');
+                      alert("Failed to update profile");
                     } finally {
                       setIsUpdating(false);
                     }
                   }}
                   disabled={isUpdating}
                 >
-                  {isUpdating ? 'Saving...' : 'Save Changes'}
+                  {isUpdating ? "Saving..." : "Save Changes"}
                 </Button>
               </div>
 
