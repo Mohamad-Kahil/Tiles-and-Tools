@@ -51,6 +51,11 @@ const Header = ({
       icon: <ShoppingBag className="h-4 w-4 mr-2" />,
     },
     {
+      name: language === "en" ? "Sign In" : "تسجيل الدخول",
+      href: "/login",
+      icon: <User className="h-4 w-4 mr-2" />,
+    },
+    {
       name: language === "en" ? "Account" : "الحساب",
       href: "/account",
       icon: <User className="h-4 w-4 mr-2" />,
@@ -68,25 +73,8 @@ const Header = ({
         <div className="flex h-20 items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
-            <span className="font-bold text-xl hidden sm:inline-block">
-              {language === "en" ? "Tiles&Tools" : "Tiles&Tools"}
-            </span>
+            <span className="font-bold text-xl static mx-10">Tiles&Tools</span>
           </Link>
-
-          {/* Main Navigation Links (Desktop) */}
-          <div className="hidden md:flex items-center space-x-4">
-            {navigationLinks.map((link) => (
-              <Button
-                key={link.href}
-                variant="ghost"
-                className="flex items-center"
-                onClick={() => navigate(link.href)}
-              >
-                {link.icon}
-                <span>{link.name}</span>
-              </Button>
-            ))}
-          </div>
 
           {/* Category Links in a single row */}
           <div className="hidden lg:flex items-center space-x-6">
@@ -94,7 +82,7 @@ const Header = ({
           </div>
 
           {/* Search, Language, Cart */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-4 ml-auto">
             <div className="hidden md:block w-full max-w-sm">
               <SearchBar
                 placeholder={
@@ -115,7 +103,20 @@ const Header = ({
               <span className="sr-only">Toggle Language</span>
             </Button>
 
-            <CartPreview />
+            {/* Cart and Sign In */}
+            <div className="hidden md:flex items-center space-x-4">
+              {navigationLinks.slice(2, 5).map((link) => (
+                <Button
+                  key={link.href}
+                  variant="ghost"
+                  className="flex items-center"
+                  onClick={() => navigate(link.href)}
+                >
+                  {link.icon}
+                  <span>{link.name}</span>
+                </Button>
+              ))}
+            </div>
 
             {/* Mobile Menu Button */}
             <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
@@ -219,7 +220,6 @@ const Header = ({
           </div>
         </div>
       </div>
-
       {/* Mobile Search (visible only on small screens) */}
       <div className="md:hidden border-t py-2 px-4">
         <SearchBar

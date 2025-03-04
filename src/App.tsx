@@ -12,6 +12,12 @@ const CheckoutPage = lazy(() => import("./components/checkout/CheckoutPage"));
 const OrderConfirmationPage = lazy(
   () => import("./components/checkout/OrderConfirmationPage"),
 );
+const LoginPage = lazy(() => import("./components/auth/LoginPage"));
+const RegisterPage = lazy(() => import("./components/auth/RegisterPage"));
+const AccountPage = lazy(() => import("./components/account/AccountPage"));
+const OrderDetailPage = lazy(
+  () => import("./components/account/OrderDetailPage"),
+);
 
 function App() {
   return (
@@ -38,6 +44,13 @@ function App() {
             <Route
               path="/order-confirmation"
               element={<OrderConfirmationPage />}
+            />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/account" element={<AccountPage />} />
+            <Route
+              path="/account/orders/:orderId"
+              element={<OrderDetailPage />}
             />
             {/* Add a catch-all route that redirects to home */}
             <Route path="*" element={<Home />} />
