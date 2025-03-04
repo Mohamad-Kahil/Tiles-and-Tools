@@ -111,6 +111,72 @@ const mockProducts: Record<
       },
     ],
   },
+  "2": {
+    id: "2",
+    name: "Premium Wall Paint - Desert Sand",
+    price: 349.99,
+    image:
+      "https://images.unsplash.com/photo-1562184552-997c461abbe6?w=500&q=80",
+    rating: 4.6,
+    category: "wall-products",
+    subcategory: "paint",
+    description:
+      "Transform your walls with our premium Desert Sand paint. This high-quality, low-VOC formula provides excellent coverage and a smooth, long-lasting finish. The warm, neutral tone creates a cozy and inviting atmosphere in any room.",
+    features: [
+      "Low-VOC eco-friendly formula",
+      "Excellent coverage with fewer coats",
+      "Washable and stain-resistant",
+      "Smooth, matte finish",
+      "Made in Egypt with premium ingredients",
+    ],
+    specifications: {
+      Type: "Interior Wall Paint",
+      Finish: "Matte",
+      Coverage: "10-12 sq.m/liter",
+      "Drying Time": "1-2 hours",
+      "Recoat Time": "4 hours",
+      Volume: "4 liters",
+      Color: "Desert Sand (Warm Beige)",
+      Base: "Water-based",
+    },
+    stock: 85,
+    discount: 0,
+    images: [
+      "https://images.unsplash.com/photo-1562184552-997c461abbe6?w=800&q=80",
+      "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&q=80",
+      "https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=800&q=80",
+      "https://images.unsplash.com/photo-1594292712506-5d5aa0c1e09e?w=800&q=80",
+    ],
+    reviews: [
+      {
+        id: "r1",
+        user: "Fatima Khalid",
+        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Fatima",
+        rating: 5,
+        date: "2023-09-20",
+        comment:
+          "This paint is amazing! The color is exactly as shown and it covered my walls perfectly with just two coats. Very little odor and it dried quickly. Highly recommend!",
+      },
+      {
+        id: "r2",
+        user: "Mohamed Salah",
+        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Mohamed",
+        rating: 4,
+        date: "2023-08-15",
+        comment:
+          "Good quality paint that goes on smoothly. The Desert Sand color creates a warm, inviting feel in my living room. Would buy again.",
+      },
+      {
+        id: "r3",
+        user: "Amira Hassan",
+        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Amira",
+        rating: 5,
+        date: "2023-10-05",
+        comment:
+          "Excellent paint! Easy to apply, great coverage, and the color is beautiful. My bedroom looks completely transformed. The low-VOC formula meant there was hardly any smell.",
+      },
+    ],
+  },
   "3": {
     id: "3",
     name: "Modern Pendant Light Fixture",
@@ -177,43 +243,234 @@ const mockProducts: Record<
       },
     ],
   },
-};
-
-// Related products
-const relatedProducts: Product[] = [
-  {
+  "4": {
+    id: "4",
+    name: "Handcrafted Ceramic Vase",
+    price: 499.99,
+    image:
+      "https://images.unsplash.com/photo-1612196808214-b7e239e5f6b7?w=500&q=80",
+    rating: 4.5,
+    category: "decor",
+    subcategory: "vases",
+    description:
+      "Add an artistic touch to your home with our handcrafted ceramic vase. Each piece is uniquely made by skilled Egyptian artisans, featuring traditional patterns with a modern twist. Perfect as a standalone decorative piece or filled with your favorite flowers.",
+    features: [
+      "Handcrafted by Egyptian artisans",
+      "Unique design with no two pieces exactly alike",
+      "Durable ceramic construction",
+      "Waterproof interior for fresh flowers",
+      "Versatile size suitable for various spaces",
+    ],
+    specifications: {
+      Material: "Ceramic",
+      Height: "30 cm",
+      Diameter: "15 cm",
+      Weight: "1.2 kg",
+      Color: "Blue and White Pattern",
+      Style: "Contemporary Egyptian",
+      Care: "Hand wash only",
+      Origin: "Handmade in Egypt",
+    },
+    stock: 28,
+    discount: 0,
+    images: [
+      "https://images.unsplash.com/photo-1612196808214-b7e239e5f6b7?w=800&q=80",
+      "https://images.unsplash.com/photo-1580480055273-228ff5388ef8?w=800&q=80",
+      "https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=800&q=80",
+      "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=800&q=80",
+    ],
+    reviews: [
+      {
+        id: "r1",
+        user: "Yasmin Ahmed",
+        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Yasmin",
+        rating: 5,
+        date: "2023-08-28",
+        comment:
+          "This vase is even more beautiful in person! The craftsmanship is exceptional and it has become a conversation piece in my living room. Love supporting local Egyptian artisans.",
+      },
+      {
+        id: "r2",
+        user: "Tarek Zaki",
+        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Tarek",
+        rating: 4,
+        date: "2023-09-15",
+        comment:
+          "Lovely vase with beautiful detailing. It's a bit smaller than I expected but still looks great on my shelf. The blue and white pattern is stunning.",
+      },
+      {
+        id: "r3",
+        user: "Dina Fouad",
+        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Dina",
+        rating: 5,
+        date: "2023-10-10",
+        comment:
+          "Absolutely love this vase! It's the perfect addition to my home decor collection. The quality is excellent and the design is both traditional and modern at the same time.",
+      },
+    ],
+  },
+  "5": {
     id: "5",
     name: "Engineered Hardwood Flooring",
     price: 1599.99,
     image:
       "https://images.unsplash.com/photo-1581858726788-75bc0f6a952d?w=500&q=80",
     rating: 4.9,
+    category: "flooring",
+    subcategory: "wood",
+    description:
+      "Elevate your home with our premium engineered hardwood flooring. Combining the beauty of natural wood with enhanced durability, these planks feature a real wood veneer over a stable core. Resistant to humidity and temperature changes, making it suitable for any room in your home.",
+    features: [
+      "Real wood veneer surface",
+      "Stable engineered construction",
+      "Click-lock installation system",
+      "Suitable for underfloor heating",
+      "Pre-finished with UV-cured oil",
+    ],
+    specifications: {
+      Material: "Engineered Oak",
+      Dimensions: "220 x 2200 mm planks",
+      Thickness: "15 mm",
+      "Wear Layer": "4 mm solid oak",
+      Finish: "Brushed and oiled",
+      Color: "Natural Oak",
+      Coverage: "2.42 sq.m per pack",
+      Installation: "Floating or glue-down",
+    },
+    stock: 65,
+    discount: 5,
+    images: [
+      "https://images.unsplash.com/photo-1581858726788-75bc0f6a952d?w=800&q=80",
+      "https://images.unsplash.com/photo-1562663474-6cbb3eaa4d14?w=800&q=80",
+      "https://images.unsplash.com/photo-1622398925373-3f91b1e275f5?w=800&q=80",
+      "https://images.unsplash.com/photo-1581858726857-01398e58d865?w=800&q=80",
+    ],
+    reviews: [
+      {
+        id: "r1",
+        user: "Hassan Ibrahim",
+        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Hassan",
+        rating: 5,
+        date: "2023-07-20",
+        comment:
+          "Absolutely stunning flooring! The installation was straightforward with the click-lock system, and the finished result looks like a high-end solid wood floor. Very satisfied with my purchase.",
+      },
+      {
+        id: "r2",
+        user: "Mariam Adel",
+        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Mariam",
+        rating: 5,
+        date: "2023-08-12",
+        comment:
+          "This flooring transformed our living room completely. The natural oak finish is beautiful and warm. It's been installed for 3 months now and has held up perfectly with our kids and dog.",
+      },
+      {
+        id: "r3",
+        user: "Khaled Mahmoud",
+        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Khaled",
+        rating: 4,
+        date: "2023-09-05",
+        comment:
+          "Great quality engineered wood. The planks are long and wide which made installation faster and gives a luxurious look. Only giving 4 stars because a few pieces had minor imperfections, but overall very happy.",
+      },
+    ],
   },
-  {
-    id: "7",
-    name: "Decorative Wallpaper - Floral Pattern",
-    price: 799.99,
-    image:
-      "https://images.unsplash.com/photo-1615529328331-f8917597711f?w=500&q=80",
-    rating: 4.3,
-  },
-  {
-    id: "9",
-    name: "Porcelain Floor Tiles - Marble Look",
-    price: 899.99,
-    image:
-      "https://images.unsplash.com/photo-1600607687644-c7f34b5063c8?w=500&q=80",
-    rating: 4.7,
-  },
-  {
+  "6": {
     id: "6",
     name: "Minimalist Wall Sconce",
     price: 459.99,
     image:
       "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=500&q=80",
     rating: 4.4,
+    category: "lighting",
+    subcategory: "wall-lights",
+    description:
+      "Enhance your wall space with our elegant minimalist wall sconce. This contemporary fixture provides warm, ambient lighting while doubling as a stylish design element. Perfect for hallways, bedrooms, living rooms, or as bathroom vanity lighting.",
+    features: [
+      "Sleek, minimalist design",
+      "Adjustable light direction",
+      "Dimmable (with compatible switch)",
+      "Energy-efficient LED compatible",
+      "Easy installation with included hardware",
+    ],
+    specifications: {
+      Material: "Brushed Brass and Frosted Glass",
+      Dimensions: "25 cm height, 12 cm width, 15 cm projection",
+      "Bulb Type": "E14 socket (bulb not included)",
+      "Max Wattage": "40W",
+      Voltage: "220-240V",
+      Installation: "Wall mounted",
+      Style: "Modern/Minimalist",
+      Weight: "0.8 kg",
+    },
+    stock: 38,
+    discount: 0,
+    images: [
+      "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=800&q=80",
+      "https://images.unsplash.com/photo-1540932239986-30128078f3c5?w=800&q=80",
+      "https://images.unsplash.com/photo-1565814329452-e1efa11c5b89?w=800&q=80",
+      "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?w=800&q=80",
+    ],
+    reviews: [
+      {
+        id: "r1",
+        user: "Sara Mostafa",
+        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sara",
+        rating: 5,
+        date: "2023-10-02",
+        comment:
+          "These wall sconces are perfect! I installed them on either side of my bed and they provide the perfect amount of light for reading while looking very stylish. Great quality for the price.",
+      },
+      {
+        id: "r2",
+        user: "Ahmed Nasser",
+        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=AhmedN",
+        rating: 4,
+        date: "2023-09-18",
+        comment:
+          "Nice modern design that works well in my minimalist apartment. Installation was straightforward. The only reason for 4 stars instead of 5 is that the light direction adjustment is a bit stiff.",
+      },
+      {
+        id: "r3",
+        user: "Leila Kamal",
+        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Leila",
+        rating: 4,
+        date: "2023-08-25",
+        comment:
+          "Beautiful wall sconces that add a touch of elegance to my hallway. The brushed brass finish is lovely and the frosted glass diffuses the light nicely. Would recommend!",
+      },
+    ],
   },
-];
+};
+
+// Function to get related products based on current product category
+const getRelatedProducts = (
+  currentProduct: (typeof mockProducts)[string] | null,
+): Product[] => {
+  if (!currentProduct) return [];
+
+  // Get products from the same category or subcategory
+  const sameCategory = Object.values(mockProducts).filter(
+    (product) =>
+      product.id !== currentProduct.id &&
+      (product.category === currentProduct.category ||
+        product.subcategory === currentProduct.subcategory),
+  );
+
+  // If we have enough products from the same category, return them
+  if (sameCategory.length >= 4) {
+    return sameCategory.slice(0, 4);
+  }
+
+  // Otherwise, add some other products to fill up to 4
+  const otherProducts = Object.values(mockProducts).filter(
+    (product) =>
+      product.id !== currentProduct.id &&
+      product.category !== currentProduct.category,
+  );
+
+  return [...sameCategory, ...otherProducts].slice(0, 4);
+};
 
 const ProductDetailPage = () => {
   const { productId } = useParams<{ productId: string }>();
@@ -371,8 +628,48 @@ const ProductDetailPage = () => {
     );
   }
 
+  // Create fallback product if needed
+  if (!isLoading && !product && productId) {
+    // Create a fallback product with the ID
+    const fallbackProduct = {
+      id: productId,
+      name: `Product ${productId}`,
+      price: 999.99,
+      image:
+        "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=500&q=80",
+      rating: 4.5,
+      category: "other",
+      subcategory: "general",
+      description:
+        "This is a placeholder for a product that will be available soon.",
+      features: [
+        "Quality materials",
+        "Modern design",
+        "Versatile use",
+        "Durable construction",
+      ],
+      specifications: {
+        Material: "Various",
+        Dimensions: "Standard",
+        Weight: "Variable",
+        Origin: "Egypt",
+      },
+      stock: 10,
+      discount: 0,
+      images: [
+        "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80",
+        "https://images.unsplash.com/photo-1581858726788-75bc0f6a952d?w=800&q=80",
+        "https://images.unsplash.com/photo-1565814329452-e1efa11c5b89?w=800&q=80",
+      ],
+      reviews: [],
+    };
+
+    setProduct(fallbackProduct);
+    console.log(`Created fallback product for ID: ${productId}`);
+  }
+
   // Product not found
-  if (!product) {
+  if (!isLoading && !product) {
     return (
       <div className="min-h-screen bg-background flex flex-col">
         <Header />
@@ -896,7 +1193,7 @@ const ProductDetailPage = () => {
               Related Products
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {relatedProducts.map((relatedProduct) => (
+              {getRelatedProducts(product).map((relatedProduct) => (
                 <ProductCard
                   key={relatedProduct.id}
                   id={relatedProduct.id}
