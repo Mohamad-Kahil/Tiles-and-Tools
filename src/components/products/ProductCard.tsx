@@ -92,6 +92,8 @@ const ProductCard = ({
       )}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      onTouchStart={() => setIsHovered(true)}
+      onTouchEnd={() => setIsHovered(false)}
     >
       <div className="relative h-[220px] overflow-hidden bg-gray-100">
         <img

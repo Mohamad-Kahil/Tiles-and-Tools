@@ -123,7 +123,7 @@ const AccountPage = () => {
       <main className="flex-1 container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold tracking-tight mb-6">My Account</h1>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
           {/* Sidebar */}
           <div className="md:col-span-1">
             <div className="bg-card rounded-lg shadow-sm p-6 sticky top-24">
@@ -195,7 +195,7 @@ const AccountPage = () => {
                 </h2>
                 <Separator className="mb-6" />
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                   <div className="space-y-2">
                     <Label htmlFor="name">Full Name</Label>
                     <Input id="name" defaultValue={userData.name} />
@@ -317,7 +317,7 @@ const AccountPage = () => {
                       className="border rounded-md p-4 hover:bg-muted/50 transition-colors cursor-pointer"
                       onClick={() => navigate(`/account/orders/${order.id}`)}
                     >
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mobile-stack">
                         <div>
                           <div className="flex items-center">
                             <h3 className="font-medium">{order.id}</h3>

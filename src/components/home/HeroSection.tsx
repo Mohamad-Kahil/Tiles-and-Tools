@@ -98,9 +98,11 @@ const HeroSection = ({
 
   return (
     <div
-      className="relative w-full h-[500px] overflow-hidden bg-gray-100"
+      className="relative w-full h-[500px] sm:h-[400px] md:h-[450px] lg:h-[500px] overflow-hidden bg-gray-100"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      onTouchStart={handleMouseEnter}
+      onTouchEnd={handleMouseLeave}
     >
       {/* Slides */}
       <div className="relative w-full h-full">
@@ -124,12 +126,12 @@ const HeroSection = ({
             </div>
 
             {/* Content */}
-            <div className="relative z-20 flex flex-col justify-center h-full max-w-4xl mx-auto px-6 md:px-10 lg:px-0">
+            <div className="relative z-20 flex flex-col justify-center h-full max-w-4xl mx-auto px-4 sm:px-6 md:px-10 lg:px-0">
               <div className="text-white max-w-xl">
-                <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-2 sm:mb-3">
                   {slide.title}
                 </h2>
-                <p className="text-lg md:text-xl opacity-90 mb-6">
+                <p className="text-base sm:text-lg md:text-xl opacity-90 mb-4 sm:mb-6">
                   {slide.subtitle}
                 </p>
                 <Button size="lg" className="font-medium" asChild>

@@ -52,7 +52,7 @@ const CartPage = () => {
             </Button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
             {/* Cart Items */}
             <div className="lg:col-span-2 space-y-4">
               <div className="bg-card rounded-lg shadow-sm p-6">
@@ -85,7 +85,7 @@ const CartPage = () => {
                         />
                       </div>
 
-                      <div className="flex-1 flex flex-col sm:flex-row justify-between">
+                      <div className="flex-1 flex flex-col sm:flex-row justify-between mobile-stack">
                         <div className="space-y-1">
                           <Link
                             to={`/product/${item.id}`}
@@ -98,7 +98,7 @@ const CartPage = () => {
                           </div>
                         </div>
 
-                        <div className="flex items-center justify-between sm:flex-col sm:items-end mt-2 sm:mt-0">
+                        <div className="flex items-center justify-between sm:flex-col sm:items-end mt-2 sm:mt-0 mobile-full-width">
                           <div className="flex items-center border rounded-md">
                             <button
                               className="px-3 py-1 border-r"

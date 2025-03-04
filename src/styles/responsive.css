@@ -1,0 +1,142 @@
+/* Responsive styles for mobile and tablet devices */
+
+/* Base mobile-first styles */
+:root {
+  --container-padding: 1rem;
+  --card-padding: 1rem;
+  --grid-gap: 1rem;
+}
+
+/* Small devices (phones, up to 640px) */
+@media (max-width: 640px) {
+  .container {
+    padding-left: var(--container-padding);
+    padding-right: var(--container-padding);
+  }
+
+  h1 {
+    font-size: 1.5rem !important;
+  }
+
+  h2 {
+    font-size: 1.25rem !important;
+  }
+
+  .mobile-stack {
+    flex-direction: column !important;
+  }
+
+  .mobile-full-width {
+    width: 100% !important;
+  }
+
+  .mobile-hidden {
+    display: none !important;
+  }
+
+  .mobile-center {
+    text-align: center !important;
+    justify-content: center !important;
+  }
+
+  .mobile-p-4 {
+    padding: 1rem !important;
+  }
+
+  .mobile-mt-4 {
+    margin-top: 1rem !important;
+  }
+
+  .mobile-mb-4 {
+    margin-bottom: 1rem !important;
+  }
+}
+
+/* Medium devices (tablets, 641px to 1024px) */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .container {
+    padding-left: calc(var(--container-padding) * 1.5);
+    padding-right: calc(var(--container-padding) * 1.5);
+  }
+
+  .tablet-grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .tablet-hidden {
+    display: none !important;
+  }
+
+  .tablet-block {
+    display: block !important;
+  }
+
+  .tablet-p-6 {
+    padding: 1.5rem !important;
+  }
+}
+
+/* RTL Support */
+.rtl {
+  direction: rtl;
+  text-align: right;
+}
+
+.rtl .ml-auto {
+  margin-left: 0;
+  margin-right: auto;
+}
+
+.rtl .mr-2,
+.rtl .mr-4 {
+  margin-right: 0;
+  margin-left: 0.5rem;
+}
+
+.rtl .space-x-2 > *,
+.rtl .space-x-4 > * {
+  margin-right: 0 !important;
+}
+
+.rtl .space-x-2 > * + * {
+  margin-left: 0;
+  margin-right: 0.5rem;
+}
+
+.rtl .space-x-4 > * + * {
+  margin-left: 0;
+  margin-right: 1rem;
+}
+
+/* Touch-friendly adjustments */
+@media (pointer: coarse) {
+  button,
+  .button,
+  a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  input,
+  select,
+  textarea {
+    font-size: 16px !important; /* Prevents iOS zoom on focus */
+  }
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    font-size: 12pt;
+    color: #000;
+    background: #fff;
+  }
+
+  a[href]:after {
+    content: " (" attr(href) ")";
+  }
+}
