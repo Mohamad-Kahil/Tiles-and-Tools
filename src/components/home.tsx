@@ -1,57 +1,49 @@
-import React, { useState } from "react";
+import React from "react";
 import Header from "./layout/Header";
 import HeroSection from "./home/HeroSection";
 import CategoryShowcase from "./home/CategoryShowcase";
 import FeaturedProducts from "./products/FeaturedProducts";
 import Footer from "./layout/Footer";
 
-interface HomeProps {
-  language?: "en" | "ar";
-}
+import { useLanguage } from "@/contexts/LanguageContext";
+import { getTranslation } from "@/lib/i18n";
 
-const Home = ({ language = "en" }: HomeProps) => {
-  const [currentLanguage, setCurrentLanguage] = useState<"en" | "ar">(language);
+interface HomeProps {}
 
-  const handleLanguageChange = (newLanguage: "en" | "ar") => {
-    setCurrentLanguage(newLanguage);
-  };
+const Home = ({}: HomeProps) => {
+  const { language, direction } = useLanguage();
 
   // Promotional banners data
   const promotionalBanners = [
     {
       id: "promo1",
-      title: currentLanguage === "en" ? "Summer Sale" : "تخفيضات الصيف",
+      title: language === "en" ? "Summer Sale" : "تخفيضات الصيف",
       description:
-        currentLanguage === "en"
+        language === "en"
           ? "Up to 30% off on selected items"
           : "خصم يصل إلى 30٪ على منتجات مختارة",
       backgroundColor: "bg-amber-100",
       textColor: "text-amber-900",
-      buttonText: currentLanguage === "en" ? "Shop Now" : "تسوق الآن",
+      buttonText: language === "en" ? "Shop Now" : "تسوق الآن",
       buttonLink: "/sale",
     },
     {
       id: "promo2",
-      title: currentLanguage === "en" ? "Free Delivery" : "توصيل مجاني",
+      title: language === "en" ? "Free Delivery" : "توصيل مجاني",
       description:
-        currentLanguage === "en"
+        language === "en"
           ? "On all orders over 5000 EGP"
           : "على جميع الطلبات التي تزيد عن 5000 جنيه",
       backgroundColor: "bg-blue-100",
       textColor: "text-blue-900",
-      buttonText: currentLanguage === "en" ? "Learn More" : "اعرف المزيد",
+      buttonText: language === "en" ? "Learn More" : "اعرف المزيد",
       buttonLink: "/delivery",
     },
   ];
 
   return (
-    <div
-      className={`min-h-screen bg-background ${currentLanguage === "ar" ? "rtl" : "ltr"}`}
-    >
-      <Header
-        language={currentLanguage}
-        onLanguageChange={handleLanguageChange}
-      />
+    <div className={`min-h-screen bg-background ${direction}`}>
+      <Header />
 
       <main>
         {/* Hero Section */}
@@ -59,11 +51,9 @@ const Home = ({ language = "en" }: HomeProps) => {
 
         {/* Category Showcase */}
         <CategoryShowcase
-          title={
-            currentLanguage === "en" ? "Browse Our Categories" : "تصفح فئاتنا"
-          }
+          title={language === "en" ? "Browse Our Categories" : "تصفح فئاتنا"}
           subtitle={
-            currentLanguage === "en"
+            language === "en"
               ? "Explore our wide range of Egyptian home decor and finishing products"
               : "استكشف مجموعتنا الواسعة من منتجات الديكور المنزلي والتشطيبات المصرية"
           }
@@ -96,11 +86,9 @@ const Home = ({ language = "en" }: HomeProps) => {
 
         {/* Featured Products */}
         <FeaturedProducts
-          title={
-            currentLanguage === "en" ? "Featured Products" : "منتجات مميزة"
-          }
+          title={language === "en" ? "Featured Products" : "منتجات مميزة"}
           subtitle={
-            currentLanguage === "en"
+            language === "en"
               ? "Discover our most popular home decoration and finishing products"
               : "اكتشف أكثر منتجات الديكور المنزلي والتشطيبات شعبية لدينا"
           }
@@ -111,12 +99,12 @@ const Home = ({ language = "en" }: HomeProps) => {
           <div className="container mx-auto px-4">
             <div className="text-center mb-10">
               <h2 className="text-3xl font-bold tracking-tight mb-2">
-                {currentLanguage === "en"
+                {language === "en"
                   ? "What Our Customers Say"
                   : "ما يقوله عملاؤنا"}
               </h2>
               <p className="text-muted-foreground max-w-2xl mx-auto">
-                {currentLanguage === "en"
+                {language === "en"
                   ? "Read testimonials from our satisfied customers across Egypt"
                   : "اقرأ شهادات من عملائنا الراضين في جميع أنحاء مصر"}
               </p>
@@ -127,11 +115,11 @@ const Home = ({ language = "en" }: HomeProps) => {
                 {
                   id: "t1",
                   name: "Ahmed Hassan",
-                  location: currentLanguage === "en" ? "Cairo" : "القاهرة",
+                  location: language === "en" ? "Cairo" : "القاهرة",
                   avatar:
                     "https://api.dicebear.com/7.x/avataaars/svg?seed=Ahmed",
                   content:
-                    currentLanguage === "en"
+                    language === "en"
                       ? "The quality of the marble flooring I purchased exceeded my expectations. The installation team was professional and efficient."
                       : "جودة أرضيات الرخام التي اشتريتها فاقت توقعاتي. كان فريق التركيب محترفًا وفعالًا.",
                   rating: 5,
@@ -139,12 +127,11 @@ const Home = ({ language = "en" }: HomeProps) => {
                 {
                   id: "t2",
                   name: "Nour El-Din",
-                  location:
-                    currentLanguage === "en" ? "Alexandria" : "الإسكندرية",
+                  location: language === "en" ? "Alexandria" : "الإسكندرية",
                   avatar:
                     "https://api.dicebear.com/7.x/avataaars/svg?seed=Nour",
                   content:
-                    currentLanguage === "en"
+                    language === "en"
                       ? "I love the wall paint colors and the customer service was excellent. Will definitely shop here again!"
                       : "أحب ألوان طلاء الجدران وكانت خدمة العملاء ممتازة. سأتسوق هنا مرة أخرى بالتأكيد!",
                   rating: 4,
@@ -152,11 +139,11 @@ const Home = ({ language = "en" }: HomeProps) => {
                 {
                   id: "t3",
                   name: "Laila Mahmoud",
-                  location: currentLanguage === "en" ? "Giza" : "الجيزة",
+                  location: language === "en" ? "Giza" : "الجيزة",
                   avatar:
                     "https://api.dicebear.com/7.x/avataaars/svg?seed=Laila",
                   content:
-                    currentLanguage === "en"
+                    language === "en"
                       ? "The lighting fixtures transformed my living room completely. Great quality products at reasonable prices."
                       : "لقد غيرت تركيبات الإضاءة غرفة المعيشة الخاصة بي تمامًا. منتجات ذات جودة عالية بأسعار معقولة.",
                   rating: 5,
@@ -202,12 +189,12 @@ const Home = ({ language = "en" }: HomeProps) => {
         <section className="w-full py-16 bg-primary text-primary-foreground">
           <div className="container mx-auto px-4 text-center">
             <h2 className="text-3xl font-bold mb-4">
-              {currentLanguage === "en"
+              {language === "en"
                 ? "Subscribe to Our Newsletter"
                 : "اشترك في نشرتنا الإخبارية"}
             </h2>
             <p className="max-w-2xl mx-auto mb-8">
-              {currentLanguage === "en"
+              {language === "en"
                 ? "Stay updated with our latest products, trends, and exclusive offers"
                 : "ابق على اطلاع بأحدث منتجاتنا واتجاهاتنا وعروضنا الحصرية"}
             </p>
@@ -215,7 +202,7 @@ const Home = ({ language = "en" }: HomeProps) => {
               <input
                 type="email"
                 placeholder={
-                  currentLanguage === "en"
+                  language === "en"
                     ? "Your email address"
                     : "عنوان بريدك الإلكتروني"
                 }
@@ -226,7 +213,7 @@ const Home = ({ language = "en" }: HomeProps) => {
                 type="submit"
                 className="px-6 py-3 bg-white text-primary font-medium rounded-md hover:bg-gray-100 transition-colors"
               >
-                {currentLanguage === "en" ? "Subscribe" : "اشترك"}
+                {language === "en" ? "Subscribe" : "اشترك"}
               </button>
             </form>
           </div>

@@ -1,5 +1,7 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { getTranslation } from "@/lib/i18n";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -23,7 +25,6 @@ interface Category {
 
 interface CategoryMenuProps {
   categories?: Category[];
-  language?: "en" | "ar";
 }
 
 const defaultCategories: Category[] = [
@@ -169,11 +170,11 @@ ListItem.displayName = "ListItem";
 
 const CategoryMenu = ({
   categories = defaultCategories,
-  language = "en",
 }: CategoryMenuProps) => {
+  const { language, direction } = useLanguage();
   const displayCategories =
     language === "ar" ? defaultArabicCategories : categories;
-  const isRtl = language === "ar";
+  const isRtl = direction === "rtl";
   const navigate = useNavigate();
 
   const handleCategoryClick = (href: string) => {

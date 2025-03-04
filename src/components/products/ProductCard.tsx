@@ -7,6 +7,8 @@ import { cn } from "@/lib/utils";
 import { useCart } from "@/components/cart/CartContext";
 import { useWishlist } from "@/components/wishlist/WishlistContext";
 import { useAnalytics } from "@/components/analytics/AnalyticsProvider";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { formatCurrency, getTranslation } from "@/lib/i18n";
 
 interface ProductCardProps {
   id?: string;
@@ -39,6 +41,7 @@ const ProductCard = ({
     removeItem: removeFromWishlist,
   } = useWishlist();
   const { trackEvent } = useAnalytics();
+  const { language } = useLanguage();
 
   const handleAddToCart = () => {
     addItem(
@@ -58,10 +61,7 @@ const ProductCard = ({
   };
 
   // Format price to EGP currency
-  const formattedPrice = new Intl.NumberFormat("ar-EG", {
-    style: "currency",
-    currency: "EGP",
-  }).format(price);
+  const formattedPrice = formatCurrency(price, language);
 
   // Generate stars based on rating
   const renderStars = () => {
@@ -126,7 +126,8 @@ const ProductCard = ({
             asChild
           >
             <Link to={`/product/${id}`}>
-              <Eye className="h-4 w-4" /> Quick View
+              <Eye className="h-4 w-4" />{" "}
+              {language === "en" ? "Quick View" : "عرض سريع"}
             </Link>
           </Button>
           <Button
@@ -135,7 +136,8 @@ const ProductCard = ({
             className="w-3/4 gap-2"
             onClick={handleAddToCart}
           >
-            <ShoppingCart className="h-4 w-4" /> Add to Cart
+            <ShoppingCart className="h-4 w-4" />{" "}
+            {getTranslation("addToCart", language)}
           </Button>
         </div>
       </div>
@@ -160,7 +162,8 @@ const ProductCard = ({
             className="flex-1 gap-2"
             onClick={handleAddToCart}
           >
-            <ShoppingCart className="h-4 w-4" /> Add to Cart
+            <ShoppingCart className="h-4 w-4" />{" "}
+            {getTranslation("addToCart", language)}
           </Button>
 
           {showWishlistButton && (

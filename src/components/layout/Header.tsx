@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/components/auth/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { getTranslation } from "@/lib/i18n";
 import {
   Menu,
-  Globe,
   ShoppingCart,
   Home,
   Package,
@@ -18,62 +19,58 @@ import { cn } from "@/lib/utils";
 import CategoryMenu from "@/components/navigation/CategoryMenu";
 import SearchBar from "@/components/search/SearchBar";
 import CartPreview from "@/components/cart/CartPreview";
+import LanguageSwitcher from "@/components/layout/LanguageSwitcher";
 
-interface HeaderProps {
-  language?: "en" | "ar";
-  onLanguageChange?: (language: "en" | "ar") => void;
-}
+interface HeaderProps {}
 
-const Header = ({
-  language = "en",
-  onLanguageChange = () => {},
-}: HeaderProps) => {
+const Header = ({}: HeaderProps) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const isRtl = language === "ar";
   const navigate = useNavigate();
   const { isAuthenticated, user, logout } = useAuth();
+  const { language, setLanguage, direction } = useLanguage();
+  const isRtl = direction === "rtl";
 
-  const toggleLanguage = () => {
-    onLanguageChange(language === "en" ? "ar" : "en");
+  const handleLanguageChange = (newLanguage) => {
+    setLanguage(newLanguage);
   };
 
   const navigationLinks = [
     {
-      name: language === "en" ? "Home" : "الرئيسية",
+      name: getTranslation("home", language),
       href: "/",
       icon: <Home className="h-4 w-4 mr-2" />,
     },
     {
-      name: language === "en" ? "Products" : "المنتجات",
+      name: getTranslation("products", language),
       href: "/products",
       icon: <Package className="h-4 w-4 mr-2" />,
     },
     {
-      name: language === "en" ? "Cart" : "عربة التسوق",
+      name: getTranslation("cart", language),
       href: "/cart",
       icon: <ShoppingBag className="h-4 w-4 mr-2" />,
     },
     {
-      name: language === "en" ? "Wishlist" : "المفضلة",
+      name: getTranslation("wishlist", language),
       href: "/wishlist",
       icon: <Heart className="h-4 w-4 mr-2" />,
     },
     ...(!isAuthenticated
       ? [
           {
-            name: language === "en" ? "Sign In" : "تسجيل الدخول",
+            name: getTranslation("signIn", language),
             href: "/login",
             icon: <User className="h-4 w-4 mr-2" />,
           },
         ]
       : [
           {
-            name: language === "en" ? "Account" : "الحساب",
+            name: getTranslation("account", language),
             href: "/account",
             icon: <User className="h-4 w-4 mr-2" />,
           },
           {
-            name: language === "en" ? "Logout" : "تسجيل الخروج",
+            name: getTranslation("logout", language),
             href: "#",
             icon: <User className="h-4 w-4 mr-2" />,
             onClick: () => {
@@ -88,7 +85,7 @@ const Header = ({
     <header
       className={cn(
         "sticky top-0 z-50 w-full bg-background border-b",
-        isRtl ? "rtl" : "ltr",
+        direction,
       )}
     >
       <div className="container mx-auto px-4">
@@ -100,30 +97,21 @@ const Header = ({
 
           {/* Category Links in a single row */}
           <div className="hidden lg:flex items-center space-x-6">
-            <CategoryMenu language={language} />
+            <CategoryMenu />
           </div>
 
           {/* Search, Language, Cart */}
           <div className="flex items-center space-x-4 ml-auto">
             <div className="hidden md:block w-full max-w-sm">
-              <SearchBar
-                placeholder={
-                  language === "en"
-                    ? "Search products..."
-                    : "البحث عن منتجات..."
-                }
-              />
+              <SearchBar placeholder={getTranslation("search", language)} />
             </div>
 
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={toggleLanguage}
+            <LanguageSwitcher
+              currentLanguage={language}
+              onLanguageChange={handleLanguageChange}
+              variant="icon"
               className="hidden sm:flex"
-            >
-              <Globe className="h-5 w-5" />
-              <span className="sr-only">Toggle Language</span>
-            </Button>
+            />
 
             {/* Cart and Sign In */}
             <div className="hidden md:flex items-center space-x-4">
@@ -154,11 +142,7 @@ const Header = ({
                 <div className="flex flex-col h-full py-6">
                   <div className="px-4 mb-6">
                     <SearchBar
-                      placeholder={
-                        language === "en"
-                          ? "Search products..."
-                          : "البحث عن منتجات..."
-                      }
+                      placeholder={getTranslation("search", language)}
                       className="w-full"
                     />
                   </div>
@@ -168,7 +152,7 @@ const Header = ({
                       {/* Main Navigation Links (Mobile) */}
                       <div className="px-6">
                         <h3 className="mb-2 text-lg font-semibold">
-                          {language === "en" ? "Navigation" : "التنقل"}
+                          {getTranslation("navigation", language)}
                         </h3>
                         <div className="space-y-3">
                           {navigationLinks.map((link) =>
@@ -201,28 +185,25 @@ const Header = ({
 
                       <div className="px-6">
                         <h3 className="mb-2 text-lg font-semibold">
-                          {language === "en" ? "Categories" : "الفئات"}
+                          {getTranslation("categories", language)}
                         </h3>
                         <div className="space-y-3">
                           {/* Mobile category links */}
                           {[
                             {
-                              name: language === "en" ? "Flooring" : "الأرضيات",
+                              name: getTranslation("flooring", language),
                               href: "/category/flooring",
                             },
                             {
-                              name:
-                                language === "en"
-                                  ? "Wall Products"
-                                  : "منتجات الحائط",
+                              name: getTranslation("wallProducts", language),
                               href: "/category/wall-products",
                             },
                             {
-                              name: language === "en" ? "Lighting" : "الإضاءة",
+                              name: getTranslation("lighting", language),
                               href: "/category/lighting",
                             },
                             {
-                              name: language === "en" ? "Furniture" : "الأثاث",
+                              name: getTranslation("furniture", language),
                               href: "/category/furniture",
                             },
                           ].map((category) => (
@@ -241,16 +222,12 @@ const Header = ({
                   </div>
 
                   <div className="mt-auto border-t pt-4 px-6">
-                    <Button
-                      variant="outline"
-                      className="w-full justify-start"
-                      onClick={toggleLanguage}
-                    >
-                      <Globe className="mr-2 h-4 w-4" />
-                      {language === "en"
-                        ? "Switch to Arabic"
-                        : "التبديل إلى الإنجليزية"}
-                    </Button>
+                    <LanguageSwitcher
+                      currentLanguage={language}
+                      onLanguageChange={handleLanguageChange}
+                      variant="full"
+                      className="w-full"
+                    />
                   </div>
                 </div>
               </SheetContent>
@@ -261,9 +238,7 @@ const Header = ({
       {/* Mobile Search (visible only on small screens) */}
       <div className="md:hidden border-t py-2 px-4">
         <SearchBar
-          placeholder={
-            language === "en" ? "Search products..." : "البحث عن منتجات..."
-          }
+          placeholder={getTranslation("search", language)}
           className="w-full"
         />
       </div>

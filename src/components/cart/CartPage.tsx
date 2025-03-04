@@ -2,6 +2,8 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { ShoppingCart, Trash2, ChevronRight, ArrowLeft } from "lucide-react";
 import { useCart } from "./CartContext";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { formatCurrency, getTranslation } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import Header from "@/components/layout/Header";
@@ -9,6 +11,7 @@ import Footer from "@/components/layout/Footer";
 
 const CartPage = () => {
   const { items, removeItem, updateQuantity, subtotal, itemCount } = useCart();
+  const { language, direction } = useLanguage();
 
   // Handle quantity changes
   const handleQuantityChange = (id: string, newQuantity: number) => {
@@ -19,10 +22,7 @@ const CartPage = () => {
 
   // Format price
   const formatPrice = (price: number) => {
-    return price.toLocaleString("ar-EG", {
-      style: "currency",
-      currency: "EGP",
-    });
+    return formatCurrency(price, language);
   };
 
   // Calculate shipping cost (free over 5000 EGP)
@@ -32,23 +32,29 @@ const CartPage = () => {
   const total = subtotal + shippingCost;
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className={`min-h-screen bg-background flex flex-col ${direction}`}>
       <Header />
 
       <main className="flex-1 container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold tracking-tight mb-6">
-          Your Shopping Cart
+          {getTranslation("yourCart", language)}
         </h1>
 
         {items.length === 0 ? (
           <div className="text-center py-16 bg-muted rounded-lg">
             <ShoppingCart className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-            <h2 className="text-2xl font-medium mb-2">Your cart is empty</h2>
+            <h2 className="text-2xl font-medium mb-2">
+              {getTranslation("emptyCart", language)}
+            </h2>
             <p className="text-muted-foreground mb-6">
-              Looks like you haven't added any products to your cart yet.
+              {language === "en"
+                ? "Looks like you haven't added any products to your cart yet."
+                : "يبدو أنك لم تضف أي منتجات إلى سلة التسوق الخاصة بك حتى الآن."}
             </p>
             <Button asChild>
-              <Link to="/products">Start Shopping</Link>
+              <Link to="/products">
+                {getTranslation("startShopping", language)}
+              </Link>
             </Button>
           </div>
         ) : (
@@ -63,7 +69,7 @@ const CartPage = () => {
                   <Button variant="ghost" size="sm" asChild>
                     <Link to="/products" className="flex items-center gap-1">
                       <ArrowLeft className="h-4 w-4" />
-                      Continue Shopping
+                      {getTranslation("continueShopping", language)}
                     </Link>
                   </Button>
                 </div>
@@ -149,14 +155,20 @@ const CartPage = () => {
 
                 <div className="space-y-3">
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Subtotal</span>
+                    <span className="text-muted-foreground">
+                      {getTranslation("subtotal", language)}
+                    </span>
                     <span className="font-medium">{formatPrice(subtotal)}</span>
                   </div>
 
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Shipping</span>
+                    <span className="text-muted-foreground">
+                      {getTranslation("shipping", language)}
+                    </span>
                     <span className="font-medium">
-                      {shippingCost === 0 ? "Free" : formatPrice(shippingCost)}
+                      {shippingCost === 0
+                        ? getTranslation("free", language)
+                        : formatPrice(shippingCost)}
                     </span>
                   </div>
 
@@ -170,14 +182,16 @@ const CartPage = () => {
                   <Separator className="my-2" />
 
                   <div className="flex justify-between text-lg font-bold">
-                    <span>Total</span>
+                    <span>{getTranslation("total", language)}</span>
                     <span className="text-primary">{formatPrice(total)}</span>
                   </div>
 
                   <Button className="w-full mt-4" size="lg" asChild>
                     <Link to="/checkout">
-                      Proceed to Checkout{" "}
-                      <ChevronRight className="ml-2 h-4 w-4" />
+                      {getTranslation("proceedToCheckout", language)}{" "}
+                      <ChevronRight
+                        className={`${direction === "rtl" ? "mr-2" : "ml-2"} h-4 w-4`}
+                      />
                     </Link>
                   </Button>
 
