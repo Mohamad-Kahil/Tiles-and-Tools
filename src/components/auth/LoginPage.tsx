@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "./AuthContext";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -33,8 +34,14 @@ type FormValues = z.infer<typeof formSchema>;
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { login } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Get the redirect path from location state or default to account page
+  const from = location.state?.from?.pathname || "/account";
 
   // Initialize form
   const form = useForm<FormValues>({
@@ -49,14 +56,16 @@ const LoginPage = () => {
   // Handle form submission
   const onSubmit = async (data: FormValues) => {
     setIsLoading(true);
+    setError(null);
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-
-    console.log("Login submitted:", data);
-
-    // Redirect to account page on successful login
-    navigate("/account");
+    try {
+      await login(data.email, data.password);
+      // Redirect to the intended page or account page on successful login
+      navigate(from, { replace: true });
+    } catch (err) {
+      setError("Invalid email or password. Try demo@example.com / password");
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -78,6 +87,11 @@ const LoginPage = () => {
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="space-y-4"
               >
+                {error && (
+                  <div className="bg-red-50 text-red-500 p-3 rounded-md text-sm">
+                    {error}
+                  </div>
+                )}
                 <FormField
                   control={form.control}
                   name="email"

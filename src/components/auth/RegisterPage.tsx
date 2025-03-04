@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "./AuthContext";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -43,9 +44,11 @@ type FormValues = z.infer<typeof formSchema>;
 
 const RegisterPage = () => {
   const navigate = useNavigate();
+  const { register } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Initialize form
   const form = useForm<FormValues>({
@@ -63,14 +66,22 @@ const RegisterPage = () => {
   // Handle form submission
   const onSubmit = async (data: FormValues) => {
     setIsLoading(true);
+    setError(null);
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    try {
+      await register({
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        password: data.password,
+      });
 
-    console.log("Registration submitted:", data);
-
-    // Redirect to account page on successful registration
-    navigate("/account");
+      // Redirect to account page on successful registration
+      navigate("/account");
+    } catch (err) {
+      setError("Registration failed. Please try again.");
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -92,6 +103,11 @@ const RegisterPage = () => {
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="space-y-4"
               >
+                {error && (
+                  <div className="bg-red-50 text-red-500 p-3 rounded-md text-sm">
+                    {error}
+                  </div>
+                )}
                 <div className="grid grid-cols-2 gap-4">
                   <FormField
                     control={form.control}

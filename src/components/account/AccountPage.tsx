@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/components/auth/AuthContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,13 +13,22 @@ import { Badge } from "@/components/ui/badge";
 
 const AccountPage = () => {
   const navigate = useNavigate();
+  const { user, isAuthenticated, logout, updateProfile } = useAuth();
   const [activeTab, setActiveTab] = useState("profile");
+  const [isUpdating, setIsUpdating] = useState(false);
+  
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/login", { state: { from: { pathname: "/account" } } });
+    }
+  }, [isAuthenticated, navigate]);
 
-  // Mock user data
-  const userData = {
-    name: "Ahmed Hassan",
-    email: "ahmed.hassan@example.com",
-    phone: "+20 123 456 7890",
+  // Use authenticated user data or fallback to mock data
+  const userData = user ? {
+    name: `${user.firstName} ${user.lastName}`,
+    email: user.email,
+    phone: user.phone || "+20 123 456 7890",
     addresses: [
       {
         id: "addr1",
@@ -163,6 +173,10 @@ const AccountPage = () => {
               <Button
                 variant="outline"
                 className="w-full justify-start text-red-500 hover:text-red-600 hover:bg-red-50"
+                onClick={() => {
+                  logout();
+                  navigate("/login");
+                }}
               >
                 <LogOut className="mr-2 h-4 w-4" />
                 Sign Out
@@ -198,7 +212,29 @@ const AccountPage = () => {
                   </div>
                 </div>
 
-                <Button className="mt-6">Save Changes</Button>
+                <Button 
+                  className="mt-6" 
+                  onClick={async () => {
+                    setIsUpdating(true);
+                    try {
+                      // Get form values
+                      const firstName = (document.getElementById('name') as HTMLInputElement).value.split(' ')[0];
+                      const lastName = (document.getElementById('name') as HTMLInputElement).value.split(' ')[1] || '';
+                      const email = (document.getElementById('email') as HTMLInputElement).value;
+                      const phone = (document.getElementById('phone') as HTMLInputElement).value;
+                      
+                      await updateProfile({ firstName, lastName, email, phone });
+                      alert('Profile updated successfully');
+                    } catch (error) {
+                      alert('Failed to update profile');
+                    } finally {
+                      setIsUpdating(false);
+                    }
+                  }}
+                  disabled={isUpdating}
+                >
+                  {isUpdating ? 'Saving...' : 'Save Changes'}
+                </Button>
               </div>
 
               <div className="bg-card rounded-lg shadow-sm p-6">

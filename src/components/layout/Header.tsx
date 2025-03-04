@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "@/components/auth/AuthContext";
 import {
   Menu,
   Globe,
@@ -30,6 +31,7 @@ const Header = ({
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const isRtl = language === "ar";
   const navigate = useNavigate();
+  const { isAuthenticated, user, logout } = useAuth();
 
   const toggleLanguage = () => {
     onLanguageChange(language === "en" ? "ar" : "en");
@@ -56,16 +58,30 @@ const Header = ({
       href: "/wishlist",
       icon: <Heart className="h-4 w-4 mr-2" />,
     },
-    {
-      name: language === "en" ? "Sign In" : "تسجيل الدخول",
-      href: "/login",
-      icon: <User className="h-4 w-4 mr-2" />,
-    },
-    {
-      name: language === "en" ? "Account" : "الحساب",
-      href: "/account",
-      icon: <User className="h-4 w-4 mr-2" />,
-    },
+    ...(!isAuthenticated
+      ? [
+          {
+            name: language === "en" ? "Sign In" : "تسجيل الدخول",
+            href: "/login",
+            icon: <User className="h-4 w-4 mr-2" />,
+          },
+        ]
+      : [
+          {
+            name: language === "en" ? "Account" : "الحساب",
+            href: "/account",
+            icon: <User className="h-4 w-4 mr-2" />,
+          },
+          {
+            name: language === "en" ? "Logout" : "تسجيل الخروج",
+            href: "#",
+            icon: <User className="h-4 w-4 mr-2" />,
+            onClick: () => {
+              logout();
+              navigate("/");
+            },
+          },
+        ]),
   ];
 
   return (
@@ -111,12 +127,14 @@ const Header = ({
 
             {/* Cart and Sign In */}
             <div className="hidden md:flex items-center space-x-4">
-              {navigationLinks.slice(2, 5).map((link) => (
+              {navigationLinks.slice(2).map((link) => (
                 <Button
-                  key={link.href}
+                  key={link.href || link.name}
                   variant="ghost"
                   className="flex items-center"
-                  onClick={() => navigate(link.href)}
+                  onClick={() =>
+                    link.onClick ? link.onClick() : navigate(link.href)
+                  }
                 >
                   {link.icon}
                   <span>{link.name}</span>
@@ -153,17 +171,31 @@ const Header = ({
                           {language === "en" ? "Navigation" : "التنقل"}
                         </h3>
                         <div className="space-y-3">
-                          {navigationLinks.map((link) => (
-                            <Link
-                              key={link.href}
-                              to={link.href}
-                              className="flex items-center py-2 text-base hover:text-primary"
-                              onClick={() => setIsMobileMenuOpen(false)}
-                            >
-                              {link.icon}
-                              <span>{link.name}</span>
-                            </Link>
-                          ))}
+                          {navigationLinks.map((link) =>
+                            link.onClick ? (
+                              <button
+                                key={link.name}
+                                className="flex items-center py-2 text-base hover:text-primary w-full text-left"
+                                onClick={() => {
+                                  setIsMobileMenuOpen(false);
+                                  link.onClick && link.onClick();
+                                }}
+                              >
+                                {link.icon}
+                                <span>{link.name}</span>
+                              </button>
+                            ) : (
+                              <Link
+                                key={link.href}
+                                to={link.href}
+                                className="flex items-center py-2 text-base hover:text-primary"
+                                onClick={() => setIsMobileMenuOpen(false)}
+                              >
+                                {link.icon}
+                                <span>{link.name}</span>
+                              </Link>
+                            ),
+                          )}
                         </div>
                       </div>
 
