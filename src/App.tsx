@@ -16,7 +16,14 @@ const OrderConfirmationPage = lazy(
 function App() {
   return (
     <CartProvider>
-      <Suspense fallback={<p>Loading...</p>}>
+      <Suspense
+        fallback={
+          <div className="flex items-center justify-center min-h-screen">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+            <p className="ml-2">Loading...</p>
+          </div>
+        }
+      >
         <>
           <Routes>
             <Route path="/" element={<Home />} />
@@ -32,6 +39,8 @@ function App() {
               path="/order-confirmation"
               element={<OrderConfirmationPage />}
             />
+            {/* Add a catch-all route that redirects to home */}
+            <Route path="*" element={<Home />} />
           </Routes>
           {import.meta.env.VITE_TEMPO === "true" && useRoutes(routes)}
         </>

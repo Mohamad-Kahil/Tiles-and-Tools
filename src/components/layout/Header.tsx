@@ -1,6 +1,14 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { Menu, Globe, ShoppingCart } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  Menu,
+  Globe,
+  ShoppingCart,
+  Home,
+  Package,
+  ShoppingBag,
+  User,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
@@ -20,10 +28,34 @@ const Header = ({
 }: HeaderProps) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const isRtl = language === "ar";
+  const navigate = useNavigate();
 
   const toggleLanguage = () => {
     onLanguageChange(language === "en" ? "ar" : "en");
   };
+
+  const navigationLinks = [
+    {
+      name: language === "en" ? "Home" : "الرئيسية",
+      href: "/",
+      icon: <Home className="h-4 w-4 mr-2" />,
+    },
+    {
+      name: language === "en" ? "Products" : "المنتجات",
+      href: "/products",
+      icon: <Package className="h-4 w-4 mr-2" />,
+    },
+    {
+      name: language === "en" ? "Cart" : "عربة التسوق",
+      href: "/cart",
+      icon: <ShoppingBag className="h-4 w-4 mr-2" />,
+    },
+    {
+      name: language === "en" ? "Account" : "الحساب",
+      href: "/account",
+      icon: <User className="h-4 w-4 mr-2" />,
+    },
+  ];
 
   return (
     <header
@@ -45,6 +77,21 @@ const Header = ({
           {/* Desktop Navigation */}
           <div className="hidden lg:flex lg:flex-1 lg:justify-center px-6">
             <CategoryMenu language={language} />
+          </div>
+
+          {/* Main Navigation Links (Desktop) */}
+          <div className="hidden md:flex items-center space-x-4 mr-4">
+            {navigationLinks.map((link) => (
+              <Button
+                key={link.href}
+                variant="ghost"
+                className="flex items-center"
+                onClick={() => navigate(link.href)}
+              >
+                {link.icon}
+                <span>{link.name}</span>
+              </Button>
+            ))}
           </div>
 
           {/* Search, Language, Cart */}
@@ -94,6 +141,26 @@ const Header = ({
 
                   <div className="flex-1 overflow-auto">
                     <nav className="flex flex-col space-y-6">
+                      {/* Main Navigation Links (Mobile) */}
+                      <div className="px-6">
+                        <h3 className="mb-2 text-lg font-semibold">
+                          {language === "en" ? "Navigation" : "التنقل"}
+                        </h3>
+                        <div className="space-y-3">
+                          {navigationLinks.map((link) => (
+                            <Link
+                              key={link.href}
+                              to={link.href}
+                              className="flex items-center py-2 text-base hover:text-primary"
+                              onClick={() => setIsMobileMenuOpen(false)}
+                            >
+                              {link.icon}
+                              <span>{link.name}</span>
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+
                       <div className="px-6">
                         <h3 className="mb-2 text-lg font-semibold">
                           {language === "en" ? "Categories" : "الفئات"}

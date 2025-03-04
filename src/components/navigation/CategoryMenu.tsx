@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -173,6 +173,16 @@ const CategoryMenu = ({
   const displayCategories =
     language === "ar" ? defaultArabicCategories : categories;
   const isRtl = language === "ar";
+  const navigate = useNavigate();
+
+  const handleCategoryClick = (href: string) => {
+    navigate(href);
+  };
+
+  const handleSubcategoryClick = (href: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    navigate(href);
+  };
 
   return (
     <div className={`w-full bg-background ${isRtl ? "rtl" : "ltr"}`}>
@@ -180,7 +190,10 @@ const CategoryMenu = ({
         <NavigationMenuList className="flex-wrap">
           {displayCategories.map((category) => (
             <NavigationMenuItem key={category.href}>
-              <NavigationMenuTrigger className="text-base">
+              <NavigationMenuTrigger
+                className="text-base cursor-pointer"
+                onClick={() => handleCategoryClick(category.href)}
+              >
                 {category.name}
               </NavigationMenuTrigger>
               <NavigationMenuContent>
@@ -190,6 +203,9 @@ const CategoryMenu = ({
                       key={subcategory.href}
                       title={subcategory.name}
                       href={subcategory.href}
+                      onClick={(e) =>
+                        handleSubcategoryClick(subcategory.href, e)
+                      }
                     >
                       {subcategory.description}
                     </ListItem>

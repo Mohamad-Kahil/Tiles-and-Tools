@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ShoppingCart, X, ChevronRight, Trash2 } from "lucide-react";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
@@ -19,10 +19,21 @@ const CartPreview = ({
 }: CartPreviewProps) => {
   const [open, setOpen] = useState(isOpen);
   const { items, removeItem, updateQuantity, itemCount, subtotal } = useCart();
+  const navigate = useNavigate();
 
   const handleClose = () => {
     setOpen(false);
     onClose();
+  };
+
+  const handleViewCart = () => {
+    handleClose();
+    navigate("/cart");
+  };
+
+  const handleCheckout = () => {
+    handleClose();
+    navigate("/checkout");
   };
 
   // Format price
@@ -65,7 +76,13 @@ const CartPreview = ({
                 <div className="p-4 space-y-4">
                   {items.map((item) => (
                     <div key={item.id} className="flex gap-3">
-                      <div className="h-16 w-16 rounded overflow-hidden flex-shrink-0">
+                      <div
+                        className="h-16 w-16 rounded overflow-hidden flex-shrink-0 cursor-pointer"
+                        onClick={() => {
+                          handleClose();
+                          navigate(`/product/${item.id}`);
+                        }}
+                      >
                         <img
                           src={item.image}
                           alt={item.name}
@@ -73,7 +90,13 @@ const CartPreview = ({
                         />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h4 className="text-sm font-medium truncate">
+                        <h4
+                          className="text-sm font-medium truncate cursor-pointer hover:text-primary"
+                          onClick={() => {
+                            handleClose();
+                            navigate(`/product/${item.id}`);
+                          }}
+                        >
                           {item.name}
                         </h4>
                         <div className="flex items-center mt-1 text-sm">
@@ -110,20 +133,15 @@ const CartPreview = ({
                   <span className="font-medium">Total</span>
                   <span className="font-bold">{formatPrice(subtotal)}</span>
                 </div>
-                <Button className="w-full" asChild onClick={handleClose}>
-                  <Link to="/cart">
-                    View Cart <ChevronRight className="ml-2 h-4 w-4" />
-                  </Link>
+                <Button className="w-full" onClick={handleViewCart}>
+                  View Cart <ChevronRight className="ml-2 h-4 w-4" />
                 </Button>
                 <Button
                   className="w-full mt-2"
                   variant="outline"
-                  asChild
-                  onClick={handleClose}
+                  onClick={handleCheckout}
                 >
-                  <Link to="/checkout">
-                    Checkout <ChevronRight className="ml-2 h-4 w-4" />
-                  </Link>
+                  Checkout <ChevronRight className="ml-2 h-4 w-4" />
                 </Button>
               </div>
             </>
