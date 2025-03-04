@@ -1,7 +1,6 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import "./styles/responsive.css";
 
 @layer base {
   :root {
@@ -75,3 +74,6 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Import responsive styles after the layer definitions */
+@import "./styles/responsive.css";

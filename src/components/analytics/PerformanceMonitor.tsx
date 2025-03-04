@@ -88,7 +88,9 @@ const PerformanceMonitor: React.FC = () => {
       const fidObserver = new PerformanceObserver((entryList) => {
         const entries = entryList.getEntries();
         if (entries.length > 0) {
-          const fid = entries[0].processingStart - entries[0].startTime;
+          // Cast to any to handle the processingStart property
+          const entry = entries[0] as any;
+          const fid = entry.processingStart - entry.startTime;
           setMetrics((prev) => ({ ...prev, fid }));
           console.log(`📊 FID: ${fid.toFixed(2)}ms`);
           sendToAnalytics("fid", fid);
@@ -114,9 +116,7 @@ const PerformanceMonitor: React.FC = () => {
 
     // Clean up observers on unmount
     return () => {
-      if ("PerformanceObserver" in window) {
-        PerformanceObserver.disconnect();
-      }
+      // No global disconnect needed, each observer handles its own cleanup
     };
   }, []);
 

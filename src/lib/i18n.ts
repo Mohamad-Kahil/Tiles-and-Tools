@@ -150,7 +150,7 @@ export const translations: Translations = {
     en: "Subtotal",
     ar: "المجموع الفرعي",
   },
-  shipping: {
+  shippingLabel: {
     en: "Shipping",
     ar: "الشحن",
   },
@@ -190,7 +190,7 @@ export const translations: Translations = {
   },
 
   // Order confirmation
-  orderConfirmed: {
+  orderConfirmedTitle: {
     en: "Order Confirmed!",
     ar: "تم تأكيد الطلب!",
   },
@@ -202,7 +202,7 @@ export const translations: Translations = {
     en: "Order Timeline",
     ar: "جدول زمني للطلب",
   },
-  orderConfirmed: {
+  orderConfirmedStatus: {
     en: "Order Confirmed",
     ar: "تم تأكيد الطلب",
   },
