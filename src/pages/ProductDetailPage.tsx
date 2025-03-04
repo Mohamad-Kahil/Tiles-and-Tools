@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useCart } from "@/components/cart/CartContext";
 import { useWishlist } from "@/components/wishlist/WishlistContext";
+import { useAnalytics } from "@/components/analytics/AnalyticsProvider";
 import {
   ChevronRight,
   Heart,
@@ -221,6 +222,17 @@ const ProductDetailPage = () => {
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
 
+  // Track product view
+  useEffect(() => {
+    if (product) {
+      try {
+        trackEvent("ecommerce", "view_item", product.name, product.price);
+      } catch (error) {
+        console.error("Error tracking product view:", error);
+      }
+    }
+  }, [product]);
+
   // Fetch product data
   useEffect(() => {
     const fetchProduct = async () => {
@@ -263,6 +275,7 @@ const ProductDetailPage = () => {
     isInWishlist,
     removeItem: removeFromWishlist,
   } = useWishlist();
+  const { trackEvent } = useAnalytics();
 
   // Handle add to cart
   const handleAddToCart = () => {
@@ -277,6 +290,18 @@ const ProductDetailPage = () => {
         quantity,
       );
       console.log(`Added ${quantity} of ${product.name} to cart`);
+
+      // Track add to cart event with quantity
+      try {
+        trackEvent(
+          "ecommerce",
+          "add_to_cart",
+          product.name,
+          discountedPrice || product.price,
+        );
+      } catch (error) {
+        console.error("Error tracking add to cart:", error);
+      }
     }
   };
 
@@ -285,6 +310,17 @@ const ProductDetailPage = () => {
     if (product) {
       if (isInWishlist(product.id)) {
         removeFromWishlist(product.id);
+        // Track remove from wishlist event
+        try {
+          trackEvent(
+            "ecommerce",
+            "remove_from_wishlist",
+            product.name,
+            discountedPrice || product.price,
+          );
+        } catch (error) {
+          console.error("Error tracking wishlist removal:", error);
+        }
       } else {
         addToWishlist({
           id: product.id,
@@ -292,6 +328,17 @@ const ProductDetailPage = () => {
           price: discountedPrice || product.price,
           image: product.image,
         });
+        // Track add to wishlist event
+        try {
+          trackEvent(
+            "ecommerce",
+            "add_to_wishlist",
+            product.name,
+            discountedPrice || product.price,
+          );
+        } catch (error) {
+          console.error("Error tracking wishlist addition:", error);
+        }
       }
     }
   };

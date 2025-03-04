@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useCart } from "@/components/cart/CartContext";
 import { useWishlist } from "@/components/wishlist/WishlistContext";
+import { useAnalytics } from "@/components/analytics/AnalyticsProvider";
 
 interface ProductCardProps {
   id?: string;
@@ -37,6 +38,7 @@ const ProductCard = ({
     isInWishlist,
     removeItem: removeFromWishlist,
   } = useWishlist();
+  const { trackEvent } = useAnalytics();
 
   const handleAddToCart = () => {
     addItem(
@@ -48,6 +50,10 @@ const ProductCard = ({
       },
       1,
     );
+
+    // Track add to cart event
+    trackEvent("ecommerce", "add_to_cart", name, price);
+
     onAddToCart();
   };
 
@@ -165,6 +171,8 @@ const ProductCard = ({
               onClick={() => {
                 if (isInWishlist(id)) {
                   removeFromWishlist(id);
+                  // Track remove from wishlist event
+                  trackEvent("ecommerce", "remove_from_wishlist", name, price);
                 } else {
                   addToWishlist({
                     id,
@@ -172,6 +180,8 @@ const ProductCard = ({
                     price,
                     image,
                   });
+                  // Track add to wishlist event
+                  trackEvent("ecommerce", "add_to_wishlist", name, price);
                 }
                 onToggleWishlist();
               }}

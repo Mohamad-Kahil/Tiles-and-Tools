@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft, CreditCard, Truck, Check, MapPin } from "lucide-react";
 
 import { useCart } from "@/components/cart/CartContext";
+import { useAnalytics } from "@/components/analytics/AnalyticsProvider";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
@@ -52,6 +53,7 @@ const CheckoutPage = () => {
   const { items, subtotal, clearCart } = useCart();
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { trackEvent, trackPurchase } = useAnalytics();
 
   // Initialize form
   const form = useForm<FormValues>({
@@ -93,9 +95,27 @@ const CheckoutPage = () => {
 
     console.log("Order submitted:", { ...data, items, total });
 
+    // Generate a random order ID
+    const orderId = `ORD-${Math.floor(100000 + Math.random() * 900000)}`;
+
+    // Track purchase event
+    trackPurchase(
+      orderId,
+      total,
+      items.map((item) => ({
+        id: item.id,
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity,
+      })),
+    );
+
+    // Track checkout completion event
+    trackEvent("ecommerce", "checkout_complete", "checkout_success", total);
+
     // Clear cart and redirect to confirmation page
     clearCart();
-    navigate("/order-confirmation");
+    navigate("/order-confirmation", { state: { orderId } });
   };
 
   // Egyptian governorates

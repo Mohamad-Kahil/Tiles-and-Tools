@@ -1,5 +1,6 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { useAnalytics } from "@/components/analytics/AnalyticsProvider";
 import { CheckCircle, Package, Truck, Home, ArrowRight } from "lucide-react";
 
 import Header from "@/components/layout/Header";
@@ -7,8 +8,20 @@ import Footer from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 
 const OrderConfirmationPage = () => {
-  // Generate a random order number
-  const orderNumber = `EGD-${Math.floor(100000 + Math.random() * 900000)}`;
+  const location = useLocation();
+  const { trackEvent } = useAnalytics();
+
+  // Get order ID from location state or generate a random one
+  const orderNumber =
+    location.state?.orderId ||
+    `EGD-${Math.floor(100000 + Math.random() * 900000)}`;
+
+  // Track order confirmation view
+  React.useEffect(() => {
+    if (trackEvent) {
+      trackEvent("ecommerce", "view_order_confirmation", orderNumber);
+    }
+  }, [orderNumber, trackEvent]);
 
   // Estimated delivery date (5-7 days from now)
   const deliveryDate = new Date();
