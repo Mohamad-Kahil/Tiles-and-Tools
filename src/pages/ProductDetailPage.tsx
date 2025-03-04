@@ -3,6 +3,8 @@ import { useParams, Link } from "react-router-dom";
 import { useCart } from "@/components/cart/CartContext";
 import { useWishlist } from "@/components/wishlist/WishlistContext";
 import { useAnalytics } from "@/components/analytics/AnalyticsProvider";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { formatCurrency } from "@/lib/i18n";
 import {
   ChevronRight,
   Heart,
@@ -394,17 +396,14 @@ const ProductDetailPage = () => {
     ? originalPrice - originalPrice * (product.discount / 100)
     : null;
 
+  // Get language for formatting
+  const { language } = useLanguage();
+
   // Format prices
-  const formattedOriginalPrice = originalPrice.toLocaleString("ar-EG", {
-    style: "currency",
-    currency: "EGP",
-  });
+  const formattedOriginalPrice = formatCurrency(originalPrice, language);
 
   const formattedDiscountedPrice = discountedPrice
-    ? discountedPrice.toLocaleString("ar-EG", {
-        style: "currency",
-        currency: "EGP",
-      })
+    ? formatCurrency(discountedPrice, language)
     : null;
 
   return (

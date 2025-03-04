@@ -38,41 +38,41 @@ const Header = ({}: HeaderProps) => {
     {
       name: getTranslation("home", language),
       href: "/",
-      icon: <Home className="h-4 w-4 mr-2" />,
+      icon: <Home className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />,
     },
     {
       name: getTranslation("products", language),
       href: "/products",
-      icon: <Package className="h-4 w-4 mr-2" />,
+      icon: <Package className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />,
     },
     {
       name: getTranslation("cart", language),
       href: "/cart",
-      icon: <ShoppingBag className="h-4 w-4 mr-2" />,
+      icon: <ShoppingBag className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />,
     },
     {
       name: getTranslation("wishlist", language),
       href: "/wishlist",
-      icon: <Heart className="h-4 w-4 mr-2" />,
+      icon: <Heart className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />,
     },
     ...(!isAuthenticated
       ? [
           {
             name: getTranslation("signIn", language),
             href: "/login",
-            icon: <User className="h-4 w-4 mr-2" />,
+            icon: <User className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />,
           },
         ]
       : [
           {
             name: getTranslation("account", language),
             href: "/account",
-            icon: <User className="h-4 w-4 mr-2" />,
+            icon: <User className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />,
           },
           {
             name: getTranslation("logout", language),
             href: "#",
-            icon: <User className="h-4 w-4 mr-2" />,
+            icon: <User className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />,
             onClick: () => {
               logout();
               navigate("/");
@@ -96,12 +96,12 @@ const Header = ({}: HeaderProps) => {
           </Link>
 
           {/* Category Links in a single row */}
-          <div className="hidden lg:flex items-center space-x-6">
+          <div className="hidden lg:flex items-center space-x-6 rtl:space-x-reverse">
             <CategoryMenu />
           </div>
 
           {/* Search, Language, Cart */}
-          <div className="flex items-center space-x-4 ml-auto">
+          <div className="flex items-center space-x-4 rtl:space-x-reverse ml-auto rtl:mr-auto rtl:ml-0">
             <div className="hidden md:block w-full max-w-sm">
               <SearchBar placeholder={getTranslation("search", language)} />
             </div>
@@ -114,7 +114,7 @@ const Header = ({}: HeaderProps) => {
             />
 
             {/* Cart and Sign In */}
-            <div className="hidden md:flex items-center space-x-4">
+            <div className="hidden md:flex items-center space-x-4 rtl:space-x-reverse">
               {navigationLinks.slice(2).map((link) => (
                 <Button
                   key={link.href || link.name}

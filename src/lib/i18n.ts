@@ -260,6 +260,7 @@ export const formatCurrency = (amount: number, language: Language): string => {
   return amount.toLocaleString(language === "ar" ? "ar-EG" : "en-US", {
     style: "currency",
     currency: "EGP",
+    currencyDisplay: "symbol",
   });
 };
 
