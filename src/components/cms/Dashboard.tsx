@@ -38,7 +38,7 @@ const Dashboard = () => {
       value: "1,254",
       icon: <Users className="h-5 w-5 text-purple-500" />,
       link: "/cms/customers",
-      disabled: true,
+      disabled: false,
     },
   ];
 

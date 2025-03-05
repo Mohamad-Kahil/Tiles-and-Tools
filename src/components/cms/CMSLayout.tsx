@@ -49,7 +49,7 @@ const CMSLayout = () => {
       title: "Customers",
       href: "/cms/customers",
       icon: <Users className="h-5 w-5" />,
-      disabled: true,
+      disabled: false,
     },
     {
       title: "Content",
