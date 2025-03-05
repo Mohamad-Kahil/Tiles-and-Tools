@@ -33,7 +33,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {
   Search,
-  Plus,
   Filter,
   Download,
   Upload,
@@ -48,6 +47,8 @@ import {
   TrendingDown,
   RefreshCw,
 } from "lucide-react";
+import AddProductDialog from "./AddProductDialog";
+import StockAdjustmentDialog from "./StockAdjustmentDialog";
 
 const InventoryDashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -204,9 +205,7 @@ const InventoryDashboard = () => {
           <Button variant="outline">
             <Download className="mr-2 h-4 w-4" /> Export
           </Button>
-          <Button>
-            <Plus className="mr-2 h-4 w-4" /> Add Product
-          </Button>
+          <AddProductDialog />
         </div>
       </div>
 
@@ -335,9 +334,11 @@ const InventoryDashboard = () => {
         </div>
 
         <div className="flex gap-2">
-          <Button variant="outline">
-            <RefreshCw className="mr-2 h-4 w-4" /> Update Stock
-          </Button>
+          <StockAdjustmentDialog>
+            <Button variant="outline">
+              <RefreshCw className="mr-2 h-4 w-4" /> Update Stock
+            </Button>
+          </StockAdjustmentDialog>
           <Button variant="outline">
             <AlertTriangle className="mr-2 h-4 w-4" /> Reorder Items
           </Button>
@@ -408,8 +409,14 @@ const InventoryDashboard = () => {
                           <DropdownMenuItem>
                             <Edit className="mr-2 h-4 w-4" /> Edit
                           </DropdownMenuItem>
-                          <DropdownMenuItem>
-                            <RefreshCw className="mr-2 h-4 w-4" /> Update Stock
+                          <DropdownMenuItem asChild>
+                            <StockAdjustmentDialog
+                              product={{
+                                id: item.id,
+                                name: item.name,
+                                currentStock: item.stock,
+                              }}
+                            />
                           </DropdownMenuItem>
                           <DropdownMenuItem className="text-red-600">
                             <Trash className="mr-2 h-4 w-4" /> Delete
