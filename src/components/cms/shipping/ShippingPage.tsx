@@ -76,17 +76,17 @@ const ShippingPage = () => {
       </div>
 
       <Tabs defaultValue="zones" value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-4 max-w-md">
-          <TabsTrigger value="zones" className="px-6 py-2">
+        <TabsList className="grid w-full grid-cols-4 max-w-xl">
+          <TabsTrigger value="zones" className="px-4 py-2 whitespace-nowrap">
             Shipping Zones
           </TabsTrigger>
-          <TabsTrigger value="methods" className="px-6 py-2">
+          <TabsTrigger value="methods" className="px-4 py-2 whitespace-nowrap">
             Shipping Methods
           </TabsTrigger>
-          <TabsTrigger value="carriers" className="px-6 py-2">
+          <TabsTrigger value="carriers" className="px-4 py-2">
             Carriers
           </TabsTrigger>
-          <TabsTrigger value="settings" className="px-6 py-2">
+          <TabsTrigger value="settings" className="px-4 py-2">
             Settings
           </TabsTrigger>
         </TabsList>
