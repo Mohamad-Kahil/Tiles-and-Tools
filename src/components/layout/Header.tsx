@@ -99,7 +99,7 @@ const Header = ({}: HeaderProps) => {
             <img
               src="/DELogo.png"
               alt="DecorEgypt Logo"
-              className="h-16 max-h-full"
+              className="h-16 max-h-11"
             />
           </Link>
 
