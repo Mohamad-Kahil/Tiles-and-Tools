@@ -61,7 +61,7 @@ const CMSLayout = () => {
       title: "Promotions",
       href: "/cms/promotions",
       icon: <Tag className="h-5 w-5" />,
-      disabled: true,
+      disabled: false,
     },
     {
       title: "Shipping",
