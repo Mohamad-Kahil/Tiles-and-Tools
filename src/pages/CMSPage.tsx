@@ -19,6 +19,7 @@ import ContentList from "@/components/cms/content/ContentList";
 import ContentForm from "@/components/cms/content/ContentForm";
 import ContentDetail from "@/components/cms/content/ContentDetail";
 import SettingsPage from "@/components/cms/settings/SettingsPage";
+import AnalyticsDashboard from "@/components/cms/analytics/AnalyticsDashboard";
 
 const CMSPage = () => {
   return (
@@ -62,10 +63,7 @@ const CMSPage = () => {
           path="payments"
           element={<ComingSoon module="Payment Gateways" />}
         />
-        <Route
-          path="analytics"
-          element={<ComingSoon module="Reports & Analytics" />}
-        />
+        <Route path="analytics" element={<AnalyticsDashboard />} />
         <Route
           path="support"
           element={<ComingSoon module="Customer Support" />}

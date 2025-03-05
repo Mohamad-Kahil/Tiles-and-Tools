@@ -79,7 +79,7 @@ const CMSLayout = () => {
       title: "Analytics",
       href: "/cms/analytics",
       icon: <BarChart2 className="h-5 w-5" />,
-      disabled: true,
+      disabled: false,
     },
     {
       title: "Support",
