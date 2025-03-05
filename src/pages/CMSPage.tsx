@@ -20,6 +20,7 @@ import ContentForm from "@/components/cms/content/ContentForm";
 import ContentDetail from "@/components/cms/content/ContentDetail";
 import SettingsPage from "@/components/cms/settings/SettingsPage";
 import AnalyticsDashboard from "@/components/cms/analytics/AnalyticsDashboard";
+import SupportDashboard from "@/components/cms/support/SupportDashboard";
 
 const CMSPage = () => {
   return (
@@ -64,10 +65,7 @@ const CMSPage = () => {
           element={<ComingSoon module="Payment Gateways" />}
         />
         <Route path="analytics" element={<AnalyticsDashboard />} />
-        <Route
-          path="support"
-          element={<ComingSoon module="Customer Support" />}
-        />
+        <Route path="support" element={<SupportDashboard />} />
         <Route
           path="roles"
           element={<ComingSoon module="User Roles & Permissions" />}

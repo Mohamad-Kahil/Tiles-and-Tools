@@ -85,7 +85,7 @@ const CMSLayout = () => {
       title: "Support",
       href: "/cms/support",
       icon: <MessageSquare className="h-5 w-5" />,
-      disabled: true,
+      disabled: false,
     },
     {
       title: "User Roles",
