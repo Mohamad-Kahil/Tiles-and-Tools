@@ -19,6 +19,7 @@ import {
   Truck,
   Copy,
   ArrowUpDown,
+  Eye,
 } from "lucide-react";
 
 // Mock product data

@@ -253,7 +253,7 @@ const EditShippingMethodDialog = ({
             {watchType === "carrier" && (
               <FormField
                 control={form.control}
-                name="carrier"
+                name="type"
                 render={() => (
                   <FormItem>
                     <FormLabel>Carrier</FormLabel>
