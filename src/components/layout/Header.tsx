@@ -96,7 +96,11 @@ const Header = ({}: HeaderProps) => {
             className="flex items-center space-x-2"
             onClick={() => window.scrollTo(0, 0)}
           >
-            <span className="font-bold text-xl static mx-10">Tiles&Tools</span>
+            <img
+              src="/DELogo.png"
+              alt="DecorEgypt Logo"
+              className="h-16 max-h-full"
+            />
           </Link>
 
           {/* Category Links in a single row */}
