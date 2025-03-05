@@ -374,13 +374,25 @@ const ProductCatalog = () => {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <h2 className="text-2xl font-bold tracking-tight">Product Catalog</h2>
         <div className="flex gap-2">
-          <Button variant="outline">
+          <Button
+            variant="outline"
+            onClick={() => alert("Import products functionality")}
+          >
             <Upload className="mr-2 h-4 w-4" /> Import
           </Button>
-          <Button variant="outline">
+          <Button
+            variant="outline"
+            onClick={() => alert("Export products functionality")}
+          >
             <Download className="mr-2 h-4 w-4" /> Export
           </Button>
-          <Button>
+          <Button
+            onClick={() => {
+              alert(
+                "Add Product functionality will be implemented in the next phase",
+              );
+            }}
+          >
             <Plus className="mr-2 h-4 w-4" /> Add Product
           </Button>
         </div>
@@ -449,10 +461,19 @@ const ProductCatalog = () => {
             <span className="text-sm text-muted-foreground">
               {selectedProducts.length} selected
             </span>
-            <Button variant="outline" size="sm">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => alert("Bulk edit selected products")}
+            >
               <Tag className="mr-2 h-4 w-4" /> Bulk Edit
             </Button>
-            <Button variant="outline" size="sm" className="text-red-600">
+            <Button
+              variant="outline"
+              size="sm"
+              className="text-red-600"
+              onClick={() => alert("Delete selected products")}
+            >
               <Trash className="mr-2 h-4 w-4" /> Delete
             </Button>
           </div>
@@ -554,8 +575,12 @@ const ProductCatalog = () => {
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-3">
-                        <div className="h-10 w-10 rounded-md bg-muted flex items-center justify-center">
-                          <ImagePlus className="h-5 w-5 text-muted-foreground" />
+                        <div className="h-10 w-10 rounded-md overflow-hidden bg-muted">
+                          <img
+                            src={`https://images.unsplash.com/photo-1600607686527-6fb886090705?w=200&q=80&random=${product.id}`}
+                            alt={product.name}
+                            className="h-full w-full object-cover"
+                          />
                         </div>
                         <div>
                           <div className="font-medium">{product.name}</div>
@@ -612,16 +637,30 @@ const ProductCatalog = () => {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => alert("View product details")}
+                          >
                             <Eye className="mr-2 h-4 w-4" /> View
                           </DropdownMenuItem>
-                          <DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => alert("Edit product details")}
+                          >
                             <Edit className="mr-2 h-4 w-4" /> Edit
                           </DropdownMenuItem>
-                          <DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => alert("Duplicate product")}
+                          >
                             <Copy className="mr-2 h-4 w-4" /> Duplicate
                           </DropdownMenuItem>
-                          <DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() =>
+                              alert(
+                                product.featured
+                                  ? "Product removed from featured"
+                                  : "Product marked as featured",
+                              )
+                            }
+                          >
                             {product.featured ? (
                               <>
                                 <StarOff className="mr-2 h-4 w-4" /> Remove
@@ -634,7 +673,10 @@ const ProductCatalog = () => {
                               </>
                             )}
                           </DropdownMenuItem>
-                          <DropdownMenuItem className="text-red-600">
+                          <DropdownMenuItem
+                            className="text-red-600"
+                            onClick={() => alert("Delete product")}
+                          >
                             <Trash className="mr-2 h-4 w-4" /> Delete
                           </DropdownMenuItem>
                         </DropdownMenuContent>
@@ -656,7 +698,11 @@ const ProductCatalog = () => {
           <Button variant="outline" size="sm" disabled>
             Previous
           </Button>
-          <Button variant="outline" size="sm">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => alert("Next page")}
+          >
             Next
           </Button>
         </div>
