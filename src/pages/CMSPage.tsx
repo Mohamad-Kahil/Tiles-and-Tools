@@ -23,6 +23,7 @@ import AnalyticsDashboard from "@/components/cms/analytics/AnalyticsDashboard";
 import SupportDashboard from "@/components/cms/support/SupportDashboard";
 import PromotionsPage from "@/components/cms/promotions/PromotionsPage";
 import ShippingPage from "@/components/cms/shipping/ShippingPage";
+import InventoryPage from "@/components/cms/inventory/InventoryPage";
 
 const CMSPage = () => {
   return (
@@ -43,6 +44,7 @@ const CMSPage = () => {
         <Route path="products/new" element={<ProductForm />} />
         <Route path="products/:id" element={<ProductDetail />} />
         <Route path="products/:id/edit" element={<ProductForm />} />
+        <Route path="inventory" element={<InventoryPage />} />
         <Route path="orders" element={<OrderList />} />
         <Route path="orders/:id" element={<OrderDetail />} />
         <Route path="orders/:id/invoice" element={<InvoiceGenerator />} />

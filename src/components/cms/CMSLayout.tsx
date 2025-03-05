@@ -40,6 +40,12 @@ const CMSLayout = () => {
       disabled: false,
     },
     {
+      title: "Inventory",
+      href: "/cms/inventory",
+      icon: <Package className="h-5 w-5" />,
+      disabled: false,
+    },
+    {
       title: "Orders",
       href: "/cms/orders",
       icon: <ShoppingCart className="h-5 w-5" />,
