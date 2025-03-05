@@ -56,6 +56,9 @@ import EditShippingMethodDialog from "./EditShippingMethodDialog";
 import ManageShippingMethodsDialog from "./ManageShippingMethodsDialog";
 import ConnectCarrierDialog from "./ConnectCarrierDialog";
 import ConfigureCarrierDialog from "./ConfigureCarrierDialog";
+import ShippingRatesCalculator from "./ShippingRatesCalculator";
+import ShippingReportsCard from "./ShippingReportsCard";
+import BulkShippingManager from "./BulkShippingManager";
 
 const ShippingPage = () => {
   const [activeTab, setActiveTab] = useState("zones");
@@ -584,6 +587,17 @@ const ShippingPage = () => {
         </TabsContent>
 
         <TabsContent value="settings" className="space-y-6 pt-4">
+          <div className="grid grid-cols-1 gap-6 mb-6">
+            <ShippingRatesCalculator />
+          </div>
+
+          <div className="grid grid-cols-1 gap-6 mb-6">
+            <ShippingReportsCard />
+          </div>
+
+          <div className="grid grid-cols-1 gap-6 mb-6">
+            <BulkShippingManager />
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Card>
               <CardHeader>
