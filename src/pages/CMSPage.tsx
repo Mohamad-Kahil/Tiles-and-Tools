@@ -18,6 +18,7 @@ import CustomerForm from "@/components/cms/customers/CustomerForm";
 import ContentList from "@/components/cms/content/ContentList";
 import ContentForm from "@/components/cms/content/ContentForm";
 import ContentDetail from "@/components/cms/content/ContentDetail";
+import SettingsPage from "@/components/cms/settings/SettingsPage";
 
 const CMSPage = () => {
   return (
@@ -73,10 +74,7 @@ const CMSPage = () => {
           path="roles"
           element={<ComingSoon module="User Roles & Permissions" />}
         />
-        <Route
-          path="settings"
-          element={<ComingSoon module="General Settings" />}
-        />
+        <Route path="settings" element={<SettingsPage />} />
 
         {/* Catch-all redirect */}
         <Route path="*" element={<Navigate to="/cms" replace />} />

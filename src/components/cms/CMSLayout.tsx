@@ -97,7 +97,7 @@ const CMSLayout = () => {
       title: "Settings",
       href: "/cms/settings",
       icon: <Settings className="h-5 w-5" />,
-      disabled: true,
+      disabled: false,
     },
   ];
 
