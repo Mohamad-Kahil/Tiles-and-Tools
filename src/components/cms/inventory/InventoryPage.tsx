@@ -3,6 +3,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import InventoryDashboard from "./InventoryDashboard";
 import InventoryReportsCard from "./InventoryReportsCard";
 import StockAdjustmentDialog from "./StockAdjustmentDialog";
+import ProductCatalog from "@/components/cms/products/ProductCatalog";
+import ProductAttributesManager from "@/components/cms/products/ProductAttributesManager";
+import ProductCategoriesManager from "@/components/cms/products/ProductCategoriesManager";
 
 const InventoryPage = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -14,7 +17,7 @@ const InventoryPage = () => {
         value={activeTab}
         onValueChange={setActiveTab}
       >
-        <TabsList className="grid w-full grid-cols-3 max-w-xl">
+        <TabsList className="grid w-full grid-cols-5 max-w-3xl">
           <TabsTrigger
             value="dashboard"
             className="px-4 py-2 whitespace-nowrap"
@@ -24,8 +27,20 @@ const InventoryPage = () => {
           <TabsTrigger value="products" className="px-4 py-2 whitespace-nowrap">
             Product Catalog
           </TabsTrigger>
+          <TabsTrigger
+            value="attributes"
+            className="px-4 py-2 whitespace-nowrap"
+          >
+            Attributes
+          </TabsTrigger>
+          <TabsTrigger
+            value="categories"
+            className="px-4 py-2 whitespace-nowrap"
+          >
+            Categories
+          </TabsTrigger>
           <TabsTrigger value="reports" className="px-4 py-2">
-            Reports & Analytics
+            Reports
           </TabsTrigger>
         </TabsList>
 
@@ -34,14 +49,15 @@ const InventoryPage = () => {
         </TabsContent>
 
         <TabsContent value="products" className="space-y-6 pt-4">
-          <div className="flex items-center justify-center h-[400px] border rounded-md bg-muted/20">
-            <div className="text-center">
-              <p className="text-muted-foreground mb-4">
-                Product catalog management will be implemented in the next phase
-              </p>
-              <StockAdjustmentDialog />
-            </div>
-          </div>
+          <ProductCatalog />
+        </TabsContent>
+
+        <TabsContent value="attributes" className="space-y-6 pt-4">
+          <ProductAttributesManager />
+        </TabsContent>
+
+        <TabsContent value="categories" className="space-y-6 pt-4">
+          <ProductCategoriesManager />
         </TabsContent>
 
         <TabsContent value="reports" className="space-y-6 pt-4">
