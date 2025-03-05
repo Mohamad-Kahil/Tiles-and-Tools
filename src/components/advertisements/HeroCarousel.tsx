@@ -24,7 +24,8 @@ interface HeroCarouselProps {
 const defaultSlides: AdSlide[] = [
   {
     id: "ad1",
-    image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&q=80",
+    image:
+      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&q=80",
     title: "Summer Sale - Up to 30% Off",
     subtitle: "Exclusive discounts on premium flooring and wall products",
     ctaText: "Shop Now",
@@ -32,7 +33,8 @@ const defaultSlides: AdSlide[] = [
   },
   {
     id: "ad2",
-    image: "https://images.unsplash.com/photo-1581858726788-75bc0f6a952d?w=1200&q=80",
+    image:
+      "https://images.unsplash.com/photo-1581858726788-75bc0f6a952d?w=1200&q=80",
     title: "New Arrivals - Luxury Hardwood",
     subtitle: "Transform your space with our latest collection",
     ctaText: "Explore Collection",
@@ -40,7 +42,8 @@ const defaultSlides: AdSlide[] = [
   },
   {
     id: "ad3",
-    image: "https://images.unsplash.com/photo-1565814329452-e1efa11c5b89?w=1200&q=80",
+    image:
+      "https://images.unsplash.com/photo-1565814329452-e1efa11c5b89?w=1200&q=80",
     title: "Modern Lighting Solutions",
     subtitle: "Brighten your home with our designer lighting collection",
     ctaText: "View Lighting",
@@ -107,4 +110,84 @@ const HeroCarousel = ({
     // This would track a click for the ad
     console.log(`Ad click: ${adId}`);
     // Navigate to the CTA link
-    window.location.
+    window.location.href = ctaLink;
+  };
+
+  return (
+    <div
+      className={cn("relative overflow-hidden", className)}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      {/* Slides */}
+      <div
+        className="flex transition-transform duration-500 ease-in-out"
+        style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+      >
+        {slides.map((slide) => (
+          <div
+            key={slide.id}
+            className="w-full flex-shrink-0 relative"
+            style={{
+              backgroundImage: `url(${slide.image})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              height: "500px",
+            }}
+          >
+            <div className="absolute inset-0 bg-black bg-opacity-40"></div>
+            <div className="absolute inset-0 flex flex-col justify-center items-center text-center p-6 text-white">
+              <h2 className="text-4xl font-bold mb-2">{slide.title}</h2>
+              {slide.subtitle && (
+                <p className="text-xl mb-6 max-w-xl">{slide.subtitle}</p>
+              )}
+              <Button
+                onClick={() => handleAdClick(slide.id, slide.ctaLink)}
+                size="lg"
+              >
+                {slide.ctaText}
+              </Button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Navigation Arrows */}
+      {showArrows && (
+        <>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/30 text-white hover:bg-black/50 rounded-full"
+            onClick={goToPrevSlide}
+          >
+            <ChevronLeft className="h-6 w-6" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/30 text-white hover:bg-black/50 rounded-full"
+            onClick={goToNextSlide}
+          >
+            <ChevronRight className="h-6 w-6" />
+          </Button>
+        </>
+      )}
+
+      {/* Dots */}
+      {showDots && (
+        <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
+          {slides.map((_, index) => (
+            <button
+              key={index}
+              className={`w-3 h-3 rounded-full transition-colors ${index === currentSlide ? "bg-white" : "bg-white/50 hover:bg-white/75"}`}
+              onClick={() => goToSlide(index)}
+            ></button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default HeroCarousel;
