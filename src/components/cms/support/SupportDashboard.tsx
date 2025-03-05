@@ -22,6 +22,10 @@ import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import NewTicketDialog from "./NewTicketDialog";
 import NewArticleDialog from "./NewArticleDialog";
+import TicketDetailView from "./TicketDetailView";
+import KnowledgeBaseManager from "./KnowledgeBaseManager";
+import ArticleDetailView from "./ArticleDetailView";
+import SupportAnalytics from "./SupportAnalytics";
 import {
   MessageSquare,
   Search,
@@ -50,6 +54,8 @@ import {
 
 const SupportDashboard = () => {
   const [activeTicket, setActiveTicket] = useState<string | null>(null);
+  const [activeArticle, setActiveArticle] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState("tickets");
 
   return (
     <div className="space-y-6">
@@ -58,7 +64,11 @@ const SupportDashboard = () => {
         <NewTicketDialog />
       </div>
 
-      <Tabs defaultValue="tickets">
+      <Tabs
+        defaultValue="tickets"
+        value={activeTab}
+        onValueChange={setActiveTab}
+      >
         <TabsList className="grid w-full grid-cols-3 max-w-md">
           <TabsTrigger value="tickets">Tickets</TabsTrigger>
           <TabsTrigger value="knowledge">Knowledge Base</TabsTrigger>
@@ -204,177 +214,51 @@ const SupportDashboard = () => {
             <div className="md:w-2/3">
               {activeTicket ? (
                 <Card>
-                  <CardHeader className="pb-3">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <CardTitle>Order delivery delay</CardTitle>
-                        <CardDescription className="flex items-center gap-2 mt-1">
-                          <Badge
-                            variant="outline"
-                            className="bg-blue-100 text-blue-800"
-                          >
-                            Open
-                          </Badge>
-                          <Badge variant="outline">High Priority</Badge>
-                          <span className="text-xs">Ticket #TKT-2023-1001</span>
-                        </CardDescription>
-                      </div>
-                      <div className="flex gap-2">
-                        <Button variant="outline" size="sm">
-                          Assign
-                        </Button>
-                        <Select defaultValue="open">
-                          <SelectTrigger className="w-[130px] h-9">
-                            <SelectValue placeholder="Status" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="open">Open</SelectItem>
-                            <SelectItem value="pending">Pending</SelectItem>
-                            <SelectItem value="resolved">Resolved</SelectItem>
-                            <SelectItem value="closed">Closed</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex items-start gap-4 mb-6">
-                      <Avatar>
-                        <AvatarImage
-                          src="https://api.dicebear.com/7.x/avataaars/svg?seed=Ahmed"
-                          alt="Ahmed Hassan"
-                        />
-                        <AvatarFallback>AH</AvatarFallback>
-                      </Avatar>
-                      <div className="space-y-1">
-                        <h4 className="font-medium">Ahmed Hassan</h4>
-                        <div className="text-sm text-muted-foreground flex items-center gap-4">
-                          <span className="flex items-center">
-                            <Mail className="h-3.5 w-3.5 mr-1" />{" "}
-                            ahmed.hassan@example.com
-                          </span>
-                          <span className="flex items-center">
-                            <Phone className="h-3.5 w-3.5 mr-1" /> +20 123 456
-                            7890
-                          </span>
-                        </div>
-                        <div className="text-sm text-muted-foreground flex items-center">
-                          <Calendar className="h-3.5 w-3.5 mr-1" /> Customer
-                          since Jan 10, 2023
-                        </div>
-                      </div>
-                    </div>
-
-                    <Separator className="my-4" />
-
-                    <div className="space-y-6">
-                      <div className="space-y-2">
-                        <div className="flex items-start gap-4">
-                          <Avatar className="mt-0.5">
-                            <AvatarImage
-                              src="https://api.dicebear.com/7.x/avataaars/svg?seed=Ahmed"
-                              alt="Ahmed Hassan"
-                            />
-                            <AvatarFallback>AH</AvatarFallback>
-                          </Avatar>
-                          <div className="flex-1 space-y-2">
-                            <div className="bg-muted p-4 rounded-lg">
-                              <div className="flex justify-between items-center mb-2">
-                                <span className="font-medium">
-                                  Ahmed Hassan
-                                </span>
-                                <span className="text-xs text-muted-foreground">
-                                  Today, 10:23 AM
-                                </span>
-                              </div>
-                              <p className="text-sm">
-                                Hello, I placed an order (#ORD-2023-1001) on
-                                August 15th for some flooring tiles, and it was
-                                supposed to be delivered yesterday. I haven't
-                                received any updates on the delivery status.
-                                Could you please check what's happening with my
-                                order?
-                              </p>
-                              <div className="mt-2 p-2 bg-background rounded border">
-                                <div className="text-xs text-muted-foreground mb-1">
-                                  Order #ORD-2023-1001
-                                </div>
-                                <div className="text-sm font-medium">
-                                  Luxury Marble Flooring Tile (x20)
-                                </div>
-                                <div className="text-xs">
-                                  Ordered: August 15, 2023
-                                </div>
-                                <div className="text-xs">
-                                  Expected Delivery: August 22, 2023
-                                </div>
-                              </div>
-                            </div>
-                            <div className="text-xs text-muted-foreground">
-                              Submitted via website
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="flex items-start gap-4">
-                          <Avatar className="mt-0.5">
-                            <AvatarImage
-                              src="https://api.dicebear.com/7.x/avataaars/svg?seed=Support"
-                              alt="Support Agent"
-                            />
-                            <AvatarFallback>SA</AvatarFallback>
-                          </Avatar>
-                          <div className="flex-1 space-y-2">
-                            <div className="bg-primary/10 p-4 rounded-lg">
-                              <div className="flex justify-between items-center mb-2">
-                                <span className="font-medium">
-                                  Support Agent
-                                </span>
-                                <span className="text-xs text-muted-foreground">
-                                  Today, 11:05 AM
-                                </span>
-                              </div>
-                              <p className="text-sm">
-                                Hello Ahmed, thank you for reaching out. I
-                                apologize for the delay with your order. I've
-                                checked your order status and there seems to be
-                                a slight delay with the delivery service. I've
-                                contacted our logistics team and they've assured
-                                me that your order will be delivered tomorrow.
-                                I'll personally follow up to ensure it arrives
-                                on time.
-                              </p>
-                              <p className="text-sm mt-2">
-                                Would you like me to arrange a specific delivery
-                                time that works best for you?
-                              </p>
-                            </div>
-                            <div className="text-xs text-muted-foreground">
-                              Internal note: Delivery delay due to inventory
-                              restock
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="space-y-2">
-                        <Textarea
-                          placeholder="Type your reply here..."
-                          className="min-h-[120px]"
-                        />
-                        <div className="flex justify-between">
-                          <div className="flex gap-2">
-                            <Button variant="outline" size="sm">
-                              Add Note
-                            </Button>
-                            <Button variant="outline" size="sm">
-                              Attach File
-                            </Button>
-                          </div>
-                          <Button>Send Reply</Button>
-                        </div>
-                      </div>
-                    </div>
+                  <CardContent className="p-6">
+                    <TicketDetailView
+                      ticket={{
+                        id: "TKT-2023-1001",
+                        subject: "Order delivery delay",
+                        status: "Open",
+                        priority: "High",
+                        customer: {
+                          name: "Ahmed Hassan",
+                          email: "ahmed.hassan@example.com",
+                          phone: "+20 123 456 7890",
+                          avatar:
+                            "https://api.dicebear.com/7.x/avataaars/svg?seed=Ahmed",
+                          since: "Jan 10, 2023",
+                        },
+                        order: {
+                          id: "ORD-2023-1001",
+                          date: "August 15, 2023",
+                          items: "Luxury Marble Flooring Tile (x20)",
+                          expectedDelivery: "August 22, 2023",
+                        },
+                        messages: [
+                          {
+                            sender: "Ahmed Hassan",
+                            senderType: "customer",
+                            avatar:
+                              "https://api.dicebear.com/7.x/avataaars/svg?seed=Ahmed",
+                            time: "Today, 10:23 AM",
+                            content:
+                              "Hello, I placed an order (#ORD-2023-1001) on August 15th for some flooring tiles, and it was supposed to be delivered yesterday. I haven't received any updates on the delivery status. Could you please check what's happening with my order?",
+                            note: "Submitted via website",
+                          },
+                          {
+                            sender: "Support Agent",
+                            senderType: "agent",
+                            avatar:
+                              "https://api.dicebear.com/7.x/avataaars/svg?seed=Support",
+                            time: "Today, 11:05 AM",
+                            content:
+                              "Hello Ahmed, thank you for reaching out. I apologize for the delay with your order. I've checked your order status and there seems to be a slight delay with the delivery service. I've contacted our logistics team and they've assured me that your order will be delivered tomorrow. I'll personally follow up to ensure it arrives on time.\n\nWould you like me to arrange a specific delivery time that works best for you?",
+                            note: "Internal note: Delivery delay due to inventory restock",
+                          },
+                        ],
+                      }}
+                    />
                   </CardContent>
                 </Card>
               ) : (
@@ -400,538 +284,65 @@ const SupportDashboard = () => {
         </TabsContent>
 
         <TabsContent value="knowledge" className="space-y-6 pt-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="md:col-span-2">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Knowledge Base Articles</CardTitle>
-                  <CardDescription>
-                    Manage and organize support articles
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center gap-2 mb-4">
-                    <div className="relative flex-1">
-                      <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                      <Input
-                        type="search"
-                        placeholder="Search articles..."
-                        className="pl-8"
-                      />
-                    </div>
-                    <NewArticleDialog />
-                  </div>
-
-                  <div className="border rounded-md">
-                    <div className="p-3 border-b bg-muted/50 flex justify-between items-center">
-                      <h3 className="font-medium">Recent Articles</h3>
-                      <Select defaultValue="all">
-                        <SelectTrigger className="w-[130px] h-8">
-                          <SelectValue placeholder="Category" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="all">All Categories</SelectItem>
-                          <SelectItem value="orders">
-                            Orders & Shipping
-                          </SelectItem>
-                          <SelectItem value="products">Products</SelectItem>
-                          <SelectItem value="returns">
-                            Returns & Refunds
-                          </SelectItem>
-                          <SelectItem value="account">
-                            Account & Billing
-                          </SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div className="divide-y">
-                      {[
-                        {
-                          id: "kb-1",
-                          title: "How to track your order",
-                          category: "Orders & Shipping",
-                          views: 1245,
-                          lastUpdated: "2 days ago",
-                          status: "Published",
-                        },
-                        {
-                          id: "kb-2",
-                          title: "Return policy and process",
-                          category: "Returns & Refunds",
-                          views: 987,
-                          lastUpdated: "1 week ago",
-                          status: "Published",
-                        },
-                        {
-                          id: "kb-3",
-                          title: "Product care and maintenance guide",
-                          category: "Products",
-                          views: 756,
-                          lastUpdated: "2 weeks ago",
-                          status: "Published",
-                        },
-                        {
-                          id: "kb-4",
-                          title: "Payment methods and billing information",
-                          category: "Account & Billing",
-                          views: 543,
-                          lastUpdated: "3 weeks ago",
-                          status: "Published",
-                        },
-                        {
-                          id: "kb-5",
-                          title: "Installation services and scheduling",
-                          category: "Products",
-                          views: 432,
-                          lastUpdated: "1 month ago",
-                          status: "Draft",
-                        },
-                      ].map((article) => (
-                        <div key={article.id} className="p-3 hover:bg-muted/50">
-                          <div className="flex justify-between items-start">
-                            <div>
-                              <h4 className="font-medium">{article.title}</h4>
-                              <div className="flex items-center gap-2 mt-1">
-                                <Badge variant="outline" className="text-xs">
-                                  {article.category}
-                                </Badge>
-                                <span className="text-xs text-muted-foreground">
-                                  {article.views} views
-                                </span>
-                              </div>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Badge
-                                variant="outline"
-                                className={
-                                  article.status === "Published"
-                                    ? "bg-green-100 text-green-800"
-                                    : "bg-yellow-100 text-yellow-800"
-                                }
-                              >
-                                {article.status}
-                              </Badge>
-                              <Button variant="ghost" size="sm">
-                                Edit
-                              </Button>
-                            </div>
-                          </div>
-                          <div className="text-xs text-muted-foreground mt-2">
-                            Last updated: {article.lastUpdated}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-
-                    <div className="p-3 border-t flex justify-between items-center">
-                      <Button variant="outline" size="sm" disabled>
-                        <ArrowLeft className="h-4 w-4 mr-1" /> Previous
-                      </Button>
-                      <span className="text-sm">Page 1 of 3</span>
-                      <Button variant="outline" size="sm">
-                        Next <ArrowRight className="h-4 w-4 ml-1" />
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            <div>
-              <Card>
-                <CardHeader>
-                  <CardTitle>Categories</CardTitle>
-                  <CardDescription>
-                    Organize your knowledge base
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {[
-                      {
-                        name: "Orders & Shipping",
-                        articles: 12,
-                        icon: <ShoppingCart className="h-4 w-4" />,
-                      },
-                      {
-                        name: "Products",
-                        articles: 18,
-                        icon: <Package className="h-4 w-4" />,
-                      },
-                      {
-                        name: "Returns & Refunds",
-                        articles: 8,
-                        icon: <RefreshCw className="h-4 w-4" />,
-                      },
-                      {
-                        name: "Account & Billing",
-                        articles: 10,
-                        icon: <User className="h-4 w-4" />,
-                      },
-                      {
-                        name: "Installation & Services",
-                        articles: 6,
-                        icon: <HelpCircle className="h-4 w-4" />,
-                      },
-                    ].map((category, index) => (
-                      <div
-                        key={index}
-                        className="flex items-center justify-between p-3 border rounded-md hover:bg-muted/50"
-                      >
-                        <div className="flex items-center gap-2">
-                          <div className="bg-primary/10 p-2 rounded-full">
-                            {category.icon}
-                          </div>
-                          <span>{category.name}</span>
-                        </div>
-                        <Badge variant="outline">
-                          {category.articles} articles
-                        </Badge>
-                      </div>
-                    ))}
-                  </div>
-
-                  <Button variant="outline" className="w-full mt-4">
-                    <Plus className="mr-2 h-4 w-4" /> Add Category
-                  </Button>
-                </CardContent>
-              </Card>
-
-              <Card className="mt-6">
-                <CardHeader>
-                  <CardTitle>Popular Articles</CardTitle>
-                  <CardDescription>Most viewed support content</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {[
-                      { title: "How to track your order", views: 1245 },
-                      { title: "Return policy and process", views: 987 },
-                      {
-                        title: "Product care and maintenance guide",
-                        views: 756,
-                      },
-                      {
-                        title: "Payment methods and billing information",
-                        views: 543,
-                      },
-                      {
-                        title: "Shipping times and delivery options",
-                        views: 489,
-                      },
-                    ].map((article, index) => (
-                      <div
-                        key={index}
-                        className="flex items-center justify-between"
-                      >
-                        <div className="text-sm font-medium">
-                          {article.title}
-                        </div>
-                        <Badge variant="outline">{article.views} views</Badge>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
+          {activeArticle ? (
+            <ArticleDetailView
+              article={{
+                id: "kb-1",
+                title: "How to track your order",
+                category: "Orders & Shipping",
+                status: "Published",
+                content: `<h1>How to Track Your Order</h1>
+                <p>Tracking your order with DecorEgypt is easy. Follow these simple steps to stay updated on your purchase:</p>
+                
+                <h2>Method 1: Using Your Account</h2>
+                <ol>
+                  <li>Log in to your DecorEgypt account</li>
+                  <li>Navigate to "My Orders" in your account dashboard</li>
+                  <li>Find your order in the list and click "View Details"</li>
+                  <li>The current status and tracking information will be displayed</li>
+                </ol>
+                
+                <h2>Method 2: Using Your Order Confirmation Email</h2>
+                <ol>
+                  <li>Open the order confirmation email you received when placing your order</li>
+                  <li>Click on the "Track Order" button or link</li>
+                  <li>You'll be directed to a page showing your order status</li>
+                </ol>
+                
+                <h2>Method 3: Guest Order Tracking</h2>
+                <ol>
+                  <li>Visit our website and click on "Track Order" in the footer</li>
+                  <li>Enter your order number and the email address used for the order</li>
+                  <li>Click "Track" to see your order status</li>
+                </ol>
+                
+                <h2>Understanding Order Statuses</h2>
+                <ul>
+                  <li><strong>Order Placed</strong>: We've received your order</li>
+                  <li><strong>Processing</strong>: Your order is being prepared</li>
+                  <li><strong>Shipped</strong>: Your order is on its way</li>
+                  <li><strong>Out for Delivery</strong>: Your order will be delivered today</li>
+                  <li><strong>Delivered</strong>: Your order has been delivered</li>
+                </ul>
+                
+                <p>If you have any questions about your order, please <a href="/contact">contact our customer support team</a>.</p>`,
+                excerpt:
+                  "Learn how to easily track your DecorEgypt orders using your account, order confirmation email, or as a guest.",
+                author: "Support Team",
+                createdAt: "August 10, 2023",
+                updatedAt: "August 15, 2023",
+                views: 1245,
+                tags: ["orders", "shipping", "tracking", "delivery"],
+              }}
+              onBack={() => setActiveArticle(null)}
+            />
+          ) : (
+            <KnowledgeBaseManager onArticleSelect={setActiveArticle} />
+          )}
         </TabsContent>
 
         <TabsContent value="reports" className="space-y-6 pt-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="md:col-span-2">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Support Performance</CardTitle>
-                  <CardDescription>
-                    Key metrics and trends for customer support
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-                    <div className="p-4 border rounded-md">
-                      <div className="text-sm text-muted-foreground mb-1">
-                        Average Response Time
-                      </div>
-                      <div className="text-2xl font-bold">2.5 hours</div>
-                      <div className="text-xs text-green-600 flex items-center mt-1">
-                        <TrendingDown className="h-3 w-3 mr-1" /> 15%
-                        improvement
-                      </div>
-                    </div>
-                    <div className="p-4 border rounded-md">
-                      <div className="text-sm text-muted-foreground mb-1">
-                        Resolution Rate
-                      </div>
-                      <div className="text-2xl font-bold">92%</div>
-                      <div className="text-xs text-green-600 flex items-center mt-1">
-                        <TrendingDown className="h-3 w-3 mr-1" /> 5% improvement
-                      </div>
-                    </div>
-                    <div className="p-4 border rounded-md">
-                      <div className="text-sm text-muted-foreground mb-1">
-                        Customer Satisfaction
-                      </div>
-                      <div className="text-2xl font-bold">4.7/5</div>
-                      <div className="text-xs text-green-600 flex items-center mt-1">
-                        <TrendingDown className="h-3 w-3 mr-1" /> 0.3
-                        improvement
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="h-[300px] flex items-center justify-center border rounded-md bg-muted/20">
-                    <div className="text-center">
-                      <BarChart2 className="h-10 w-10 text-muted-foreground mx-auto mb-2" />
-                      <p className="text-muted-foreground">
-                        Support metrics chart will appear here
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="mt-6">
-                <CardHeader>
-                  <CardTitle>Ticket Analytics</CardTitle>
-                  <CardDescription>
-                    Breakdown of support tickets by category and status
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <h4 className="font-medium mb-4">Tickets by Category</h4>
-                      <div className="space-y-4">
-                        {[
-                          {
-                            category: "Order Issues",
-                            count: 45,
-                            percentage: 30,
-                          },
-                          {
-                            category: "Product Questions",
-                            count: 38,
-                            percentage: 25,
-                          },
-                          {
-                            category: "Shipping & Delivery",
-                            count: 30,
-                            percentage: 20,
-                          },
-                          {
-                            category: "Returns & Refunds",
-                            count: 23,
-                            percentage: 15,
-                          },
-                          {
-                            category: "Account & Billing",
-                            count: 15,
-                            percentage: 10,
-                          },
-                        ].map((item, index) => (
-                          <div key={index} className="flex items-center gap-2">
-                            <div className="w-full bg-muted rounded-full h-2.5">
-                              <div
-                                className="bg-primary h-2.5 rounded-full"
-                                style={{ width: `${item.percentage}%` }}
-                              ></div>
-                            </div>
-                            <div className="min-w-[100px] flex items-center justify-between">
-                              <span className="text-sm">{item.category}</span>
-                              <span className="text-sm font-medium">
-                                {item.count}
-                              </span>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div>
-                      <h4 className="font-medium mb-4">Tickets by Status</h4>
-                      <div className="h-[200px] flex items-center justify-center border rounded-md bg-muted/20">
-                        <div className="text-center">
-                          <PieChart className="h-10 w-10 text-muted-foreground mx-auto mb-2" />
-                          <p className="text-muted-foreground">
-                            Status distribution chart will appear here
-                          </p>
-                        </div>
-                      </div>
-                      <div className="grid grid-cols-2 gap-4 mt-4">
-                        <div className="space-y-1">
-                          <div className="flex items-center">
-                            <div className="w-3 h-3 rounded-full bg-blue-500 mr-2"></div>
-                            <span className="text-sm">Open (35%)</span>
-                          </div>
-                          <div className="flex items-center">
-                            <div className="w-3 h-3 rounded-full bg-yellow-500 mr-2"></div>
-                            <span className="text-sm">Pending (25%)</span>
-                          </div>
-                        </div>
-                        <div className="space-y-1">
-                          <div className="flex items-center">
-                            <div className="w-3 h-3 rounded-full bg-green-500 mr-2"></div>
-                            <span className="text-sm">Resolved (30%)</span>
-                          </div>
-                          <div className="flex items-center">
-                            <div className="w-3 h-3 rounded-full bg-gray-500 mr-2"></div>
-                            <span className="text-sm">Closed (10%)</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            <div className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Support Team</CardTitle>
-                  <CardDescription>Agent performance metrics</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {[
-                      {
-                        name: "Sarah Ahmed",
-                        role: "Support Lead",
-                        tickets: 45,
-                        resolution: "95%",
-                        satisfaction: 4.9,
-                        avatar:
-                          "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah",
-                      },
-                      {
-                        name: "Mohamed Khalid",
-                        role: "Senior Agent",
-                        tickets: 38,
-                        resolution: "92%",
-                        satisfaction: 4.7,
-                        avatar:
-                          "https://api.dicebear.com/7.x/avataaars/svg?seed=Mohamed",
-                      },
-                      {
-                        name: "Nour Hassan",
-                        role: "Support Agent",
-                        tickets: 32,
-                        resolution: "88%",
-                        satisfaction: 4.6,
-                        avatar:
-                          "https://api.dicebear.com/7.x/avataaars/svg?seed=Nour",
-                      },
-                    ].map((agent, index) => (
-                      <div
-                        key={index}
-                        className="flex items-center justify-between p-3 border rounded-md"
-                      >
-                        <div className="flex items-center gap-3">
-                          <Avatar>
-                            <AvatarImage src={agent.avatar} alt={agent.name} />
-                            <AvatarFallback>
-                              {agent.name.charAt(0)}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div>
-                            <div className="font-medium">{agent.name}</div>
-                            <div className="text-xs text-muted-foreground">
-                              {agent.role}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-sm">{agent.tickets} tickets</div>
-                          <div className="text-xs text-muted-foreground">
-                            {agent.resolution} resolution • {agent.satisfaction}
-                            /5 rating
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Common Issues</CardTitle>
-                  <CardDescription>
-                    Frequently reported customer problems
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {[
-                      {
-                        issue: "Delivery delays",
-                        count: 28,
-                        trend: "increasing",
-                      },
-                      {
-                        issue: "Product quality concerns",
-                        count: 22,
-                        trend: "stable",
-                      },
-                      {
-                        issue: "Website navigation problems",
-                        count: 17,
-                        trend: "decreasing",
-                      },
-                      {
-                        issue: "Payment processing errors",
-                        count: 15,
-                        trend: "stable",
-                      },
-                      {
-                        issue: "Missing items in orders",
-                        count: 12,
-                        trend: "decreasing",
-                      },
-                    ].map((issue, index) => (
-                      <div
-                        key={index}
-                        className="flex items-center justify-between"
-                      >
-                        <div className="text-sm">{issue.issue}</div>
-                        <div className="flex items-center gap-2">
-                          <Badge variant="outline">{issue.count}</Badge>
-                          {issue.trend === "increasing" ? (
-                            <TrendingUp className="h-4 w-4 text-red-500" />
-                          ) : issue.trend === "decreasing" ? (
-                            <TrendingDown className="h-4 w-4 text-green-500" />
-                          ) : (
-                            <ArrowRight className="h-4 w-4 text-muted-foreground" />
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Response Time</CardTitle>
-                  <CardDescription>
-                    Average time to first response
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="h-[200px] flex items-center justify-center border rounded-md bg-muted/20">
-                    <div className="text-center">
-                      <LineChart className="h-10 w-10 text-muted-foreground mx-auto mb-2" />
-                      <p className="text-muted-foreground">
-                        Response time trend will appear here
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
+          <SupportAnalytics />
         </TabsContent>
       </Tabs>
     </div>
