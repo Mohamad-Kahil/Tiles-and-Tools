@@ -37,7 +37,7 @@ const CMSLayout = () => {
       title: "Products",
       href: "/cms/products",
       icon: <Package className="h-5 w-5" />,
-      disabled: true,
+      disabled: false,
     },
     {
       title: "Orders",

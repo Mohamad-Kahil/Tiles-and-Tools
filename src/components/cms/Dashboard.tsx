@@ -24,7 +24,7 @@ const Dashboard = () => {
       value: "248",
       icon: <Package className="h-5 w-5 text-green-500" />,
       link: "/cms/products",
-      disabled: true,
+      disabled: false,
     },
     {
       title: "Orders Today",

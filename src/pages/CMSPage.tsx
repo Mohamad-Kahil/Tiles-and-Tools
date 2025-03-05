@@ -6,6 +6,9 @@ import AdvertisementList from "@/components/cms/advertisements/AdvertisementList
 import AdvertisementForm from "@/components/cms/advertisements/AdvertisementForm";
 import AdvertisementDetail from "@/components/cms/advertisements/AdvertisementDetail";
 import AdvertisementAnalytics from "@/components/cms/advertisements/AdvertisementAnalytics";
+import ProductList from "@/components/cms/products/ProductList";
+import ProductForm from "@/components/cms/products/ProductForm";
+import ProductDetail from "@/components/cms/products/ProductDetail";
 
 const CMSPage = () => {
   return (
@@ -22,10 +25,10 @@ const CMSPage = () => {
         />
 
         {/* Placeholder routes for future phases */}
-        <Route
-          path="products"
-          element={<ComingSoon module="Product Management" />}
-        />
+        <Route path="products" element={<ProductList />} />
+        <Route path="products/new" element={<ProductForm />} />
+        <Route path="products/:id" element={<ProductDetail />} />
+        <Route path="products/:id/edit" element={<ProductForm />} />
         <Route
           path="orders"
           element={<ComingSoon module="Order Management" />}
