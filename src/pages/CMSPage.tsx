@@ -12,6 +12,8 @@ import ProductDetail from "@/components/cms/products/ProductDetail";
 import OrderList from "@/components/cms/orders/OrderList";
 import OrderDetail from "@/components/cms/orders/OrderDetail";
 import InvoiceGenerator from "@/components/cms/orders/InvoiceGenerator";
+import ReturnManagement from "@/components/cms/orders/ReturnManagement";
+import ReturnDetail from "@/components/cms/orders/ReturnDetail";
 import CustomerList from "@/components/cms/customers/CustomerList";
 import CustomerDetail from "@/components/cms/customers/CustomerDetail";
 import CustomerForm from "@/components/cms/customers/CustomerForm";
@@ -48,6 +50,8 @@ const CMSPage = () => {
         <Route path="orders" element={<OrderList />} />
         <Route path="orders/:id" element={<OrderDetail />} />
         <Route path="orders/:id/invoice" element={<InvoiceGenerator />} />
+        <Route path="orders/return-management" element={<ReturnManagement />} />
+        <Route path="orders/return-detail/:id" element={<ReturnDetail />} />
         <Route path="customers" element={<CustomerList />} />
         <Route path="customers/new" element={<CustomerForm />} />
         <Route path="customers/:id" element={<CustomerDetail />} />

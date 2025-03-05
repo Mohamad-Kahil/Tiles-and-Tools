@@ -32,6 +32,7 @@ import {
   Truck,
   AlertTriangle,
   CheckCircle,
+  RotateCcw,
 } from "lucide-react";
 
 // Mock order data
@@ -225,11 +226,18 @@ const OrderList = () => {
           </Select>
         </div>
 
-        <Button className="w-full sm:w-auto" variant="outline" asChild>
-          <Link to="/cms/orders/export">
-            <FileText className="mr-2 h-4 w-4" /> Export Orders
-          </Link>
-        </Button>
+        <div className="flex gap-2">
+          <Button className="w-full sm:w-auto" variant="outline" asChild>
+            <Link to="/cms/orders/export">
+              <FileText className="mr-2 h-4 w-4" /> Export Orders
+            </Link>
+          </Button>
+          <Button className="w-full sm:w-auto" variant="outline" asChild>
+            <Link to="/cms/orders/return-management">
+              <RotateCcw className="mr-2 h-4 w-4" /> Manage Returns
+            </Link>
+          </Button>
+        </div>
       </div>
 
       <div className="border rounded-md">

@@ -24,6 +24,7 @@ import {
   CreditCard,
   Package,
   Clock,
+  RotateCcw,
 } from "lucide-react";
 
 // Mock order data
@@ -257,6 +258,12 @@ const OrderDetail = () => {
             <Link to={`/cms/orders/${order.id}/invoice`}>
               <FileText className="mr-2 h-4 w-4" /> Generate Invoice
             </Link>
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => alert(`Create return for order ${order.id}`)}
+          >
+            <RotateCcw className="mr-2 h-4 w-4" /> Create Return
           </Button>
           {(order.status === "Processing" ||
             order.status === "Pending Payment") && (
