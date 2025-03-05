@@ -67,7 +67,7 @@ const CMSLayout = () => {
       title: "Shipping",
       href: "/cms/shipping",
       icon: <Truck className="h-5 w-5" />,
-      disabled: true,
+      disabled: false,
     },
     {
       title: "Payments",

@@ -22,6 +22,7 @@ import SettingsPage from "@/components/cms/settings/SettingsPage";
 import AnalyticsDashboard from "@/components/cms/analytics/AnalyticsDashboard";
 import SupportDashboard from "@/components/cms/support/SupportDashboard";
 import PromotionsPage from "@/components/cms/promotions/PromotionsPage";
+import ShippingPage from "@/components/cms/shipping/ShippingPage";
 
 const CMSPage = () => {
   return (
@@ -54,10 +55,7 @@ const CMSPage = () => {
         <Route path="content/:id" element={<ContentDetail />} />
         <Route path="content/:id/edit" element={<ContentForm />} />
         <Route path="promotions" element={<PromotionsPage />} />
-        <Route
-          path="shipping"
-          element={<ComingSoon module="Shipping & Logistics" />}
-        />
+        <Route path="shipping" element={<ShippingPage />} />
         <Route
           path="payments"
           element={<ComingSoon module="Payment Gateways" />}
