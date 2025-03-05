@@ -31,7 +31,7 @@ const Dashboard = () => {
       value: "18",
       icon: <ShoppingCart className="h-5 w-5 text-orange-500" />,
       link: "/cms/orders",
-      disabled: true,
+      disabled: false,
     },
     {
       title: "Active Customers",

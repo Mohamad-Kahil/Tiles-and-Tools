@@ -9,6 +9,9 @@ import AdvertisementAnalytics from "@/components/cms/advertisements/Advertisemen
 import ProductList from "@/components/cms/products/ProductList";
 import ProductForm from "@/components/cms/products/ProductForm";
 import ProductDetail from "@/components/cms/products/ProductDetail";
+import OrderList from "@/components/cms/orders/OrderList";
+import OrderDetail from "@/components/cms/orders/OrderDetail";
+import InvoiceGenerator from "@/components/cms/orders/InvoiceGenerator";
 
 const CMSPage = () => {
   return (
@@ -29,10 +32,9 @@ const CMSPage = () => {
         <Route path="products/new" element={<ProductForm />} />
         <Route path="products/:id" element={<ProductDetail />} />
         <Route path="products/:id/edit" element={<ProductForm />} />
-        <Route
-          path="orders"
-          element={<ComingSoon module="Order Management" />}
-        />
+        <Route path="orders" element={<OrderList />} />
+        <Route path="orders/:id" element={<OrderDetail />} />
+        <Route path="orders/:id/invoice" element={<InvoiceGenerator />} />
         <Route
           path="customers"
           element={<ComingSoon module="Customer Management" />}

@@ -43,7 +43,7 @@ const CMSLayout = () => {
       title: "Orders",
       href: "/cms/orders",
       icon: <ShoppingCart className="h-5 w-5" />,
-      disabled: true,
+      disabled: false,
     },
     {
       title: "Customers",
