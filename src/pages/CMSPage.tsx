@@ -15,6 +15,9 @@ import InvoiceGenerator from "@/components/cms/orders/InvoiceGenerator";
 import CustomerList from "@/components/cms/customers/CustomerList";
 import CustomerDetail from "@/components/cms/customers/CustomerDetail";
 import CustomerForm from "@/components/cms/customers/CustomerForm";
+import ContentList from "@/components/cms/content/ContentList";
+import ContentForm from "@/components/cms/content/ContentForm";
+import ContentDetail from "@/components/cms/content/ContentDetail";
 
 const CMSPage = () => {
   return (
@@ -42,10 +45,10 @@ const CMSPage = () => {
         <Route path="customers/new" element={<CustomerForm />} />
         <Route path="customers/:id" element={<CustomerDetail />} />
         <Route path="customers/:id/edit" element={<CustomerForm />} />
-        <Route
-          path="content"
-          element={<ComingSoon module="Content Management" />}
-        />
+        <Route path="content" element={<ContentList />} />
+        <Route path="content/new" element={<ContentForm />} />
+        <Route path="content/:id" element={<ContentDetail />} />
+        <Route path="content/:id/edit" element={<ContentForm />} />
         <Route
           path="promotions"
           element={<ComingSoon module="Promotions & Discounts" />}

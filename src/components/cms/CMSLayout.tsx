@@ -55,7 +55,7 @@ const CMSLayout = () => {
       title: "Content",
       href: "/cms/content",
       icon: <FileText className="h-5 w-5" />,
-      disabled: true,
+      disabled: false,
     },
     {
       title: "Promotions",
