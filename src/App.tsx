@@ -26,6 +26,7 @@ const OrderDetailPage = lazy(
   () => import("./components/account/OrderDetailPage"),
 );
 const WishlistPage = lazy(() => import("./components/wishlist/WishlistPage"));
+const CMSPage = lazy(() => import("./pages/CMSPage"));
 
 function App() {
   return (
@@ -84,6 +85,17 @@ function App() {
                         }
                       />
                       <Route path="/wishlist" element={<WishlistPage />} />
+
+                      {/* CMS Routes */}
+                      <Route
+                        path="/cms/*"
+                        element={
+                          <ProtectedRoute>
+                            <CMSPage />
+                          </ProtectedRoute>
+                        }
+                      />
+
                       {/* Add a catch-all route that redirects to home */}
                       <Route path="*" element={<Home />} />
                     </Routes>

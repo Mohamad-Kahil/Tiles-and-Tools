@@ -136,6 +136,11 @@ const Header = ({}: HeaderProps) => {
                   <span>{link.name}</span>
                 </Button>
               ))}
+
+              {/* CMS Link - Always visible for demo purposes */}
+              <Button variant="outline" asChild>
+                <Link to="/cms">CMS</Link>
+              </Button>
             </div>
 
             {/* Mobile Menu Button */}
