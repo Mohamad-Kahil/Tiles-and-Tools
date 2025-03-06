@@ -26,6 +26,7 @@ import SupportDashboard from "@/components/cms/support/SupportDashboard";
 import PromotionsPage from "@/components/cms/promotions/PromotionsPage";
 import ShippingPage from "@/components/cms/shipping/ShippingPage";
 import InventoryPage from "@/components/cms/inventory/InventoryPage";
+import RolesPage from "@/components/cms/roles/RolesPage";
 
 const CMSPage = () => {
   return (
@@ -68,10 +69,7 @@ const CMSPage = () => {
         />
         <Route path="analytics" element={<AnalyticsDashboard />} />
         <Route path="support" element={<SupportDashboard />} />
-        <Route
-          path="roles"
-          element={<ComingSoon module="User Roles & Permissions" />}
-        />
+        <Route path="roles" element={<RolesPage />} />
         <Route path="settings" element={<SettingsPage />} />
 
         {/* Catch-all redirect */}

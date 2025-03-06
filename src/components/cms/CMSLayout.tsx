@@ -94,10 +94,10 @@ const CMSLayout = () => {
       disabled: false,
     },
     {
-      title: "User Roles",
+      title: "User Roles & Permissions",
       href: "/cms/roles",
       icon: <UserCog className="h-5 w-5" />,
-      disabled: true,
+      disabled: false,
     },
     {
       title: "Settings",
