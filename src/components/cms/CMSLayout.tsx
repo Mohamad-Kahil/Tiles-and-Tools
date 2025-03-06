@@ -79,7 +79,7 @@ const CMSLayout = () => {
       title: "Payments",
       href: "/cms/payments",
       icon: <CreditCard className="h-5 w-5" />,
-      disabled: true,
+      disabled: false,
     },
     {
       title: "Analytics",
