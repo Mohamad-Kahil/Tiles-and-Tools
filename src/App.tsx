@@ -22,11 +22,14 @@ const OrderConfirmationPage = lazy(
 const LoginPage = lazy(() => import("./components/auth/LoginPage"));
 const RegisterPage = lazy(() => import("./components/auth/RegisterPage"));
 const AccountPage = lazy(() => import("./components/account/AccountPage"));
+const OrdersPage = lazy(() => import("./pages/account/orders"));
 const OrderDetailPage = lazy(
   () => import("./components/account/OrderDetailPage"),
 );
 const WishlistPage = lazy(() => import("./components/wishlist/WishlistPage"));
 const CMSPage = lazy(() => import("./pages/CMSPage"));
+const AnalyticsPage = lazy(() => import("./pages/analytics"));
+const PromotionsPage = lazy(() => import("./pages/promotions"));
 
 function App() {
   return (
@@ -63,7 +66,7 @@ function App() {
                       <Route path="/cart" element={<CartPage />} />
                       <Route path="/checkout" element={<CheckoutPage />} />
                       <Route
-                        path="/order-confirmation"
+                        path="/checkout/confirmation"
                         element={<OrderConfirmationPage />}
                       />
                       <Route path="/login" element={<LoginPage />} />
@@ -77,6 +80,14 @@ function App() {
                         }
                       />
                       <Route
+                        path="/account/orders"
+                        element={
+                          <ProtectedRoute>
+                            <OrdersPage />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
                         path="/account/orders/:orderId"
                         element={
                           <ProtectedRoute>
@@ -85,6 +96,8 @@ function App() {
                         }
                       />
                       <Route path="/wishlist" element={<WishlistPage />} />
+                      <Route path="/analytics" element={<AnalyticsPage />} />
+                      <Route path="/promotions" element={<PromotionsPage />} />
 
                       {/* CMS Routes */}
                       <Route
