@@ -1,5 +1,6 @@
 import React from "react";
 import ChartComponent from "./analytics/ChartComponent";
+import GenerateReportDialog from "./reports/GenerateReportDialog";
 import {
   Card,
   CardContent,
@@ -155,16 +156,7 @@ const Dashboard = () => {
             <Calendar className="mr-2 h-4 w-4" />
             Aug 15, 2023
           </Button>
-          <Button>
-            <FileText className="mr-2 h-4 w-4" />
-            Generate Report
-          </Button>
-          <Button variant="secondary" asChild>
-            <Link to="/cms-dashboard">
-              <BarChart2 className="mr-2 h-4 w-4" />
-              View Dashboard
-            </Link>
-          </Button>
+          <GenerateReportDialog />
         </div>
       </div>
 
