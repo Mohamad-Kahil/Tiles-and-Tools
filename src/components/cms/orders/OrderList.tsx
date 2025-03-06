@@ -158,11 +158,13 @@ const OrderList = () => {
     return matchesSearch && matchesStatus && matchesDate;
   });
 
-  // Format price
+  // Format price with English locale
   const formatPrice = (price: number) => {
-    return price.toLocaleString("ar-EG", {
+    return price.toLocaleString("en-US", {
       style: "currency",
       currency: "EGP",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
     });
   };
 
@@ -285,9 +287,9 @@ const OrderList = () => {
                     </div>
                   </TableCell>
                   <TableCell>
-                    {new Date(order.date).toLocaleDateString()}
+                    {new Date(order.date).toLocaleDateString("en-US")}
                     <div className="text-xs text-muted-foreground">
-                      {new Date(order.date).toLocaleTimeString()}
+                      {new Date(order.date).toLocaleTimeString("en-US")}
                     </div>
                   </TableCell>
                   <TableCell>
