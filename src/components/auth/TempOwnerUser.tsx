@@ -36,8 +36,8 @@ const TempOwnerUser: React.FC<TempOwnerUserProps> = ({ onLogin }) => {
     // Call the onLogin function to update auth context
     onLogin(ownerData);
 
-    // Redirect to dashboard
-    navigate("/cms-dashboard");
+    // Redirect to home page instead of dashboard
+    navigate("/");
   };
 
   return (
