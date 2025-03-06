@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useState, useContext, useEffect } from "react";
 
 export interface User {
   id: string;
@@ -19,6 +19,12 @@ interface AuthContextType {
   ) => Promise<void>;
   logout: () => void;
   updateProfile: (userData: Partial<User>) => Promise<void>;
+  loginWithUserData?: (userData: {
+    name: string;
+    email: string;
+    password: string;
+    role: string;
+  }) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -46,6 +52,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     setIsLoading(false);
   }, []);
 
+  // Direct login with user data (for temporary owner access)
+  const loginWithUserData = (userData: {
+    name: string;
+    email: string;
+    password: string;
+    role: string;
+  }) => {
+    const nameParts = userData.name.split(" ");
+    const firstName = nameParts[0] || "";
+    const lastName = nameParts.slice(1).join(" ") || "";
+
+    const mockUser: User = {
+      id: `user-${Date.now()}`,
+      firstName,
+      lastName,
+      email: userData.email,
+      phone: "+20 123 456 7890",
+      avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${firstName}`,
+    };
+
+    setUser(mockUser);
+    localStorage.setItem("user", JSON.stringify(mockUser));
+  };
+
   // Mock login function
   const login = async (email: string, password: string) => {
     setIsLoading(true);
@@ -53,7 +83,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      // Mock validation
+      // Check for owner credentials
+      if (email === "owner@owner.com" && password === "owner1234") {
+        const mockUser: User = {
+          id: "owner-1",
+          firstName: "Mohamad",
+          lastName: "Kahil",
+          email: "owner@owner.com",
+          phone: "+20 123 456 7890",
+          avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Mohamad",
+        };
+
+        setUser(mockUser);
+        localStorage.setItem("user", JSON.stringify(mockUser));
+        return;
+      }
+
+      // Mock validation for demo user
       if (email === "demo@example.com" && password === "password") {
         const mockUser: User = {
           id: "user-1",
@@ -140,6 +186,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         register,
         logout,
         updateProfile,
+        loginWithUserData,
       }}
     >
       {children}

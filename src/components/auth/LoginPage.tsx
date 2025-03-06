@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/form";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import TempOwnerUser from "./TempOwnerUser";
 
 // Form schema
 const formSchema = z.object({
@@ -35,7 +36,7 @@ type FormValues = z.infer<typeof formSchema>;
 const LoginPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login } = useAuth();
+  const { login, loginWithUserData } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -63,7 +64,9 @@ const LoginPage = () => {
       // Redirect to the intended page or account page on successful login
       navigate(from, { replace: true });
     } catch (err) {
-      setError("Invalid email or password. Try demo@example.com / password");
+      setError(
+        "Invalid email or password. Try demo@example.com / password or owner@owner.com / owner1234",
+      );
       setIsLoading(false);
     }
   };
@@ -73,146 +76,152 @@ const LoginPage = () => {
       <Header />
 
       <main className="flex-1 container mx-auto px-4 py-8 flex items-center justify-center">
-        <div className="w-full max-w-md">
-          <div className="bg-card rounded-lg shadow-sm p-8">
-            <div className="text-center mb-6">
-              <h1 className="text-2xl font-bold">Sign In</h1>
-              <p className="text-muted-foreground mt-2">
-                Welcome back! Please enter your details
-              </p>
-            </div>
+        <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="w-full max-w-md">
+            <div className="bg-card rounded-lg shadow-sm p-8">
+              <div className="text-center mb-6">
+                <h1 className="text-2xl font-bold">Sign In</h1>
+                <p className="text-muted-foreground mt-2">
+                  Welcome back! Please enter your details
+                </p>
+              </div>
 
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-4"
-              >
-                {error && (
-                  <div className="bg-red-50 text-red-500 p-3 rounded-md text-sm">
-                    {error}
-                  </div>
-                )}
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Email</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Enter your email"
-                          type="email"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
+              <Form {...form}>
+                <form
+                  onSubmit={form.handleSubmit(onSubmit)}
+                  className="space-y-4"
+                >
+                  {error && (
+                    <div className="bg-red-50 text-red-500 p-3 rounded-md text-sm">
+                      {error}
+                    </div>
                   )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Password</FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <Input
-                            placeholder="Enter your password"
-                            type={showPassword ? "text" : "password"}
-                            {...field}
-                          />
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon"
-                            className="absolute right-0 top-0 h-full px-3"
-                            onClick={() => setShowPassword(!showPassword)}
-                          >
-                            {showPassword ? (
-                              <EyeOff className="h-4 w-4 text-muted-foreground" />
-                            ) : (
-                              <Eye className="h-4 w-4 text-muted-foreground" />
-                            )}
-                            <span className="sr-only">
-                              {showPassword ? "Hide password" : "Show password"}
-                            </span>
-                          </Button>
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <div className="flex items-center justify-between">
                   <FormField
                     control={form.control}
-                    name="rememberMe"
+                    name="email"
                     render={({ field }) => (
-                      <FormItem className="flex flex-row items-center space-x-2 space-y-0">
+                      <FormItem>
+                        <FormLabel>Email</FormLabel>
                         <FormControl>
-                          <Checkbox
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
+                          <Input
+                            placeholder="Enter your email"
+                            type="email"
+                            {...field}
                           />
                         </FormControl>
-                        <FormLabel className="text-sm font-normal cursor-pointer">
-                          Remember me
-                        </FormLabel>
+                        <FormMessage />
                       </FormItem>
                     )}
                   />
 
-                  <Link
-                    to="/forgot-password"
-                    className="text-sm text-primary hover:underline"
-                  >
-                    Forgot password?
-                  </Link>
+                  <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Password</FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <Input
+                              placeholder="Enter your password"
+                              type={showPassword ? "text" : "password"}
+                              {...field}
+                            />
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              className="absolute right-0 top-0 h-full px-3"
+                              onClick={() => setShowPassword(!showPassword)}
+                            >
+                              {showPassword ? (
+                                <EyeOff className="h-4 w-4 text-muted-foreground" />
+                              ) : (
+                                <Eye className="h-4 w-4 text-muted-foreground" />
+                              )}
+                              <span className="sr-only">
+                                {showPassword
+                                  ? "Hide password"
+                                  : "Show password"}
+                              </span>
+                            </Button>
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <div className="flex items-center justify-between">
+                    <FormField
+                      control={form.control}
+                      name="rememberMe"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-row items-center space-x-2 space-y-0">
+                          <FormControl>
+                            <Checkbox
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                            />
+                          </FormControl>
+                          <FormLabel className="text-sm font-normal cursor-pointer">
+                            Remember me
+                          </FormLabel>
+                        </FormItem>
+                      )}
+                    />
+
+                    <Link
+                      to="/forgot-password"
+                      className="text-sm text-primary hover:underline"
+                    >
+                      Forgot password?
+                    </Link>
+                  </div>
+
+                  <Button type="submit" className="w-full" disabled={isLoading}>
+                    {isLoading ? "Signing in..." : "Sign In"}
+                  </Button>
+                </form>
+              </Form>
+
+              <div className="mt-6">
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <Separator className="w-full" />
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-card px-2 text-muted-foreground">
+                      Or continue with
+                    </span>
+                  </div>
                 </div>
 
-                <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? "Signing in..." : "Sign In"}
-                </Button>
-              </form>
-            </Form>
-
-            <div className="mt-6">
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <Separator className="w-full" />
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-card px-2 text-muted-foreground">
-                    Or continue with
-                  </span>
+                <div className="mt-6 grid grid-cols-2 gap-3">
+                  <Button variant="outline" type="button" disabled={isLoading}>
+                    <Facebook className="mr-2 h-4 w-4" />
+                    Facebook
+                  </Button>
+                  <Button variant="outline" type="button" disabled={isLoading}>
+                    <Mail className="mr-2 h-4 w-4" />
+                    Google
+                  </Button>
                 </div>
               </div>
 
-              <div className="mt-6 grid grid-cols-2 gap-3">
-                <Button variant="outline" type="button" disabled={isLoading}>
-                  <Facebook className="mr-2 h-4 w-4" />
-                  Facebook
-                </Button>
-                <Button variant="outline" type="button" disabled={isLoading}>
-                  <Mail className="mr-2 h-4 w-4" />
-                  Google
-                </Button>
-              </div>
+              <p className="text-center text-sm mt-6">
+                Don't have an account?{" "}
+                <Link
+                  to="/register"
+                  className="text-primary font-medium hover:underline"
+                >
+                  Sign up
+                </Link>
+              </p>
             </div>
-
-            <p className="text-center text-sm mt-6">
-              Don't have an account?{" "}
-              <Link
-                to="/register"
-                className="text-primary font-medium hover:underline"
-              >
-                Sign up
-              </Link>
-            </p>
           </div>
+
+          {loginWithUserData && <TempOwnerUser onLogin={loginWithUserData} />}
         </div>
       </main>
 
