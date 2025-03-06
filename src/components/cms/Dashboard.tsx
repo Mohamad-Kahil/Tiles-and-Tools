@@ -1,4 +1,5 @@
 import React from "react";
+import ChartComponent from "./analytics/ChartComponent";
 import {
   Card,
   CardContent,
@@ -158,6 +159,12 @@ const Dashboard = () => {
             <FileText className="mr-2 h-4 w-4" />
             Generate Report
           </Button>
+          <Button variant="secondary" asChild>
+            <Link to="/cms-dashboard">
+              <BarChart2 className="mr-2 h-4 w-4" />
+              View Dashboard
+            </Link>
+          </Button>
         </div>
       </div>
 
@@ -262,38 +269,22 @@ const Dashboard = () => {
           </CardHeader>
           <CardContent>
             <div className="h-[300px]">
-              {/* Simple Bar Chart */}
-              <div className="mt-4 space-y-4">
-                <div className="flex justify-between text-sm text-muted-foreground">
-                  <div>EGP 0.00</div>
-                  <div>EGP 10,000.00</div>
-                </div>
-                <div className="flex items-end h-[200px] gap-2 border-b border-l pt-6 pl-6">
-                  {[
-                    { day: "Mon", value: 4500 },
-                    { day: "Tue", value: 3800 },
-                    { day: "Wed", value: 5200 },
-                    { day: "Thu", value: 7500 },
-                    { day: "Fri", value: 9100 },
-                    { day: "Sat", value: 8200 },
-                    { day: "Sun", value: 6800 },
-                  ].map((item, index) => {
-                    const height = (item.value / 10000) * 100;
-                    return (
-                      <div
-                        key={index}
-                        className="flex-1 flex flex-col items-center"
-                      >
-                        <div
-                          className="w-full bg-primary rounded-t-sm"
-                          style={{ height: `${height}%` }}
-                        ></div>
-                        <div className="text-xs mt-2">{item.day}</div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
+              <ChartComponent
+                type="bar"
+                data={{
+                  labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+                  datasets: [
+                    {
+                      label: "Daily Revenue",
+                      data: [4500, 3800, 5200, 7500, 9100, 8200, 6800],
+                      backgroundColor: "#3b82f6",
+                      borderWidth: 0,
+                    },
+                  ],
+                }}
+                height={300}
+                width={800}
+              />
             </div>
           </CardContent>
         </Card>
@@ -307,6 +298,30 @@ const Dashboard = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
+            <div className="h-[200px]">
+              <ChartComponent
+                type="pie"
+                data={{
+                  labels: categoryData.map((cat) => cat.label),
+                  datasets: [
+                    {
+                      label: "Sales by Category",
+                      data: categoryData.map((cat) => cat.value),
+                      backgroundColor: [
+                        "#3b82f6",
+                        "#22c55e",
+                        "#eab308",
+                        "#a855f7",
+                      ],
+                      borderWidth: 1,
+                    },
+                  ],
+                }}
+                height={200}
+                width={300}
+              />
+            </div>
+
             <div className="space-y-4">
               {categoryData.map((category, index) => {
                 const colors = [

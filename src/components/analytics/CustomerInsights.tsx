@@ -147,8 +147,12 @@ const CustomerInsights: React.FC<CustomerInsightsProps> = ({
                     </div>
                     <div className="w-full bg-muted rounded-full h-2">
                       <div
-                        className="bg-primary rounded-full h-2"
-                        style={{ width: `${location.percentage}%` }}
+                        style={{
+                          height: "8px",
+                          width: `${location.percentage}%`,
+                          backgroundColor: "#3b82f6",
+                          borderRadius: "9999px",
+                        }}
                       ></div>
                     </div>
                   </div>

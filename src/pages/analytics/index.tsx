@@ -18,6 +18,12 @@ import {
 import BasicBarChart from "@/components/analytics/BasicBarChart";
 import BasicPieChart from "@/components/analytics/BasicPieChart";
 import BasicLineChart from "@/components/analytics/BasicLineChart";
+import AnalyticsChartDemo from "@/components/analytics/AnalyticsChartDemo";
+import SimpleAnalyticsDemo from "@/components/analytics/SimpleAnalyticsDemo";
+import ChartDemoButton from "@/components/analytics/ChartDemoButton";
+import ChartDemoLink from "@/components/analytics/ChartDemoLink";
+
+import VersionInfo from "@/components/analytics/VersionInfo";
 
 const AnalyticsPage = () => {
   // Mock summary data
@@ -59,6 +65,7 @@ const AnalyticsPage = () => {
               <TabsTrigger value="90days">90 Days</TabsTrigger>
             </TabsList>
           </Tabs>
+          <ChartDemoButton />
           <Button variant="outline">
             <Download className="mr-2 h-4 w-4" />
             Export
@@ -175,26 +182,8 @@ const AnalyticsPage = () => {
         </div>
 
         <TabsContent value="overview" className="space-y-6">
-          <BasicLineChart
-            title="Monthly Sales"
-            description="Revenue over the past 12 months"
-            data={[
-              { label: "Jan", value: 65000 },
-              { label: "Feb", value: 58000 },
-              { label: "Mar", value: 72000 },
-              { label: "Apr", value: 68000 },
-              { label: "May", value: 79000 },
-              { label: "Jun", value: 85000 },
-              { label: "Jul", value: 92000 },
-              { label: "Aug", value: 88000 },
-              { label: "Sep", value: 94000 },
-              { label: "Oct", value: 99000 },
-              { label: "Nov", value: 105000 },
-              { label: "Dec", value: 118000 },
-            ]}
-            formatValue={formatPrice}
-            className="mb-6"
-          />
+          <VersionInfo />
+          <SimpleAnalyticsDemo className="mb-6" />
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <BasicPieChart
@@ -269,8 +258,12 @@ const AnalyticsPage = () => {
                       </div>
                       <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
                         <div
-                          className="bg-blue-500 rounded-full h-2"
-                          style={{ width: "42%" }}
+                          style={{
+                            height: "8px",
+                            width: "42%",
+                            backgroundColor: "#3b82f6",
+                            borderRadius: "9999px",
+                          }}
                         ></div>
                       </div>
                     </div>
@@ -281,8 +274,12 @@ const AnalyticsPage = () => {
                       </div>
                       <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
                         <div
-                          className="bg-green-500 rounded-full h-2"
-                          style={{ width: "28%" }}
+                          style={{
+                            height: "8px",
+                            width: "28%",
+                            backgroundColor: "#22c55e",
+                            borderRadius: "9999px",
+                          }}
                         ></div>
                       </div>
                     </div>
@@ -293,8 +290,12 @@ const AnalyticsPage = () => {
                       </div>
                       <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
                         <div
-                          className="bg-yellow-500 rounded-full h-2"
-                          style={{ width: "18%" }}
+                          style={{
+                            height: "8px",
+                            width: "18%",
+                            backgroundColor: "#eab308",
+                            borderRadius: "9999px",
+                          }}
                         ></div>
                       </div>
                     </div>
@@ -313,8 +314,12 @@ const AnalyticsPage = () => {
                       </div>
                       <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
                         <div
-                          className="bg-orange-500 rounded-full h-2"
-                          style={{ width: "25%" }}
+                          style={{
+                            height: "8px",
+                            width: "25%",
+                            backgroundColor: "#f97316",
+                            borderRadius: "9999px",
+                          }}
                         ></div>
                       </div>
                     </div>
@@ -325,8 +330,12 @@ const AnalyticsPage = () => {
                       </div>
                       <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
                         <div
-                          className="bg-red-500 rounded-full h-2"
-                          style={{ width: "45%" }}
+                          style={{
+                            height: "8px",
+                            width: "45%",
+                            backgroundColor: "#ef4444",
+                            borderRadius: "9999px",
+                          }}
                         ></div>
                       </div>
                     </div>
@@ -337,8 +346,12 @@ const AnalyticsPage = () => {
                       </div>
                       <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
                         <div
-                          className="bg-purple-500 rounded-full h-2"
-                          style={{ width: "30%" }}
+                          style={{
+                            height: "8px",
+                            width: "30%",
+                            backgroundColor: "#a855f7",
+                            borderRadius: "9999px",
+                          }}
                         ></div>
                       </div>
                     </div>
@@ -357,8 +370,12 @@ const AnalyticsPage = () => {
                       </div>
                       <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
                         <div
-                          className="bg-primary rounded-full h-2"
-                          style={{ width: "55%" }}
+                          style={{
+                            height: "8px",
+                            width: "55%",
+                            backgroundColor: "#3b82f6",
+                            borderRadius: "9999px",
+                          }}
                         ></div>
                       </div>
                     </div>
@@ -369,8 +386,12 @@ const AnalyticsPage = () => {
                       </div>
                       <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
                         <div
-                          className="bg-primary/70 rounded-full h-2"
-                          style={{ width: "35%" }}
+                          style={{
+                            height: "8px",
+                            width: "35%",
+                            backgroundColor: "rgba(59, 130, 246, 0.7)",
+                            borderRadius: "9999px",
+                          }}
                         ></div>
                       </div>
                     </div>
@@ -381,8 +402,12 @@ const AnalyticsPage = () => {
                       </div>
                       <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
                         <div
-                          className="bg-primary/40 rounded-full h-2"
-                          style={{ width: "10%" }}
+                          style={{
+                            height: "8px",
+                            width: "10%",
+                            backgroundColor: "rgba(59, 130, 246, 0.4)",
+                            borderRadius: "9999px",
+                          }}
                         ></div>
                       </div>
                     </div>
@@ -482,8 +507,12 @@ const AnalyticsPage = () => {
                       </div>
                       <div className="w-full bg-muted rounded-full h-3 overflow-hidden">
                         <div
-                          className="bg-blue-500 rounded-full h-3"
-                          style={{ width: "65%" }}
+                          style={{
+                            height: "12px",
+                            width: "65%",
+                            backgroundColor: "#3b82f6",
+                            borderRadius: "9999px",
+                          }}
                         ></div>
                       </div>
                     </div>
@@ -495,8 +524,12 @@ const AnalyticsPage = () => {
                       </div>
                       <div className="w-full bg-muted rounded-full h-3 overflow-hidden">
                         <div
-                          className="bg-green-500 rounded-full h-3"
-                          style={{ width: "35%" }}
+                          style={{
+                            height: "12px",
+                            width: "35%",
+                            backgroundColor: "#22c55e",
+                            borderRadius: "9999px",
+                          }}
                         ></div>
                       </div>
                     </div>
@@ -513,8 +546,13 @@ const AnalyticsPage = () => {
                               className="flex-1 flex flex-col items-center"
                             >
                               <div
-                                className="w-full bg-primary rounded-t"
-                                style={{ height: `${value}%` }}
+                                style={{
+                                  width: "100%",
+                                  height: `${value}%`,
+                                  backgroundColor: "#3b82f6",
+                                  borderTopLeftRadius: "2px",
+                                  borderTopRightRadius: "2px",
+                                }}
                               ></div>
                               <div className="text-xs mt-1">{i + 1}</div>
                             </div>
@@ -614,12 +652,22 @@ const AnalyticsPage = () => {
                         </div>
                         <div className="relative h-6 bg-muted rounded-full overflow-hidden">
                           <div
-                            className="absolute inset-y-0 left-0 bg-blue-200"
-                            style={{ width: "100%" }}
+                            style={{
+                              position: "absolute",
+                              inset: "0 0 0 0",
+                              height: "100%",
+                              width: "100%",
+                              backgroundColor: "rgba(59, 130, 246, 0.2)",
+                            }}
                           ></div>
                           <div
-                            className="absolute inset-y-0 left-0 bg-blue-500"
-                            style={{ width: `${product.ratio}%` }}
+                            style={{
+                              position: "absolute",
+                              inset: "0 0 0 0",
+                              height: "100%",
+                              width: `${product.ratio}%`,
+                              backgroundColor: "#3b82f6",
+                            }}
                           ></div>
                           <div className="absolute inset-0 flex items-center justify-between px-3">
                             <span className="text-xs font-medium text-blue-900">
@@ -680,12 +728,26 @@ const AnalyticsPage = () => {
                           <div className="relative">
                             <div className="h-2 w-full bg-muted rounded-full"></div>
                             <div
-                              className="absolute inset-y-0 left-0 bg-primary rounded-full"
-                              style={{ width: `${product.percentage}%` }}
+                              style={{
+                                position: "absolute",
+                                inset: "0 auto 0 0",
+                                height: "8px",
+                                width: `${product.percentage}%`,
+                                backgroundColor: "#3b82f6",
+                                borderRadius: "9999px",
+                              }}
                             ></div>
                             <div
-                              className="absolute top-1/2 -translate-y-1/2 h-4 w-1 bg-black rounded-full"
-                              style={{ left: `${product.percentage}%` }}
+                              style={{
+                                position: "absolute",
+                                top: "50%",
+                                transform: "translateY(-50%)",
+                                left: `${product.percentage}%`,
+                                height: "16px",
+                                width: "4px",
+                                backgroundColor: "black",
+                                borderRadius: "9999px",
+                              }}
                             ></div>
                           </div>
                         </div>

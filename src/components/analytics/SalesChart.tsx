@@ -76,8 +76,15 @@ const SalesChart: React.FC<SalesChartProps> = ({ className = "" }) => {
                 </span>
               </div>
               <div
-                className="w-full bg-primary/80 hover:bg-primary rounded-t-sm transition-all"
-                style={{ height: `${height}%` }}
+                style={{
+                  width: "40px",
+                  height: `${height}px`,
+                  minHeight: "4px",
+                  backgroundColor: "#3b82f6",
+                  borderTopLeftRadius: "2px",
+                  borderTopRightRadius: "2px",
+                  transition: "all 300ms",
+                }}
               ></div>
               <div className="w-full text-center mt-2">
                 <span className="text-xs font-medium">{item.date}</span>

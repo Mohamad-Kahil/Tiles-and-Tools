@@ -45,8 +45,17 @@ const BasicBarChart: React.FC<BasicBarChartProps> = ({
               </div>
               <div className="w-full bg-muted rounded-full h-3 overflow-hidden">
                 <div
-                  className={`h-3 rounded-full ${item.color || "bg-primary"}`}
-                  style={{ width: `${(item.value / maxValue) * 100}%` }}
+                  style={{
+                    height: "12px",
+                    width: `${(item.value / maxValue) * 100}%`,
+                    minWidth: "4px",
+                    backgroundColor: item.color
+                      ? item.color.replace("bg-", "") === "primary"
+                        ? "#3b82f6"
+                        : `var(--${item.color.replace("bg-", "")})`
+                      : "#3b82f6",
+                    borderRadius: "9999px",
+                  }}
                 ></div>
               </div>
             </div>

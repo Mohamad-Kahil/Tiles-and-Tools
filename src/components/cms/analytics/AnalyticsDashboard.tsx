@@ -27,7 +27,10 @@ import {
   ShoppingCart,
   Users,
   Package,
+  ExternalLink,
 } from "lucide-react";
+
+import ChartComponent from "./ChartComponent";
 
 const AnalyticsDashboard = () => {
   return (
@@ -156,13 +159,41 @@ const AnalyticsDashboard = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="h-[350px] flex items-center justify-center border rounded-md bg-muted/20">
-                <div className="text-center">
-                  <LineChart className="h-10 w-10 text-muted-foreground mx-auto mb-2" />
-                  <p className="text-muted-foreground">
-                    Sales trend chart will appear here
-                  </p>
-                </div>
+              <div className="h-[350px]">
+                <ChartComponent
+                  type="line"
+                  data={{
+                    labels: [
+                      "Jan",
+                      "Feb",
+                      "Mar",
+                      "Apr",
+                      "May",
+                      "Jun",
+                      "Jul",
+                      "Aug",
+                      "Sep",
+                      "Oct",
+                      "Nov",
+                      "Dec",
+                    ],
+                    datasets: [
+                      {
+                        label: "Revenue",
+                        data: [
+                          65000, 58000, 72000, 68000, 79000, 85000, 92000,
+                          88000, 94000, 99000, 105000, 118000,
+                        ],
+                        borderColor: "#3b82f6",
+                        backgroundColor: "rgba(59, 130, 246, 0.1)",
+                        borderWidth: 2,
+                        fill: true,
+                      },
+                    ],
+                  }}
+                  height={350}
+                  width={800}
+                />
               </div>
             </CardContent>
           </Card>
@@ -233,13 +264,35 @@ const AnalyticsDashboard = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="h-[250px] flex items-center justify-center border rounded-md bg-muted/20">
-                  <div className="text-center">
-                    <PieChart className="h-10 w-10 text-muted-foreground mx-auto mb-2" />
-                    <p className="text-muted-foreground">
-                      Category distribution chart will appear here
-                    </p>
-                  </div>
+                <div className="h-[250px]">
+                  <ChartComponent
+                    type="pie"
+                    data={{
+                      labels: [
+                        "Flooring",
+                        "Lighting",
+                        "Wall Products",
+                        "Furniture",
+                        "Decor",
+                      ],
+                      datasets: [
+                        {
+                          label: "Sales by Category",
+                          data: [35, 25, 20, 12, 8],
+                          backgroundColor: [
+                            "#3b82f6",
+                            "#22c55e",
+                            "#eab308",
+                            "#a855f7",
+                            "#ef4444",
+                          ],
+                          borderWidth: 1,
+                        },
+                      ],
+                    }}
+                    height={250}
+                    width={400}
+                  />
                 </div>
                 <div className="grid grid-cols-2 gap-4 mt-4">
                   <div className="space-y-1">
@@ -282,13 +335,38 @@ const AnalyticsDashboard = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="h-[350px] flex items-center justify-center border rounded-md bg-muted/20">
-                <div className="text-center">
-                  <BarChart2 className="h-10 w-10 text-muted-foreground mx-auto mb-2" />
-                  <p className="text-muted-foreground">
-                    Product performance chart will appear here
-                  </p>
-                </div>
+              <div className="h-[350px]">
+                <ChartComponent
+                  type="bar"
+                  data={{
+                    labels: [
+                      "Luxury Marble",
+                      "Modern Pendant Light",
+                      "Premium Wall Paint",
+                      "Ceramic Vase",
+                      "Hardwood Flooring",
+                    ],
+                    datasets: [
+                      {
+                        label: "Revenue",
+                        data: [12999.9, 8999.9, 6999.8, 4999.9, 4799.7],
+                        backgroundColor: [
+                          "#3b82f6",
+                          "#22c55e",
+                          "#eab308",
+                          "#a855f7",
+                          "#ef4444",
+                        ],
+                        borderWidth: 0,
+                      },
+                    ],
+                  }}
+                  options={{
+                    indexAxis: "y",
+                  }}
+                  height={350}
+                  width={800}
+                />
               </div>
             </CardContent>
           </Card>
@@ -418,13 +496,25 @@ const AnalyticsDashboard = () => {
               <CardDescription>New customers over time</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="h-[350px] flex items-center justify-center border rounded-md bg-muted/20">
-                <div className="text-center">
-                  <LineChart className="h-10 w-10 text-muted-foreground mx-auto mb-2" />
-                  <p className="text-muted-foreground">
-                    Customer acquisition chart will appear here
-                  </p>
-                </div>
+              <div className="h-[350px]">
+                <ChartComponent
+                  type="line"
+                  data={{
+                    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+                    datasets: [
+                      {
+                        label: "New Customers",
+                        data: [120, 145, 132, 156, 168, 172],
+                        borderColor: "#a855f7",
+                        backgroundColor: "rgba(168, 85, 247, 0.1)",
+                        borderWidth: 2,
+                        fill: true,
+                      },
+                    ],
+                  }}
+                  height={350}
+                  width={800}
+                />
               </div>
             </CardContent>
           </Card>
@@ -477,13 +567,33 @@ const AnalyticsDashboard = () => {
                 <CardDescription>Repeat purchase metrics</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="h-[250px] flex items-center justify-center border rounded-md bg-muted/20">
-                  <div className="text-center">
-                    <PieChart className="h-10 w-10 text-muted-foreground mx-auto mb-2" />
-                    <p className="text-muted-foreground">
-                      Retention chart will appear here
-                    </p>
-                  </div>
+                <div className="h-[250px]">
+                  <ChartComponent
+                    type="doughnut"
+                    data={{
+                      labels: [
+                        "One-time",
+                        "2-3 purchases",
+                        "4-6 purchases",
+                        "7+ purchases",
+                      ],
+                      datasets: [
+                        {
+                          label: "Customer Retention",
+                          data: [45, 30, 15, 10],
+                          backgroundColor: [
+                            "#3b82f6",
+                            "#22c55e",
+                            "#a855f7",
+                            "#ef4444",
+                          ],
+                          borderWidth: 1,
+                        },
+                      ],
+                    }}
+                    height={250}
+                    width={400}
+                  />
                 </div>
                 <div className="grid grid-cols-2 gap-4 mt-4">
                   <div className="space-y-1">
@@ -520,13 +630,35 @@ const AnalyticsDashboard = () => {
               <CardDescription>Campaign effectiveness and ROI</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="h-[350px] flex items-center justify-center border rounded-md bg-muted/20">
-                <div className="text-center">
-                  <BarChart2 className="h-10 w-10 text-muted-foreground mx-auto mb-2" />
-                  <p className="text-muted-foreground">
-                    Marketing performance chart will appear here
-                  </p>
-                </div>
+              <div className="h-[350px]">
+                <ChartComponent
+                  type="bar"
+                  data={{
+                    labels: [
+                      "Summer Sale",
+                      "New Collection",
+                      "Ramadan Special",
+                      "Back to School",
+                      "Holiday Season",
+                    ],
+                    datasets: [
+                      {
+                        label: "Revenue",
+                        data: [45250, 32150, 28750, 18500, 12350],
+                        backgroundColor: "#3b82f6",
+                        borderWidth: 0,
+                      },
+                      {
+                        label: "ROI %",
+                        data: [320, 280, 250, 210, 180],
+                        backgroundColor: "#22c55e",
+                        borderWidth: 0,
+                      },
+                    ],
+                  }}
+                  height={350}
+                  width={800}
+                />
               </div>
             </CardContent>
           </Card>

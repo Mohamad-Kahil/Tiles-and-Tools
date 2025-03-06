@@ -197,8 +197,15 @@ const AnimatedSalesChart: React.FC<AnimatedSalesChartProps> = ({
                     </span>
                   </div>
                   <div
-                    className="w-full bg-primary/80 hover:bg-primary rounded-t-sm transition-all duration-1000 ease-out"
-                    style={{ height: `${animatedHeights[index] || 0}%` }}
+                    style={{
+                      width: "40px",
+                      height: `${animatedHeights[index] || 0}px`,
+                      minHeight: "4px",
+                      backgroundColor: "#3b82f6",
+                      borderTopLeftRadius: "2px",
+                      borderTopRightRadius: "2px",
+                      transition: "all 1000ms ease-out",
+                    }}
                   ></div>
                   <div className="w-full text-center mt-2">
                     <span className="text-xs font-medium">{item.date}</span>

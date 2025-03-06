@@ -190,8 +190,13 @@ const AnimatedCustomerInsights: React.FC<AnimatedCustomerInsightsProps> = ({
                     </div>
                     <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
                       <div
-                        className="bg-primary rounded-full h-2 transition-all duration-1000 ease-out"
-                        style={{ width: `${locationWidths[index]}%` }}
+                        style={{
+                          height: "8px",
+                          width: `${locationWidths[index]}%`,
+                          backgroundColor: "#3b82f6",
+                          borderRadius: "9999px",
+                          transition: "all 1000ms ease-out",
+                        }}
                       ></div>
                     </div>
                   </div>

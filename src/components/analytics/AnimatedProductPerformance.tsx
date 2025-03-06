@@ -187,7 +187,13 @@ const AnimatedProductPerformance: React.FC<AnimatedProductPerformanceProps> = ({
               filteredProducts.map((product, index) => (
                 <TableRow
                   key={product.id}
-                  className={`transition-all duration-500 ${visibleRows.includes(index) ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
+                  style={{
+                    transition: "all 500ms",
+                    opacity: visibleRows.includes(index) ? 1 : 0,
+                    transform: visibleRows.includes(index)
+                      ? "translateY(0)"
+                      : "translateY(16px)",
+                  }}
                 >
                   <TableCell className="font-medium">{product.name}</TableCell>
                   <TableCell>{product.category}</TableCell>

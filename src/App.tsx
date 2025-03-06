@@ -10,6 +10,9 @@ import { WishlistProvider } from "./components/wishlist/WishlistContext";
 import { AuthProvider } from "./components/auth/AuthContext";
 import { AnalyticsProvider } from "./components/analytics/AnalyticsProvider";
 import { LanguageProvider } from "./contexts/LanguageContext";
+import Dashboard from "./components/cms/Dashboard";
+import SimpleChart from "./components/SimpleChart";
+import SimpleBarChart from "./components/SimpleBarChart";
 
 // Lazy load pages for better performance
 const ProductListingPage = lazy(() => import("./pages/ProductListingPage"));
@@ -106,6 +109,32 @@ function App() {
                           <ProtectedRoute>
                             <CMSPage />
                           </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/cms-dashboard"
+                        element={
+                          <ProtectedRoute>
+                            <Dashboard />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/simple-chart-demo"
+                        element={
+                          <SimpleChart
+                            title="Simple Chart Demo"
+                            description="A basic chart with fixed width bars"
+                          />
+                        }
+                      />
+                      <Route
+                        path="/simple-bar-chart"
+                        element={
+                          <SimpleBarChart
+                            title="Simple Bar Chart"
+                            description="A basic bar chart with pixel-based heights"
+                          />
                         }
                       />
 

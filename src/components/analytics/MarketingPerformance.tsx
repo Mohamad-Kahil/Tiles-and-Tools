@@ -253,9 +253,12 @@ const MarketingPerformance: React.FC<MarketingPerformanceProps> = ({
                         </div>
                         <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
                           <div
-                            className="bg-blue-500 rounded-full h-2 transition-all duration-1000 ease-out"
                             style={{
+                              height: "8px",
                               width: `${campaignData.impressions[index]}%`,
+                              backgroundColor: "#3b82f6",
+                              borderRadius: "9999px",
+                              transition: "all 1000ms ease-out",
                             }}
                           ></div>
                         </div>

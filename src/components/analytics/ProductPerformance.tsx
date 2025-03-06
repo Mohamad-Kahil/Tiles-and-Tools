@@ -167,7 +167,18 @@ const ProductPerformance: React.FC<ProductPerformanceProps> = ({
                 <TableCell className="text-right">
                   {formatPrice(product.revenue)}
                 </TableCell>
-                <TableCell>{getStockStatusBadge(product.stock)}</TableCell>
+                <TableCell>
+                  <div className="w-full bg-muted rounded-full h-2">
+                    <div
+                      style={{
+                        height: "8px",
+                        width: `${(product.stock / 200) * 100}%`,
+                        backgroundColor: "#3b82f6",
+                        borderRadius: "9999px",
+                      }}
+                    ></div>
+                  </div>
+                </TableCell>
                 <TableCell className="text-right">
                   <Button variant="ghost" size="sm">
                     <Eye className="h-4 w-4" />

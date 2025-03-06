@@ -49,8 +49,14 @@ const BasicLineChart: React.FC<BasicLineChartProps> = ({
               return (
                 <div key={index} className="flex-1 flex flex-col items-center">
                   <div
-                    className="w-full bg-primary rounded-t-sm"
-                    style={{ height: `${height}%` }}
+                    style={{
+                      width: "40px",
+                      height: `${height}px`,
+                      minHeight: "4px",
+                      backgroundColor: "#3b82f6",
+                      borderTopLeftRadius: "2px",
+                      borderTopRightRadius: "2px",
+                    }}
                   ></div>
                   <div className="text-xs mt-2 -rotate-45 origin-top-left">
                     {item.label}

@@ -71,10 +71,12 @@ const BasicPieChart: React.FC<BasicPieChartProps> = ({
                     </div>
                     <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
                       <div
-                        className="h-2 rounded-full"
                         style={{
+                          height: "8px",
                           width: `${percentage}%`,
                           backgroundColor: item.color,
+                          minWidth: "4px",
+                          borderRadius: "9999px",
                         }}
                       ></div>
                     </div>
