@@ -23,6 +23,7 @@ import {
   User,
   ShoppingBag,
   FileText,
+  Eye,
 } from "lucide-react";
 
 interface TransactionDetailsDialogProps {
@@ -159,12 +160,7 @@ const TransactionDetailsDialog = ({
                 </div>
                 <div className="flex items-center gap-2">
                   <ShoppingBag className="h-4 w-4 text-muted-foreground" />
-                  <Link
-                    to={`/cms/orders/${transaction.orderId}`}
-                    className="text-primary hover:underline"
-                  >
-                    {transaction.orderId}
-                  </Link>
+                  <span className="text-primary">{transaction.orderId}</span>
                 </div>
               </div>
 
@@ -212,10 +208,8 @@ const TransactionDetailsDialog = ({
 
           {/* Actions */}
           <div className="flex flex-col sm:flex-row gap-2 pt-4">
-            <Button variant="outline" className="flex-1" asChild>
-              <Link to={`/cms/orders/${transaction.orderId}`}>
-                <Eye className="mr-2 h-4 w-4" /> View Order
-              </Link>
+            <Button variant="outline" className="flex-1">
+              <Eye className="mr-2 h-4 w-4" /> View Order
             </Button>
             <Button variant="outline" className="flex-1">
               <FileText className="mr-2 h-4 w-4" /> Download Receipt
