@@ -74,7 +74,7 @@ const RecentlyViewed: React.FC<RecentlyViewedProps> = ({
 
   // Format price
   const formatPrice = (price: number) => {
-    return price.toLocaleString("ar-EG", {
+    return price.toLocaleString("en-US", {
       style: "currency",
       currency: "EGP",
     });

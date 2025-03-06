@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -25,11 +25,11 @@ import {
   Eye,
 } from "lucide-react";
 
-interface ProductPerformanceProps {
+interface AnimatedProductPerformanceProps {
   className?: string;
 }
 
-const ProductPerformance: React.FC<ProductPerformanceProps> = ({
+const AnimatedProductPerformance: React.FC<AnimatedProductPerformanceProps> = ({
   className = "",
 }) => {
   // Mock data for top products
@@ -86,6 +86,10 @@ const ProductPerformance: React.FC<ProductPerformanceProps> = ({
     },
   ];
 
+  // Animation states
+  const [visibleRows, setVisibleRows] = useState<number[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+
   // Format price
   const formatPrice = (price: number) => {
     return price.toLocaleString("en-US", {
@@ -117,6 +121,25 @@ const ProductPerformance: React.FC<ProductPerformanceProps> = ({
     }
   };
 
+  // Animate rows appearing one by one
+  useEffect(() => {
+    setVisibleRows([]);
+    const animateRows = async () => {
+      for (let i = 0; i < topProducts.length; i++) {
+        await new Promise((resolve) => setTimeout(resolve, 200));
+        setVisibleRows((prev) => [...prev, i]);
+      }
+    };
+    animateRows();
+  }, []);
+
+  // Filter products based on search term
+  const filteredProducts = topProducts.filter(
+    (product) =>
+      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.category.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
+
   return (
     <Card className={className}>
       <CardHeader>
@@ -131,6 +154,8 @@ const ProductPerformance: React.FC<ProductPerformanceProps> = ({
               type="search"
               placeholder="Search products..."
               className="pl-8"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
         </div>
@@ -149,33 +174,47 @@ const ProductPerformance: React.FC<ProductPerformanceProps> = ({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {topProducts.map((product) => (
-              <TableRow key={product.id}>
-                <TableCell className="font-medium">{product.name}</TableCell>
-                <TableCell>{product.category}</TableCell>
-                <TableCell>{formatPrice(product.price)}</TableCell>
-                <TableCell className="text-right">
-                  <div className="flex items-center justify-end gap-1">
-                    {product.sales}
-                    {product.trend === "up" ? (
-                      <TrendingUp className="h-4 w-4 text-green-500" />
-                    ) : (
-                      <TrendingDown className="h-4 w-4 text-red-500" />
-                    )}
-                  </div>
-                </TableCell>
-                <TableCell className="text-right">
-                  {formatPrice(product.revenue)}
-                </TableCell>
-                <TableCell>{getStockStatusBadge(product.stock)}</TableCell>
-                <TableCell className="text-right">
-                  <Button variant="ghost" size="sm">
-                    <Eye className="h-4 w-4" />
-                    <span className="sr-only">View</span>
-                  </Button>
+            {filteredProducts.length === 0 ? (
+              <TableRow>
+                <TableCell
+                  colSpan={7}
+                  className="text-center py-8 text-muted-foreground"
+                >
+                  No products found
                 </TableCell>
               </TableRow>
-            ))}
+            ) : (
+              filteredProducts.map((product, index) => (
+                <TableRow
+                  key={product.id}
+                  className={`transition-all duration-500 ${visibleRows.includes(index) ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
+                >
+                  <TableCell className="font-medium">{product.name}</TableCell>
+                  <TableCell>{product.category}</TableCell>
+                  <TableCell>{formatPrice(product.price)}</TableCell>
+                  <TableCell className="text-right">
+                    <div className="flex items-center justify-end gap-1">
+                      {product.sales}
+                      {product.trend === "up" ? (
+                        <TrendingUp className="h-4 w-4 text-green-500" />
+                      ) : (
+                        <TrendingDown className="h-4 w-4 text-red-500" />
+                      )}
+                    </div>
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {formatPrice(product.revenue)}
+                  </TableCell>
+                  <TableCell>{getStockStatusBadge(product.stock)}</TableCell>
+                  <TableCell className="text-right">
+                    <Button variant="ghost" size="sm">
+                      <Eye className="h-4 w-4" />
+                      <span className="sr-only">View</span>
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>
       </CardContent>
@@ -183,4 +222,4 @@ const ProductPerformance: React.FC<ProductPerformanceProps> = ({
   );
 };
 
-export default ProductPerformance;
+export default AnimatedProductPerformance;

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -19,11 +19,11 @@ import {
   Percent,
 } from "lucide-react";
 
-interface CustomerInsightsProps {
+interface AnimatedCustomerInsightsProps {
   className?: string;
 }
 
-const CustomerInsights: React.FC<CustomerInsightsProps> = ({
+const AnimatedCustomerInsights: React.FC<AnimatedCustomerInsightsProps> = ({
   className = "",
 }) => {
   // Mock data
@@ -54,6 +54,18 @@ const CustomerInsights: React.FC<CustomerInsightsProps> = ({
     ],
   };
 
+  // Animation states
+  const [activeTab, setActiveTab] = useState("overview");
+  const [locationWidths, setLocationWidths] = useState<number[]>(
+    new Array(customerStats.topLocations.length).fill(0),
+  );
+  const [segmentWidths, setSegmentWidths] = useState<number[]>(
+    new Array(customerStats.customerSegments.length).fill(0),
+  );
+  const [channelWidths, setChannelWidths] = useState<number[]>(
+    new Array(customerStats.acquisitionChannels.length).fill(0),
+  );
+
   // Format price
   const formatPrice = (price: number) => {
     return price.toLocaleString("en-US", {
@@ -62,6 +74,37 @@ const CustomerInsights: React.FC<CustomerInsightsProps> = ({
     });
   };
 
+  // Animate progress bars when tab changes
+  useEffect(() => {
+    // Reset all animations
+    setLocationWidths(new Array(customerStats.topLocations.length).fill(0));
+    setSegmentWidths(new Array(customerStats.customerSegments.length).fill(0));
+    setChannelWidths(
+      new Array(customerStats.acquisitionChannels.length).fill(0),
+    );
+
+    // Start animations based on active tab
+    setTimeout(() => {
+      if (activeTab === "overview" || activeTab === "all") {
+        setLocationWidths(
+          customerStats.topLocations.map((loc) => loc.percentage),
+        );
+      }
+
+      if (activeTab === "segments" || activeTab === "all") {
+        setSegmentWidths(
+          customerStats.customerSegments.map((seg) => seg.percentage),
+        );
+      }
+
+      if (activeTab === "acquisition" || activeTab === "all") {
+        setChannelWidths(
+          customerStats.acquisitionChannels.map((ch) => ch.percentage),
+        );
+      }
+    }, 100);
+  }, [activeTab]);
+
   return (
     <Card className={className}>
       <CardHeader>
@@ -69,7 +112,7 @@ const CustomerInsights: React.FC<CustomerInsightsProps> = ({
         <CardDescription>Understand your customer base</CardDescription>
       </CardHeader>
       <CardContent>
-        <Tabs defaultValue="overview">
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="segments">Segments</TabsTrigger>
@@ -145,10 +188,10 @@ const CustomerInsights: React.FC<CustomerInsightsProps> = ({
                       <span className="text-sm">{location.name}</span>
                       <span className="text-sm">{location.percentage}%</span>
                     </div>
-                    <div className="w-full bg-muted rounded-full h-2">
+                    <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
                       <div
-                        className="bg-primary rounded-full h-2"
-                        style={{ width: `${location.percentage}%` }}
+                        className="bg-primary rounded-full h-2 transition-all duration-1000 ease-out"
+                        style={{ width: `${locationWidths[index]}%` }}
                       ></div>
                     </div>
                   </div>
@@ -170,10 +213,10 @@ const CustomerInsights: React.FC<CustomerInsightsProps> = ({
                   <div className="text-sm text-muted-foreground mb-3">
                     {segment.percentage}% of total customers
                   </div>
-                  <div className="w-full bg-muted rounded-full h-2">
+                  <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
                     <div
-                      className="bg-primary rounded-full h-2"
-                      style={{ width: `${segment.percentage}%` }}
+                      className="bg-primary rounded-full h-2 transition-all duration-1000 ease-out"
+                      style={{ width: `${segmentWidths[index]}%` }}
                     ></div>
                   </div>
                 </div>
@@ -236,10 +279,10 @@ const CustomerInsights: React.FC<CustomerInsightsProps> = ({
                       <span className="text-sm">{channel.name}</span>
                       <span className="text-sm">{channel.percentage}%</span>
                     </div>
-                    <div className="w-full bg-muted rounded-full h-2">
+                    <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
                       <div
-                        className="bg-primary rounded-full h-2"
-                        style={{ width: `${channel.percentage}%` }}
+                        className="bg-primary rounded-full h-2 transition-all duration-1000 ease-out"
+                        style={{ width: `${channelWidths[index]}%` }}
                       ></div>
                     </div>
                   </div>
@@ -281,4 +324,4 @@ const CustomerInsights: React.FC<CustomerInsightsProps> = ({
   );
 };
 
-export default CustomerInsights;
+export default AnimatedCustomerInsights;
