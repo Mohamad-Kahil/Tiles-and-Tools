@@ -154,7 +154,7 @@ const PermissionsManager = ({
     onChange(currentPermissions);
   };
 
-  const handleSelectAllForModule = (moduleId: string, checked: boolean) => {
+  const handleSectionChange = (moduleId: string, checked: boolean) => {
     if (readOnly || !onChange) return;
 
     const currentPermissions = { ...role.permissions };
@@ -200,10 +200,11 @@ const PermissionsManager = ({
                   <Checkbox
                     id={`select-all-${module.id}`}
                     checked={allChecked}
-                    indeterminate={someChecked && !allChecked}
+                    // Remove the indeterminate prop as it's not supported
                     onCheckedChange={(checked) =>
-                      handleSelectAllForModule(module.id, !!checked)
+                      handleSectionChange(module.id, !!checked)
                     }
+                    className={someChecked && !allChecked ? "opacity-50" : ""}
                   />
                   <Label
                     htmlFor={`select-all-${module.id}`}

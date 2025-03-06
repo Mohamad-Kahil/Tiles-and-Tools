@@ -158,7 +158,14 @@ const AddRoleDialog = ({ children }: { children?: React.ReactNode }) => {
             <div className="space-y-4 max-h-[60vh] overflow-y-auto">
               <PermissionsManager
                 role={{ id: "new", name: roleData?.name || "", permissions }}
-                onChange={setPermissions}
+                onChange={(newPermissions) => {
+                  // Convert the Record<string, string[]> to our permissions format
+                  const updatedPermissions = { ...permissions };
+                  Object.entries(newPermissions).forEach(([key, value]) => {
+                    updatedPermissions[key as keyof typeof permissions] = value;
+                  });
+                  setPermissions(updatedPermissions);
+                }}
               />
             </div>
 

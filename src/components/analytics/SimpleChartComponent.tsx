@@ -116,7 +116,11 @@ const SimpleChartComponent: React.FC<SimpleChartComponentProps> = ({
           <polyline
             points={points}
             fill="none"
-            stroke={data.datasets[0].borderColor || "#3b82f6"}
+            stroke={
+              typeof data.datasets[0].borderColor === "string"
+                ? data.datasets[0].borderColor
+                : "#3b82f6"
+            }
             strokeWidth="2"
           />
 
@@ -130,7 +134,11 @@ const SimpleChartComponent: React.FC<SimpleChartComponentProps> = ({
                 cx={x}
                 cy={y}
                 r="1.5"
-                fill={data.datasets[0].borderColor || "#3b82f6"}
+                fill={
+                  typeof data.datasets[0].borderColor === "string"
+                    ? data.datasets[0].borderColor
+                    : "#3b82f6"
+                }
               />
             );
           })}
