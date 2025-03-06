@@ -27,6 +27,7 @@ import PromotionsPage from "@/components/cms/promotions/PromotionsPage";
 import ShippingPage from "@/components/cms/shipping/ShippingPage";
 import InventoryPage from "@/components/cms/inventory/InventoryPage";
 import RolesPage from "@/components/cms/roles/RolesPage";
+import PaymentsPage from "@/components/cms/payments/PaymentsPage";
 
 const CMSPage = () => {
   return (
@@ -63,10 +64,7 @@ const CMSPage = () => {
         <Route path="content/:id/edit" element={<ContentForm />} />
         <Route path="promotions" element={<PromotionsPage />} />
         <Route path="shipping" element={<ShippingPage />} />
-        <Route
-          path="payments"
-          element={<ComingSoon module="Payment Gateways" />}
-        />
+        <Route path="payments" element={<PaymentsPage />} />
         <Route path="analytics" element={<AnalyticsDashboard />} />
         <Route path="support" element={<SupportDashboard />} />
         <Route path="roles" element={<RolesPage />} />
