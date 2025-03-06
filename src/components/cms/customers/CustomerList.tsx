@@ -152,18 +152,20 @@ const CustomerList = () => {
       }
     });
 
-  // Format price
+  // Format price with English locale
   const formatPrice = (price: number) => {
-    return price.toLocaleString("ar-EG", {
+    return price.toLocaleString("en-US", {
       style: "currency",
       currency: "EGP",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
     });
   };
 
   // Format date
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString();
+    return date.toLocaleDateString("en-US");
   };
 
   return (
