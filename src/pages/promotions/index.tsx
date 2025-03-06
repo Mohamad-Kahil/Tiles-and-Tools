@@ -39,6 +39,7 @@ import {
   XCircle,
   BarChart2,
   Copy,
+  ShoppingBag,
 } from "lucide-react";
 import PromotionBanner from "@/components/promotions/PromotionBanner";
 import CouponCode from "@/components/promotions/CouponCode";
@@ -690,7 +691,7 @@ const PromotionsPage = () => {
 
               <div className="flex items-start gap-3">
                 <div className="bg-primary/10 p-2 rounded-md">
-                  <Truck className="h-5 w-5 text-primary" />
+                  <ShoppingBag className="h-5 w-5 text-primary" />
                 </div>
                 <div>
                   <h3 className="font-medium">Free Shipping</h3>

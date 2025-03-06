@@ -200,6 +200,7 @@ const ChartJSPage = () => {
                 labels: ["Flooring", "Wall Products", "Lighting", "Decor"],
                 datasets: [
                   {
+                    label: "Sales by Category",
                     data: [42, 28, 18, 12],
                     backgroundColor: [
                       "#3b82f6",
@@ -370,6 +371,7 @@ const ChartJSPage = () => {
               labels: ["Flooring", "Wall Products", "Lighting", "Decor"],
               datasets: [
                 {
+                  label: "Inventory Distribution",
                   data: [156, 85, 28, 42],
                   backgroundColor: ["#3b82f6", "#22c55e", "#eab308", "#a855f7"],
                   borderWidth: 1,
