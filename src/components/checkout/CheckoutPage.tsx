@@ -8,8 +8,6 @@ import { ArrowLeft, CreditCard, Truck, Check, MapPin } from "lucide-react";
 import { useCart } from "@/components/cart/CartContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getTranslation, formatCurrency } from "@/lib/i18n";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -138,9 +136,7 @@ const CheckoutPage = () => {
 
   return (
     <div className={`min-h-screen bg-background flex flex-col ${direction}`}>
-      <Header />
-
-      <main className="flex-1 container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8">
         <div className="flex items-center mb-6">
           <Button variant="ghost" size="sm" asChild className="mr-4">
             <Link to="/cart" className="flex items-center gap-1">
@@ -388,102 +384,32 @@ const CheckoutPage = () => {
                     <FormField
                       control={form.control}
                       name="paymentMethod"
-                      render={({ field }) => (
-                        <FormItem className="space-y-3">
-                          <FormControl>
-                            <RadioGroup
-                              onValueChange={field.onChange}
-                              defaultValue={field.value}
-                              className="space-y-3"
-                            >
-                              <div className="flex items-center space-x-2 border rounded-md p-4 hover:bg-muted/50 cursor-pointer">
-                                <RadioGroupItem
-                                  value="credit-card"
-                                  id="credit-card"
-                                />
-                                <Label
-                                  htmlFor="credit-card"
-                                  className="flex-1 cursor-pointer"
-                                >
-                                  <div className="flex items-center">
-                                    <CreditCard className="mr-2 h-5 w-5 text-primary" />
-                                    <span>
-                                      {getTranslation(
-                                        "creditDebitCard",
-                                        language,
-                                      )}
-                                    </span>
-                                  </div>
-                                  <p className="text-sm text-muted-foreground mt-1">
-                                    {getTranslation(
-                                      "paySecurelyWithCard",
-                                      language,
-                                    )}
-                                  </p>
-                                </Label>
-                                <div className="flex space-x-1">
-                                  <img
-                                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/200px-Mastercard-logo.svg.png"
-                                    alt="Mastercard"
-                                    className="h-6 w-auto"
-                                  />
-                                  <img
-                                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/200px-Visa_Inc._logo.svg.png"
-                                    alt="Visa"
-                                    className="h-6 w-auto"
-                                  />
-                                </div>
-                              </div>
-
-                              <div className="flex items-center space-x-2 border rounded-md p-4 hover:bg-muted/50 cursor-pointer">
-                                <RadioGroupItem
-                                  value="cash-on-delivery"
-                                  id="cash-on-delivery"
-                                />
-                                <Label
-                                  htmlFor="cash-on-delivery"
-                                  className="flex-1 cursor-pointer"
-                                >
-                                  <div className="flex items-center">
-                                    <Truck className="mr-2 h-5 w-5 text-primary" />
-                                    <span>
-                                      {getTranslation(
-                                        "cashOnDelivery",
-                                        language,
-                                      )}
-                                    </span>
-                                  </div>
-                                  <p className="text-sm text-muted-foreground mt-1">
-                                    {getTranslation("payWhenReceive", language)}
-                                  </p>
-                                </Label>
-                              </div>
-
-                              <div className="flex items-center space-x-2 border rounded-md p-4 hover:bg-muted/50 cursor-pointer">
-                                <RadioGroupItem value="fawry" id="fawry" />
-                                <Label
-                                  htmlFor="fawry"
-                                  className="flex-1 cursor-pointer"
-                                >
-                                  <div className="flex items-center">
-                                    <img
-                                      src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Fawry_logo.svg/200px-Fawry_logo.svg.png"
-                                      alt="Fawry"
-                                      className="mr-2 h-5 w-auto"
-                                    />
-                                    <span>Fawry</span>
-                                  </div>
-                                  <p className="text-sm text-muted-foreground mt-1">
-                                    {getTranslation("payViaFawry", language)}
-                                  </p>
-                                </Label>
-                              </div>
-                            </RadioGroup>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
+                      render={({ field }) => {
+                        // Import PaymentMethods component
+                        const PaymentMethods =
+                          require("./PaymentMethods").default;
+                        return (
+                          <PaymentMethods language={language} field={field} />
+                        );
+                      }}
                     />
+
+                    {/* Show credit card form if credit card is selected */}
+                    {form.watch("paymentMethod") === "credit-card" && (
+                      <div className="mt-4">
+                        {/* Import CreditCardForm component */}
+                        {(() => {
+                          const CreditCardForm =
+                            require("./CreditCardForm").default;
+                          return (
+                            <CreditCardForm
+                              onSubmit={() => form.handleSubmit(onSubmit)()}
+                              isSubmitting={isSubmitting}
+                            />
+                          );
+                        })()}
+                      </div>
+                    )}
                   </div>
 
                   <div className="lg:hidden">
@@ -504,116 +430,22 @@ const CheckoutPage = () => {
 
             {/* Order Summary */}
             <div className="lg:col-span-1">
-              <div className="bg-card rounded-lg shadow-sm p-6 sticky top-4">
-                <h2 className="text-xl font-medium mb-4">
-                  {getTranslation("orderSummary", language)}
-                </h2>
-                <Separator className="mb-4" />
-
-                {/* Item count */}
-                <div className="text-sm text-muted-foreground mb-4">
-                  {items.length}{" "}
-                  {items.length === 1
-                    ? getTranslation("item", language)
-                    : getTranslation("items", language)}{" "}
-                  {getTranslation("inCart", language)}
-                </div>
-
-                {/* Item list */}
-                <div className="max-h-64 overflow-auto mb-4 space-y-3">
-                  {items.map((item) => (
-                    <div key={item.id} className="flex gap-3">
-                      <div className="h-16 w-16 rounded-md overflow-hidden flex-shrink-0">
-                        <img
-                          src={item.image}
-                          alt={item.name}
-                          className="h-full w-full object-cover"
-                        />
-                      </div>
-                      <div className="flex-1">
-                        <div className="text-sm font-medium line-clamp-1">
-                          {item.name}
-                        </div>
-                        <div className="text-sm text-muted-foreground">
-                          {formatCurrency(item.price, language)} ×{" "}
-                          {item.quantity}
-                        </div>
-                        <div className="text-sm font-medium">
-                          {formatCurrency(item.price * item.quantity, language)}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                <Separator className="mb-4" />
-
-                {/* Price calculations */}
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">
-                      {getTranslation("subtotal", language)}
-                    </span>
-                    <span className="font-medium">
-                      {formatCurrency(subtotal, language)}
-                    </span>
-                  </div>
-
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">
-                      {getTranslation("shipping", language)}
-                    </span>
-                    <span className="font-medium">
-                      {shippingCost === 0
-                        ? getTranslation("free", language)
-                        : formatCurrency(shippingCost, language)}
-                    </span>
-                  </div>
-
-                  {subtotal < 5000 && (
-                    <div className="text-xs text-muted-foreground">
-                      {getTranslation("addMore", language)}{" "}
-                      {formatCurrency(5000 - subtotal, language)}{" "}
-                      {getTranslation("forFreeShipping", language)}
-                    </div>
-                  )}
-
-                  <Separator className="my-2" />
-
-                  <div className="flex justify-between text-lg font-bold">
-                    <span>{getTranslation("total", language)}</span>
-                    <span className="text-primary">
-                      {formatCurrency(total, language)}
-                    </span>
-                  </div>
-
-                  {/* Place order button (desktop) */}
-                  <div className="hidden lg:block mt-6">
-                    <Button
-                      onClick={form.handleSubmit(onSubmit)}
-                      className="w-full"
-                      size="lg"
-                      disabled={isSubmitting}
-                    >
-                      {isSubmitting
-                        ? getTranslation("processing", language)
-                        : getTranslation("placeOrder", language)}
-                    </Button>
-                  </div>
-
-                  {/* Secure checkout notice */}
-                  <div className="mt-4 text-xs text-muted-foreground flex items-center justify-center">
-                    <Check className="h-3 w-3 mr-1" />{" "}
-                    {getTranslation("secureCheckout", language)}
-                  </div>
-                </div>
-              </div>
+              {(() => {
+                const OrderSummary = require("./OrderSummary").default;
+                return (
+                  <OrderSummary
+                    items={items}
+                    subtotal={subtotal}
+                    language={language}
+                    isSubmitting={isSubmitting}
+                    onPlaceOrder={form.handleSubmit(onSubmit)}
+                  />
+                );
+              })()}
             </div>
           </div>
         )}
-      </main>
-
-      <Footer />
+      </div>
     </div>
   );
 };

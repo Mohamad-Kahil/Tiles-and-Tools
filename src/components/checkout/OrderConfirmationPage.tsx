@@ -4,8 +4,6 @@ import { CheckCircle, Package, Truck, Home, ArrowRight } from "lucide-react";
 
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getTranslation } from "@/lib/i18n";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 
 const OrderConfirmationPage = () => {
@@ -34,9 +32,7 @@ const OrderConfirmationPage = () => {
 
   return (
     <div className={`min-h-screen bg-background flex flex-col ${direction}`}>
-      <Header />
-
-      <main className="flex-1 container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8">
         <div className="max-w-3xl mx-auto bg-card rounded-lg shadow-sm p-8 text-center">
           <div className="mb-6">
             <CheckCircle className="h-16 w-16 text-green-500 mx-auto" />
@@ -167,9 +163,7 @@ const OrderConfirmationPage = () => {
             </Link>
           </div>
         </div>
-      </main>
-
-      <Footer />
+      </div>
     </div>
   );
 };
