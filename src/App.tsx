@@ -35,6 +35,11 @@ const CMSPage = lazy(() => import("./pages/CMSPage"));
 const AnalyticsPage = lazy(() => import("./pages/analytics"));
 const PromotionsPage = lazy(() => import("./pages/promotions"));
 
+// CMS Product Pages
+const ProductsPage = lazy(() => import("./pages/cms/products"));
+const NewProductPage = lazy(() => import("./pages/cms/products/new"));
+const EditProductPage = lazy(() => import("./pages/cms/products/edit/[id]"));
+
 function App() {
   return (
     <LanguageProvider>
@@ -120,6 +125,33 @@ function App() {
                           </ProtectedRoute>
                         }
                       />
+
+                      {/* CMS Product Routes */}
+                      <Route
+                        path="/cms/products"
+                        element={
+                          <ProtectedRoute>
+                            <ProductsPage />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/cms/products/new"
+                        element={
+                          <ProtectedRoute>
+                            <NewProductPage />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/cms/products/edit/:id"
+                        element={
+                          <ProtectedRoute>
+                            <EditProductPage />
+                          </ProtectedRoute>
+                        }
+                      />
+
                       <Route
                         path="/simple-chart-demo"
                         element={

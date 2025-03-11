@@ -18,7 +18,7 @@ import {
   Settings,
 } from "lucide-react";
 
-const CMSLayout = () => {
+const CMSLayout = ({ children }) => {
   const location = useLocation();
   const currentPath = location.pathname;
 
@@ -160,7 +160,7 @@ const CMSLayout = () => {
           </h1>
         </header>
         <main className="flex-1 p-6 overflow-auto">
-          <Outlet />
+          {children || <Outlet />}
         </main>
       </div>
     </div>

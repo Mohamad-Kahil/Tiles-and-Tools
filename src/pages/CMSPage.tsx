@@ -77,23 +77,4 @@ const CMSPage = () => {
   );
 };
 
-// Placeholder component for future modules
-const ComingSoon = ({ module }: { module: string }) => {
-  return (
-    <div className="flex flex-col items-center justify-center py-12 text-center">
-      <div className="bg-primary/10 rounded-full p-6 mb-4">
-        <div className="text-4xl font-bold text-primary">Coming Soon</div>
-      </div>
-      <h2 className="text-2xl font-bold mb-2">{module}</h2>
-      <p className="text-muted-foreground max-w-md mx-auto mb-6">
-        This module is currently under development and will be available in a
-        future update.
-      </p>
-      <p className="text-sm text-muted-foreground">
-        Part of our phased development approach for the E-commerce CMS
-      </p>
-    </div>
-  );
-};
-
 export default CMSPage;

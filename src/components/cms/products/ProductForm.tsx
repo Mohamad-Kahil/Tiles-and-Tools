@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Upload, X, Plus, Trash2 } from "lucide-react";
-
+import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -27,39 +27,38 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { cn } from "@/lib/utils";
+import { useToast } from "@/components/ui/use-toast";
 
 // Form schema
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters" }),
-  sku: z.string().min(1, { message: "SKU is required" }),
-  category: z.string({
+  slug: z.string().min(1, { message: "Slug is required" }),
+  category_id: z.string({
     required_error: "Please select a category",
-  }),
-  subcategory: z.string({
-    required_error: "Please select a subcategory",
   }),
   price: z.coerce
     .number()
     .min(0.01, { message: "Price must be greater than 0" }),
-  compareAtPrice: z.coerce.number().optional(),
-  costPrice: z.coerce.number().optional(),
+  compare_at_price: z.coerce.number().optional(),
+  cost_price: z.coerce.number().optional(),
   description: z.string().min(10, {
     message: "Description must be at least 10 characters",
   }),
-  shortDescription: z.string().optional(),
-  stock: z.coerce.number().int().min(0),
+  short_description: z.string().optional(),
+  inventory_quantity: z.coerce.number().int().min(0),
   weight: z.coerce.number().optional(),
   dimensions: z.object({
     length: z.coerce.number().optional(),
     width: z.coerce.number().optional(),
     height: z.coerce.number().optional(),
   }),
-  status: z.string(),
-  featured: z.boolean().default(false),
-  metaTitle: z.string().optional(),
-  metaDescription: z.string().optional(),
-  metaKeywords: z.string().optional(),
+  is_active: z.boolean().default(true),
+  is_featured: z.boolean().default(false),
+  meta_title: z.string().optional(),
+  meta_description: z.string().optional(),
+  meta_keywords: z.string().optional(),
+  sku: z.string().optional(),
+  barcode: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -67,51 +66,228 @@ type FormValues = z.infer<typeof formSchema>;
 const ProductForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { toast } = useToast();
   const isEditMode = !!id;
   const [activeTab, setActiveTab] = useState("basic");
-  const [mainImage, setMainImage] = useState<string | null>(null);
-  const [galleryImages, setGalleryImages] = useState<string[]>([]);
-
-  // Default values for the form
-  const defaultValues: Partial<FormValues> = {
-    name: "",
-    sku: "",
-    category: "",
-    subcategory: "",
-    price: 0,
-    compareAtPrice: undefined,
-    costPrice: undefined,
-    description: "",
-    shortDescription: "",
-    stock: 0,
-    weight: undefined,
-    dimensions: {
-      length: undefined,
-      width: undefined,
-      height: undefined,
-    },
-    status: "draft",
-    featured: false,
-    metaTitle: "",
-    metaDescription: "",
-    metaKeywords: "",
-  };
+  const [loading, setLoading] = useState(false);
+  const [categories, setCategories] = useState([]);
+  const [mainImage, setMainImage] = useState(null);
+  const [galleryImages, setGalleryImages] = useState([]);
+  const [existingImages, setExistingImages] = useState([]);
 
   // Initialize form
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues,
+    defaultValues: {
+      name: "",
+      slug: "",
+      category_id: "",
+      price: 0,
+      compare_at_price: undefined,
+      cost_price: undefined,
+      description: "",
+      short_description: "",
+      inventory_quantity: 0,
+      weight: undefined,
+      dimensions: {
+        length: undefined,
+        width: undefined,
+        height: undefined,
+      },
+      is_active: true,
+      is_featured: false,
+      meta_title: "",
+      meta_description: "",
+      meta_keywords: "",
+      sku: "",
+      barcode: "",
+    },
   });
 
+  // Fetch categories
+  const fetchCategories = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("categories")
+        .select("id, name")
+        .order("name");
+
+      if (error) throw error;
+      setCategories(data || []);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to load categories",
+      });
+    }
+  };
+
+  // Fetch product data if in edit mode
+  const fetchProduct = async (productId) => {
+    try {
+      setLoading(true);
+      // First fetch the product
+      const { data, error } = await supabase
+        .from("products")
+        .select("*")
+        .eq("id", productId)
+        .single();
+
+      if (error) throw error;
+      if (!data) throw new Error("Product not found");
+
+      // Then fetch product images
+      const { data: imageData, error: imageError } = await supabase
+        .from("product_images")
+        .select("*")
+        .eq("product_id", productId);
+
+      if (imageError) throw imageError;
+
+      // Set form values
+      form.reset({
+        name: data.name,
+        slug: data.slug,
+        category_id: data.category_id || "",
+        price: data.price,
+        compare_at_price: data.compare_at_price || undefined,
+        cost_price: data.cost_price || undefined,
+        description: data.description || "",
+        short_description: data.short_description || "",
+        inventory_quantity: data.inventory_quantity,
+        weight: data.weight || undefined,
+        dimensions: {
+          length: data.dimensions?.length || undefined,
+          width: data.dimensions?.width || undefined,
+          height: data.dimensions?.height || undefined,
+        },
+        is_active: data.is_active,
+        is_featured: data.is_featured,
+        meta_title: data.meta_title || "",
+        meta_description: data.meta_description || "",
+        meta_keywords: data.meta_keywords || "",
+        sku: data.sku || "",
+        barcode: data.barcode || "",
+      });
+
+      // Set existing images
+      if (imageData && imageData.length > 0) {
+        setExistingImages(imageData);
+      }
+    } catch (error) {
+      console.error("Error fetching product:", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to load product",
+      });
+      navigate("/cms/products");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Handle form submission
-  const onSubmit = (data: FormValues) => {
-    console.log("Form submitted:", {
-      ...data,
-      mainImage,
-      galleryImages,
-    });
-    // In a real app, you would send this data to your backend
-    navigate("/cms/products");
+  const onSubmit = async (data: FormValues) => {
+    try {
+      setLoading(true);
+
+      // Create or update product
+      let productId = id;
+      if (isEditMode) {
+        // Update existing product
+        const { error } = await supabase
+          .from("products")
+          .update(data)
+          .eq("id", id);
+
+        if (error) throw error;
+      } else {
+        // Create new product
+        const { data: newProduct, error } = await supabase
+          .from("products")
+          .insert(data)
+          .select()
+          .single();
+
+        if (error) throw error;
+        productId = newProduct.id;
+      }
+
+      // Handle image uploads
+      if (mainImage) {
+        // Upload main image
+        const mainImageFile = mainImage;
+        const mainImageName = `${Date.now()}-${mainImageFile.name}`;
+        const { error: uploadError } = await supabase.storage
+          .from("product-images")
+          .upload(mainImageName, mainImageFile);
+
+        if (uploadError) throw uploadError;
+
+        // Get public URL
+        const { data: publicUrlData } = supabase.storage
+          .from("product-images")
+          .getPublicUrl(mainImageName);
+
+        // Add to product_images table
+        const { error: insertError } = await supabase
+          .from("product_images")
+          .insert({
+            product_id: productId,
+            url: publicUrlData.publicUrl,
+            is_primary: true,
+          });
+
+        if (insertError) throw insertError;
+      }
+
+      // Upload gallery images
+      for (const image of galleryImages) {
+        const imageName = `${Date.now()}-${image.name}`;
+        const { error: uploadError } = await supabase.storage
+          .from("product-images")
+          .upload(imageName, image);
+
+        if (uploadError) throw uploadError;
+
+        // Get public URL
+        const { data: publicUrlData } = supabase.storage
+          .from("product-images")
+          .getPublicUrl(imageName);
+
+        // Add to product_images table
+        const { error: insertError } = await supabase
+          .from("product_images")
+          .insert({
+            product_id: productId,
+            url: publicUrlData.publicUrl,
+            is_primary: false,
+          });
+
+        if (insertError) throw insertError;
+      }
+
+      toast({
+        title: isEditMode ? "Product updated" : "Product created",
+        description: isEditMode
+          ? "Your product has been updated successfully."
+          : "Your product has been created successfully.",
+      });
+
+      navigate("/cms/products");
+    } catch (error) {
+      console.error("Error saving product:", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: `Failed to ${isEditMode ? "update" : "create"} product`,
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Handle main image upload
@@ -120,11 +296,7 @@ const ProductForm = () => {
   ) => {
     const file = event.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setMainImage(e.target?.result as string);
-      };
-      reader.readAsDataURL(file);
+      setMainImage(file);
     }
   };
 
@@ -134,13 +306,7 @@ const ProductForm = () => {
   ) => {
     const files = event.target.files;
     if (files && files.length > 0) {
-      Array.from(files).forEach((file) => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          setGalleryImages((prev) => [...prev, e.target?.result as string]);
-        };
-        reader.readAsDataURL(file);
-      });
+      setGalleryImages((prev) => [...prev, ...Array.from(files)]);
     }
   };
 
@@ -154,70 +320,46 @@ const ProductForm = () => {
     setGalleryImages((prev) => prev.filter((_, i) => i !== index));
   };
 
-  // Categories and subcategories mapping
-  const categories = [
-    {
-      value: "flooring",
-      label: "Flooring",
-      subcategories: [
-        { value: "ceramic", label: "Ceramic Tiles" },
-        { value: "porcelain", label: "Porcelain Tiles" },
-        { value: "marble", label: "Marble" },
-        { value: "wood", label: "Wood" },
-        { value: "vinyl", label: "Vinyl" },
-      ],
-    },
-    {
-      value: "wall_products",
-      label: "Wall Products",
-      subcategories: [
-        { value: "paint", label: "Paint" },
-        { value: "wallpaper", label: "Wallpaper" },
-        { value: "wall_tiles", label: "Wall Tiles" },
-        { value: "panels", label: "Decorative Panels" },
-      ],
-    },
-    {
-      value: "lighting",
-      label: "Lighting",
-      subcategories: [
-        { value: "ceiling", label: "Ceiling Lights" },
-        { value: "pendant", label: "Pendant Lights" },
-        { value: "wall_lights", label: "Wall Lights" },
-        { value: "floor_lamps", label: "Floor Lamps" },
-        { value: "table_lamps", label: "Table Lamps" },
-      ],
-    },
-    {
-      value: "decor",
-      label: "Decor",
-      subcategories: [
-        { value: "vases", label: "Vases" },
-        { value: "mirrors", label: "Mirrors" },
-        { value: "art", label: "Wall Art" },
-        { value: "cushions", label: "Cushions" },
-        { value: "rugs", label: "Rugs" },
-      ],
-    },
-    {
-      value: "furniture",
-      label: "Furniture",
-      subcategories: [
-        { value: "living_room", label: "Living Room" },
-        { value: "bedroom", label: "Bedroom" },
-        { value: "dining", label: "Dining" },
-        { value: "office", label: "Office" },
-        { value: "outdoor", label: "Outdoor" },
-      ],
-    },
-  ];
+  // Remove existing image
+  const removeExistingImage = async (imageId: string) => {
+    try {
+      const { error } = await supabase
+        .from("product_images")
+        .delete()
+        .eq("id", imageId);
 
-  // Get subcategories based on selected category
-  const getSubcategories = () => {
-    const selectedCategory = form.watch("category");
-    const category = categories.find((cat) => cat.value === selectedCategory);
-    return category?.subcategories || [];
+      if (error) throw error;
+
+      setExistingImages((prev) => prev.filter((img) => img.id !== imageId));
+      toast({
+        title: "Image removed",
+        description: "Image has been removed successfully",
+      });
+    } catch (error) {
+      console.error("Error removing image:", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to remove image",
+      });
+    }
   };
+
+  // Generate slug from name
+  const generateSlug = (name: string) => {
+    return name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+  };
+
+  // Load data on component mount
+  useEffect(() => {
+    fetchCategories();
+    if (isEditMode) {
+      fetchProduct(id);
+    }
+  }, [isEditMode, id]);
 
   return (
     <div className="space-y-6">
@@ -229,8 +371,17 @@ const ProductForm = () => {
           <Button variant="outline" onClick={() => navigate("/cms/products")}>
             Cancel
           </Button>
-          <Button type="submit" form="product-form">
-            {isEditMode ? "Update" : "Save"}
+          <Button type="submit" form="product-form" disabled={loading}>
+            {loading ? (
+              <>
+                <span className="animate-spin mr-2">⟳</span>
+                {isEditMode ? "Updating..." : "Saving..."}
+              </>
+            ) : isEditMode ? (
+              "Update"
+            ) : (
+              "Save"
+            )}
           </Button>
         </div>
       </div>
@@ -259,8 +410,39 @@ const ProductForm = () => {
                       <FormItem>
                         <FormLabel>Product Name</FormLabel>
                         <FormControl>
-                          <Input placeholder="Enter product name" {...field} />
+                          <Input
+                            placeholder="Enter product name"
+                            {...field}
+                            onChange={(e) => {
+                              field.onChange(e);
+                              // Auto-generate slug if empty
+                              if (!form.getValues("slug")) {
+                                form.setValue(
+                                  "slug",
+                                  generateSlug(e.target.value),
+                                );
+                              }
+                            }}
+                          />
                         </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="slug"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Slug</FormLabel>
+                        <FormControl>
+                          <Input placeholder="product-slug" {...field} />
+                        </FormControl>
+                        <FormDescription>
+                          Used in the URL. Auto-generated from name if left
+                          empty.
+                        </FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -286,15 +468,12 @@ const ProductForm = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <FormField
                       control={form.control}
-                      name="category"
+                      name="category_id"
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Category</FormLabel>
                           <Select
-                            onValueChange={(value) => {
-                              field.onChange(value);
-                              form.setValue("subcategory", "");
-                            }}
+                            onValueChange={field.onChange}
                             defaultValue={field.value}
                           >
                             <FormControl>
@@ -305,10 +484,10 @@ const ProductForm = () => {
                             <SelectContent>
                               {categories.map((category) => (
                                 <SelectItem
-                                  key={category.value}
-                                  value={category.value}
+                                  key={category.id}
+                                  value={category.id}
                                 >
-                                  {category.label}
+                                  {category.name}
                                 </SelectItem>
                               ))}
                             </SelectContent>
@@ -320,32 +499,21 @@ const ProductForm = () => {
 
                     <FormField
                       control={form.control}
-                      name="subcategory"
+                      name="is_active"
                       render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Subcategory</FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                            disabled={!form.watch("category")}
-                          >
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select subcategory" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {getSubcategories().map((subcategory) => (
-                                <SelectItem
-                                  key={subcategory.value}
-                                  value={subcategory.value}
-                                >
-                                  {subcategory.label}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
+                        <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                          <FormControl>
+                            <Checkbox
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                            />
+                          </FormControl>
+                          <div className="space-y-1 leading-none">
+                            <FormLabel>Active Product</FormLabel>
+                            <FormDescription>
+                              Active products are visible on the store
+                            </FormDescription>
+                          </div>
                         </FormItem>
                       )}
                     />
@@ -353,36 +521,7 @@ const ProductForm = () => {
 
                   <FormField
                     control={form.control}
-                    name="status"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Status</FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select status" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="draft">Draft</SelectItem>
-                            <SelectItem value="active">Active</SelectItem>
-                            <SelectItem value="archived">Archived</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormDescription>
-                          Only active products are visible on the store
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="featured"
+                    name="is_featured"
                     render={({ field }) => (
                       <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
                         <FormControl>
@@ -406,7 +545,7 @@ const ProductForm = () => {
                 <div className="space-y-6">
                   <FormField
                     control={form.control}
-                    name="shortDescription"
+                    name="short_description"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Short Description</FormLabel>
@@ -474,7 +613,7 @@ const ProductForm = () => {
 
                   <FormField
                     control={form.control}
-                    name="compareAtPrice"
+                    name="compare_at_price"
                     render={({ field: { value, onChange, ...field } }) => (
                       <FormItem>
                         <FormLabel>Compare At Price (EGP)</FormLabel>
@@ -502,7 +641,7 @@ const ProductForm = () => {
 
                   <FormField
                     control={form.control}
-                    name="costPrice"
+                    name="cost_price"
                     render={({ field: { value, onChange, ...field } }) => (
                       <FormItem>
                         <FormLabel>Cost Price (EGP)</FormLabel>
@@ -541,7 +680,7 @@ const ProductForm = () => {
                   {mainImage ? (
                     <div className="relative">
                       <img
-                        src={mainImage}
+                        src={URL.createObjectURL(mainImage)}
                         alt="Main product image"
                         className="w-full h-auto rounded-md border"
                       />
@@ -550,6 +689,26 @@ const ProductForm = () => {
                         size="icon"
                         className="absolute top-2 right-2 h-8 w-8"
                         onClick={removeMainImage}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ) : existingImages.find((img) => img.is_primary) ? (
+                    <div className="relative">
+                      <img
+                        src={existingImages.find((img) => img.is_primary).url}
+                        alt="Main product image"
+                        className="w-full h-auto rounded-md border"
+                      />
+                      <Button
+                        variant="destructive"
+                        size="icon"
+                        className="absolute top-2 right-2 h-8 w-8"
+                        onClick={() =>
+                          removeExistingImage(
+                            existingImages.find((img) => img.is_primary).id,
+                          )
+                        }
                       >
                         <X className="h-4 w-4" />
                       </Button>
@@ -589,11 +748,33 @@ const ProductForm = () => {
                   <Separator />
 
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                    {/* Existing gallery images */}
+                    {existingImages
+                      .filter((img) => !img.is_primary)
+                      .map((image) => (
+                        <div key={image.id} className="relative">
+                          <img
+                            src={image.url}
+                            alt={`Gallery image`}
+                            className="w-full h-32 object-cover rounded-md border"
+                          />
+                          <Button
+                            variant="destructive"
+                            size="icon"
+                            className="absolute top-2 right-2 h-6 w-6"
+                            onClick={() => removeExistingImage(image.id)}
+                          >
+                            <X className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      ))}
+
+                    {/* New gallery images */}
                     {galleryImages.map((image, index) => (
-                      <div key={index} className="relative">
+                      <div key={`new-${index}`} className="relative">
                         <img
-                          src={image}
-                          alt={`Gallery image ${index + 1}`}
+                          src={URL.createObjectURL(image)}
+                          alt={`New gallery image ${index + 1}`}
                           className="w-full h-32 object-cover rounded-md border"
                         />
                         <Button
@@ -650,7 +831,7 @@ const ProductForm = () => {
 
                   <FormField
                     control={form.control}
-                    name="stock"
+                    name="inventory_quantity"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Stock Quantity</FormLabel>
@@ -666,6 +847,20 @@ const ProductForm = () => {
                         <FormDescription>
                           Current available quantity
                         </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="barcode"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Barcode (ISBN, UPC, GTIN, etc.)</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Enter barcode" {...field} />
+                        </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -794,7 +989,7 @@ const ProductForm = () => {
 
                 <FormField
                   control={form.control}
-                  name="metaTitle"
+                  name="meta_title"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Meta Title</FormLabel>
@@ -814,7 +1009,7 @@ const ProductForm = () => {
 
                 <FormField
                   control={form.control}
-                  name="metaDescription"
+                  name="meta_description"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Meta Description</FormLabel>
@@ -836,7 +1031,7 @@ const ProductForm = () => {
 
                 <FormField
                   control={form.control}
-                  name="metaKeywords"
+                  name="meta_keywords"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Meta Keywords</FormLabel>

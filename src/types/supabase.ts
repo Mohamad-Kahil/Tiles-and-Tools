@@ -361,49 +361,79 @@ export type Database = {
       }
       products: {
         Row: {
+          barcode: string | null
           category_id: string | null
+          compare_at_price: number | null
+          cost_price: number | null
           created_at: string | null
           description: string | null
+          dimensions: Json | null
           id: string
+          inventory_quantity: number | null
           is_active: boolean | null
           is_featured: boolean | null
+          meta_description: string | null
+          meta_keywords: string | null
+          meta_title: string | null
           name: string
           price: number
           sale_price: number | null
+          short_description: string | null
           sku: string | null
           slug: string
           stock_quantity: number
           updated_at: string | null
+          weight: number | null
         }
         Insert: {
+          barcode?: string | null
           category_id?: string | null
+          compare_at_price?: number | null
+          cost_price?: number | null
           created_at?: string | null
           description?: string | null
+          dimensions?: Json | null
           id?: string
+          inventory_quantity?: number | null
           is_active?: boolean | null
           is_featured?: boolean | null
+          meta_description?: string | null
+          meta_keywords?: string | null
+          meta_title?: string | null
           name: string
           price: number
           sale_price?: number | null
+          short_description?: string | null
           sku?: string | null
           slug: string
           stock_quantity?: number
           updated_at?: string | null
+          weight?: number | null
         }
         Update: {
+          barcode?: string | null
           category_id?: string | null
+          compare_at_price?: number | null
+          cost_price?: number | null
           created_at?: string | null
           description?: string | null
+          dimensions?: Json | null
           id?: string
+          inventory_quantity?: number | null
           is_active?: boolean | null
           is_featured?: boolean | null
+          meta_description?: string | null
+          meta_keywords?: string | null
+          meta_title?: string | null
           name?: string
           price?: number
           sale_price?: number | null
+          short_description?: string | null
           sku?: string | null
           slug?: string
           stock_quantity?: number
           updated_at?: string | null
+          weight?: number | null
         }
         Relationships: [
           {

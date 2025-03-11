@@ -43,63 +43,23 @@ export const useProducts = (initialFilters: ProductFilters = {}) => {
     setError(null);
 
     try {
-      // Start building the query
-      let query = supabase
-        .from("products")
-        .select("*, category:categories(*), images:product_images(*)", {
-          count: "exact",
-        })
-        .eq("is_active", true);
-
-      // Apply filters
-      if (filters.category_id) {
-        query = query.eq("category_id", filters.category_id);
-      }
-
-      if (filters.search) {
-        query = query.ilike("name", `%${filters.search}%`);
-      }
-
-      if (filters.min_price !== undefined) {
-        query = query.gte("price", filters.min_price);
-      }
-
-      if (filters.max_price !== undefined) {
-        query = query.lte("price", filters.max_price);
-      }
-
-      if (filters.is_featured !== undefined) {
-        query = query.eq("is_featured", filters.is_featured);
-      }
-
-      // Apply sorting
-      if (filters.sort_by) {
-        query = query.order(filters.sort_by, {
-          ascending: filters.sort_order === "asc",
-        });
-      }
-
-      // Apply pagination
-      const page = filters.page || 1;
-      const limit = filters.limit || 12;
-      const from = (page - 1) * limit;
-      const to = from + limit - 1;
-
-      query = query.range(from, to);
-
-      // Execute the query
-      const { data, error, count } = await query;
+      // Call the edge function
+      const { data, error } = await supabase.functions.invoke("get-products", {
+        body: filters,
+      });
 
       if (error) throw error;
 
       // Update products and pagination
-      setProducts(data || []);
-      setPagination({
-        page,
-        limit,
-        total: count || 0,
-        pages: count ? Math.ceil(count / limit) : 0,
-      });
+      setProducts(data.products || []);
+      setPagination(
+        data.pagination || {
+          page: filters.page || 1,
+          limit: filters.limit || 12,
+          total: 0,
+          pages: 0,
+        },
+      );
     } catch (err) {
       console.error("Error fetching products:", err);
       setError("Failed to load products");
@@ -116,7 +76,7 @@ export const useProducts = (initialFilters: ProductFilters = {}) => {
 
   // Update filters
   const updateFilters = (newFilters: Partial<ProductFilters>) => {
-    setFilters((prev) => ({ ...prev, ...newFilters }));
+    setFilters((prev) => ({ ...prev, ...newFilters, page: 1 }));
   };
 
   // Fetch a single product by slug

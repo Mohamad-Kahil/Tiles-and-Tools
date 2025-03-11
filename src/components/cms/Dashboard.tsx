@@ -349,7 +349,7 @@ const Dashboard = () => {
                 </div>
                 <div>
                   <h5 className="font-medium">Luxury Marble Flooring Tile</h5>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-muted-foreground mt-1">
                     54 units sold this month
                   </p>
                   <p className="text-sm font-medium text-primary mt-1">
