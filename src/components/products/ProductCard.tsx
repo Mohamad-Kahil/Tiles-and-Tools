@@ -1,210 +1,147 @@
 import React from "react";
-import { Star, ShoppingCart, Eye, Heart } from "lucide-react";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { Heart, ShoppingCart, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { formatCurrency } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
-import { useCart } from "@/components/cart/CartContext";
-import { useWishlist } from "@/components/wishlist/WishlistContext";
-import { useAnalytics } from "@/components/analytics/AnalyticsProvider";
-import { useLanguage } from "@/contexts/LanguageContext";
-import { formatCurrency, getTranslation } from "@/lib/i18n";
 
 interface ProductCardProps {
-  id?: string;
-  name?: string;
-  price?: number;
-  image?: string;
-  rating?: number;
+  product: {
+    id: string;
+    name: string;
+    slug?: string;
+    price: number;
+    salePrice?: number;
+    imageUrl: string;
+    category?: string;
+  };
   onAddToCart?: () => void;
+  onAddToWishlist?: () => void;
   onQuickView?: () => void;
-  onToggleWishlist?: () => void;
-  showWishlistButton?: boolean;
 }
 
-const ProductCard = ({
-  id = "1",
-  name = "Elegant Ceramic Floor Tile",
-  price = 299.99,
-  image = "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=500&q=80",
-  rating = 4.5,
-  onAddToCart = () => {},
-  onQuickView = () => console.log("Quick view clicked"),
-  onToggleWishlist = () => {},
-  showWishlistButton = true,
-}: ProductCardProps) => {
-  const [isHovered, setIsHovered] = React.useState(false);
-  const { addItem } = useCart();
-  const {
-    addItem: addToWishlist,
-    isInWishlist,
-    removeItem: removeFromWishlist,
-  } = useWishlist();
-  const { trackEvent } = useAnalytics();
-  const { language } = useLanguage();
-  const navigate = useNavigate();
+const ProductCard: React.FC<ProductCardProps> = ({
+  product = {
+    id: "default",
+    name: "Sample Product",
+    price: 0,
+    imageUrl:
+      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=500&q=80",
+  },
+  onAddToCart,
+  onAddToWishlist,
+  onQuickView,
+}) => {
+  // Default to English language
+  const language = "en";
 
-  const handleAddToCart = () => {
-    addItem(
-      {
-        id,
-        name,
-        price,
-        image,
-      },
-      1,
-    );
-
-    // Track add to cart event
-    trackEvent("ecommerce", "add_to_cart", name, price);
-
-    onAddToCart();
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (onAddToCart) onAddToCart();
   };
 
-  // Format price to EGP currency
-  const formattedPrice = formatCurrency(price, language);
-
-  // Generate stars based on rating
-  const renderStars = () => {
-    const stars = [];
-    const fullStars = Math.floor(rating);
-    const hasHalfStar = rating % 1 !== 0;
-
-    for (let i = 0; i < 5; i++) {
-      if (i < fullStars) {
-        stars.push(
-          <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />,
-        );
-      } else if (i === fullStars && hasHalfStar) {
-        stars.push(
-          <div key={i} className="relative">
-            <Star className="h-4 w-4 text-gray-300" />
-            <div className="absolute inset-0 overflow-hidden w-1/2">
-              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-            </div>
-          </div>,
-        );
-      } else {
-        stars.push(<Star key={i} className="h-4 w-4 text-gray-300" />);
-      }
-    }
-    return stars;
+  const handleAddToWishlist = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (onAddToWishlist) onAddToWishlist();
   };
+
+  const handleQuickView = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (onQuickView) onQuickView();
+  };
+
+  // Use product ID as fallback if slug is not available
+  const productUrl = `/product/${product.slug || product.id}`;
 
   return (
-    <Card
-      className={cn(
-        "w-full max-w-[280px] h-[380px] overflow-hidden transition-all duration-300 bg-white",
-        isHovered ? "shadow-lg transform -translate-y-1" : "",
-      )}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      onTouchStart={() => setIsHovered(true)}
-      onTouchEnd={() => setIsHovered(false)}
-    >
-      <div className="relative h-[220px] overflow-hidden bg-gray-100">
-        <img
-          src={image}
-          alt={name}
-          className="w-full h-full object-cover transition-transform duration-500"
-          style={{
-            transform: isHovered ? "scale(1.05)" : "scale(1)",
-          }}
-        />
+    <div className="group relative bg-white rounded-lg shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md">
+      {/* Product Image */}
+      <Link to={productUrl} className="block">
+        <div className="aspect-square w-full overflow-hidden bg-gray-100">
+          <img
+            src={product.imageUrl}
+            alt={product.name}
+            className={cn(
+              "h-full w-full object-cover transition-transform duration-500",
+              "group-hover:scale-110",
+            )}
+          />
+        </div>
 
-        {/* Quick actions overlay that appears on hover */}
-        <div
-          className={cn(
-            "absolute inset-0 bg-black/40 flex flex-col items-center justify-center gap-2 transition-opacity duration-300",
-            isHovered ? "opacity-100" : "opacity-0",
-          )}
-        >
+        {/* Quick action buttons */}
+        <div className="absolute top-2 right-2 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
           <Button
             variant="secondary"
-            size="sm"
-            className="w-3/4 gap-2"
-            onClick={() => {
-              onQuickView();
-              navigate(`/product/${id}`);
-              window.scrollTo(0, 0);
-            }}
+            size="icon"
+            className="h-8 w-8 rounded-full bg-white text-gray-700 hover:text-primary shadow-sm"
+            onClick={handleAddToWishlist}
           >
-            <Eye className="h-4 w-4" />{" "}
-            {language === "en" ? "Quick View" : "عرض سريع"}
+            <Heart className="h-4 w-4" />
+            <span className="sr-only">Add to wishlist</span>
           </Button>
           <Button
-            variant="default"
-            size="sm"
-            className="w-3/4 gap-2"
-            onClick={handleAddToCart}
+            variant="secondary"
+            size="icon"
+            className="h-8 w-8 rounded-full bg-white text-gray-700 hover:text-primary shadow-sm"
+            onClick={handleQuickView}
           >
-            <ShoppingCart className="h-4 w-4" />{" "}
-            {getTranslation("addToCart", language)}
+            <Eye className="h-4 w-4" />
+            <span className="sr-only">Quick view</span>
           </Button>
         </div>
-      </div>
 
-      <CardContent className="p-4">
-        <div
-          onClick={() => {
-            navigate(`/product/${id}`);
-            window.scrollTo(0, 0);
-          }}
-          className="block cursor-pointer"
-        >
-          <h3 className="font-medium text-sm line-clamp-2 h-10 mb-1 hover:text-primary transition-colors">
-            {name}
-          </h3>
-        </div>
-        <div className="flex items-center gap-1 mb-2">
-          {renderStars()}
-          <span className="text-xs text-gray-500 ml-1">({rating})</span>
-        </div>
-        <p className="font-bold text-lg text-primary">{formattedPrice}</p>
-      </CardContent>
+        {/* Sale badge */}
+        {product.salePrice && (
+          <Badge className="absolute top-2 left-2 bg-red-500 hover:bg-red-600">
+            Sale
+          </Badge>
+        )}
 
-      <CardFooter className="p-4 pt-0">
-        <div className="flex gap-2 w-full">
-          <Button
-            variant="outline"
-            className="flex-1 gap-2"
-            onClick={handleAddToCart}
-          >
-            <ShoppingCart className="h-4 w-4" />{" "}
-            {getTranslation("addToCart", language)}
-          </Button>
-
-          {showWishlistButton && (
-            <Button
-              variant={isInWishlist(id) ? "default" : "outline"}
-              size="icon"
-              className="flex-shrink-0"
-              onClick={() => {
-                if (isInWishlist(id)) {
-                  removeFromWishlist(id);
-                  // Track remove from wishlist event
-                  trackEvent("ecommerce", "remove_from_wishlist", name, price);
-                } else {
-                  addToWishlist({
-                    id,
-                    name,
-                    price,
-                    image,
-                  });
-                  // Track add to wishlist event
-                  trackEvent("ecommerce", "add_to_wishlist", name, price);
-                }
-                onToggleWishlist();
-              }}
-            >
-              <Heart
-                className={`h-4 w-4 ${isInWishlist(id) ? "fill-current" : ""}`}
-              />
-            </Button>
+        {/* Product Info */}
+        <div className="p-4">
+          {product.category && (
+            <div className="text-xs text-muted-foreground mb-1">
+              {product.category}
+            </div>
           )}
+          <h3 className="font-medium text-sm sm:text-base line-clamp-2 mb-1 group-hover:text-primary transition-colors">
+            {product.name}
+          </h3>
+          <div className="flex items-center">
+            {product.salePrice ? (
+              <>
+                <span className="font-bold text-primary">
+                  {formatCurrency(product.salePrice, language)}
+                </span>
+                <span className="ml-2 text-sm text-muted-foreground line-through">
+                  {formatCurrency(product.price, language)}
+                </span>
+              </>
+            ) : (
+              <span className="font-bold text-primary">
+                {formatCurrency(product.price, language)}
+              </span>
+            )}
+          </div>
         </div>
-      </CardFooter>
-    </Card>
+      </Link>
+
+      {/* Add to cart button */}
+      <div className="p-4 pt-0">
+        <Button
+          variant="outline"
+          className="w-full transition-all group-hover:bg-primary group-hover:text-primary-foreground"
+          onClick={handleAddToCart}
+        >
+          <ShoppingCart className="mr-2 h-4 w-4" />
+          Add to Cart
+        </Button>
+      </div>
+    </div>
   );
 };
 

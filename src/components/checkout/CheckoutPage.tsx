@@ -6,7 +6,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft, CreditCard, Truck, Check, MapPin } from "lucide-react";
 
 import { useCart } from "@/components/cart/CartContext";
-import { useAnalytics } from "@/components/analytics/AnalyticsProvider";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { getTranslation, formatCurrency } from "@/lib/i18n";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
@@ -30,6 +31,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useToast } from "@/components/ui/use-toast";
 
 // Form schema
 const formSchema = z.object({
@@ -51,9 +53,10 @@ type FormValues = z.infer<typeof formSchema>;
 
 const CheckoutPage = () => {
   const { items, subtotal, clearCart } = useCart();
+  const { language, direction } = useLanguage();
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { trackEvent, trackPurchase } = useAnalytics();
 
   // Initialize form
   const form = useForm<FormValues>({
@@ -71,14 +74,6 @@ const CheckoutPage = () => {
       notes: "",
     },
   });
-
-  // Format price
-  const formatPrice = (price: number) => {
-    return price.toLocaleString("ar-EG", {
-      style: "currency",
-      currency: "EGP",
-    });
-  };
 
   // Calculate shipping cost (free over 5000 EGP)
   const shippingCost = subtotal > 5000 ? 0 : 100;
@@ -98,24 +93,16 @@ const CheckoutPage = () => {
     // Generate a random order ID
     const orderId = `ORD-${Math.floor(100000 + Math.random() * 900000)}`;
 
-    // Track purchase event
-    trackPurchase(
-      orderId,
-      total,
-      items.map((item) => ({
-        id: item.id,
-        name: item.name,
-        price: item.price,
-        quantity: item.quantity,
-      })),
-    );
-
-    // Track checkout completion event
-    trackEvent("ecommerce", "checkout_complete", "checkout_success", total);
+    // Show success toast
+    toast({
+      title: getTranslation("orderConfirmedTitle", language),
+      description: getTranslation("orderConfirmedDescription", language),
+      variant: "default",
+    });
 
     // Clear cart and redirect to confirmation page
     clearCart();
-    navigate("/order-confirmation", { state: { orderId } });
+    navigate("/checkout/confirmation", { state: { orderId } });
   };
 
   // Egyptian governorates
@@ -150,7 +137,7 @@ const CheckoutPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className={`min-h-screen bg-background flex flex-col ${direction}`}>
       <Header />
 
       <main className="flex-1 container mx-auto px-4 py-8">
@@ -158,20 +145,26 @@ const CheckoutPage = () => {
           <Button variant="ghost" size="sm" asChild className="mr-4">
             <Link to="/cart" className="flex items-center gap-1">
               <ArrowLeft className="h-4 w-4" />
-              Back to Cart
+              {getTranslation("backToCart", language)}
             </Link>
           </Button>
-          <h1 className="text-3xl font-bold tracking-tight">Checkout</h1>
+          <h1 className="text-3xl font-bold tracking-tight">
+            {getTranslation("checkout", language)}
+          </h1>
         </div>
 
         {items.length === 0 ? (
           <div className="text-center py-16 bg-muted rounded-lg">
-            <h2 className="text-2xl font-medium mb-2">Your cart is empty</h2>
+            <h2 className="text-2xl font-medium mb-2">
+              {getTranslation("emptyCart", language)}
+            </h2>
             <p className="text-muted-foreground mb-6">
-              You need to add items to your cart before checking out.
+              {getTranslation("needItemsBeforeCheckout", language)}
             </p>
             <Button asChild>
-              <Link to="/products">Browse Products</Link>
+              <Link to="/products">
+                {getTranslation("browseProducts", language)}
+              </Link>
             </Button>
           </div>
         ) : (
@@ -186,7 +179,7 @@ const CheckoutPage = () => {
                   {/* Contact Information */}
                   <div className="bg-card rounded-lg shadow-sm p-6">
                     <h2 className="text-xl font-medium mb-4">
-                      Contact Information
+                      {getTranslation("contactInformation", language)}
                     </h2>
                     <Separator className="mb-6" />
 
@@ -196,7 +189,9 @@ const CheckoutPage = () => {
                         name="firstName"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>First Name</FormLabel>
+                            <FormLabel>
+                              {getTranslation("firstName", language)}
+                            </FormLabel>
                             <FormControl>
                               <Input placeholder="John" {...field} />
                             </FormControl>
@@ -210,7 +205,9 @@ const CheckoutPage = () => {
                         name="lastName"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Last Name</FormLabel>
+                            <FormLabel>
+                              {getTranslation("lastName", language)}
+                            </FormLabel>
                             <FormControl>
                               <Input placeholder="Doe" {...field} />
                             </FormControl>
@@ -224,7 +221,9 @@ const CheckoutPage = () => {
                         name="email"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Email Address</FormLabel>
+                            <FormLabel>
+                              {getTranslation("emailAddress", language)}
+                            </FormLabel>
                             <FormControl>
                               <Input
                                 placeholder="john.doe@example.com"
@@ -242,7 +241,9 @@ const CheckoutPage = () => {
                         name="phone"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Phone Number</FormLabel>
+                            <FormLabel>
+                              {getTranslation("phoneNumber", language)}
+                            </FormLabel>
                             <FormControl>
                               <Input placeholder="01234567890" {...field} />
                             </FormControl>
@@ -256,7 +257,7 @@ const CheckoutPage = () => {
                   {/* Shipping Address */}
                   <div className="bg-card rounded-lg shadow-sm p-6">
                     <h2 className="text-xl font-medium mb-4">
-                      Shipping Address
+                      {getTranslation("shippingAddress", language)}
                     </h2>
                     <Separator className="mb-6" />
 
@@ -266,7 +267,9 @@ const CheckoutPage = () => {
                         name="address"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Street Address</FormLabel>
+                            <FormLabel>
+                              {getTranslation("streetAddress", language)}
+                            </FormLabel>
                             <FormControl>
                               <Input
                                 placeholder="123 Main St, Apt 4B"
@@ -284,7 +287,9 @@ const CheckoutPage = () => {
                           name="city"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>City</FormLabel>
+                              <FormLabel>
+                                {getTranslation("city", language)}
+                              </FormLabel>
                               <FormControl>
                                 <Input placeholder="Cairo" {...field} />
                               </FormControl>
@@ -298,14 +303,21 @@ const CheckoutPage = () => {
                           name="governorate"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Governorate</FormLabel>
+                              <FormLabel>
+                                {getTranslation("governorate", language)}
+                              </FormLabel>
                               <Select
                                 onValueChange={field.onChange}
                                 defaultValue={field.value}
                               >
                                 <FormControl>
                                   <SelectTrigger>
-                                    <SelectValue placeholder="Select a governorate" />
+                                    <SelectValue
+                                      placeholder={getTranslation(
+                                        "selectGovernorate",
+                                        language,
+                                      )}
+                                    />
                                   </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
@@ -329,7 +341,9 @@ const CheckoutPage = () => {
                           name="postalCode"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Postal Code (Optional)</FormLabel>
+                              <FormLabel>
+                                {getTranslation("postalCodeOptional", language)}
+                              </FormLabel>
                               <FormControl>
                                 <Input placeholder="12345" {...field} />
                               </FormControl>
@@ -344,10 +358,15 @@ const CheckoutPage = () => {
                         name="notes"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Order Notes (Optional)</FormLabel>
+                            <FormLabel>
+                              {getTranslation("orderNotesOptional", language)}
+                            </FormLabel>
                             <FormControl>
                               <Textarea
-                                placeholder="Special instructions for delivery or installation"
+                                placeholder={getTranslation(
+                                  "specialInstructions",
+                                  language,
+                                )}
                                 className="resize-none"
                                 {...field}
                               />
@@ -361,7 +380,9 @@ const CheckoutPage = () => {
 
                   {/* Payment Method */}
                   <div className="bg-card rounded-lg shadow-sm p-6">
-                    <h2 className="text-xl font-medium mb-4">Payment Method</h2>
+                    <h2 className="text-xl font-medium mb-4">
+                      {getTranslation("paymentMethod", language)}
+                    </h2>
                     <Separator className="mb-6" />
 
                     <FormField
@@ -386,10 +407,18 @@ const CheckoutPage = () => {
                                 >
                                   <div className="flex items-center">
                                     <CreditCard className="mr-2 h-5 w-5 text-primary" />
-                                    <span>Credit/Debit Card</span>
+                                    <span>
+                                      {getTranslation(
+                                        "creditDebitCard",
+                                        language,
+                                      )}
+                                    </span>
                                   </div>
                                   <p className="text-sm text-muted-foreground mt-1">
-                                    Pay securely with your card
+                                    {getTranslation(
+                                      "paySecurelyWithCard",
+                                      language,
+                                    )}
                                   </p>
                                 </Label>
                                 <div className="flex space-x-1">
@@ -417,10 +446,15 @@ const CheckoutPage = () => {
                                 >
                                   <div className="flex items-center">
                                     <Truck className="mr-2 h-5 w-5 text-primary" />
-                                    <span>Cash on Delivery</span>
+                                    <span>
+                                      {getTranslation(
+                                        "cashOnDelivery",
+                                        language,
+                                      )}
+                                    </span>
                                   </div>
                                   <p className="text-sm text-muted-foreground mt-1">
-                                    Pay when you receive your order
+                                    {getTranslation("payWhenReceive", language)}
                                   </p>
                                 </Label>
                               </div>
@@ -440,7 +474,7 @@ const CheckoutPage = () => {
                                     <span>Fawry</span>
                                   </div>
                                   <p className="text-sm text-muted-foreground mt-1">
-                                    Pay via Fawry at any service point
+                                    {getTranslation("payViaFawry", language)}
                                   </p>
                                 </Label>
                               </div>
@@ -459,7 +493,9 @@ const CheckoutPage = () => {
                       size="lg"
                       disabled={isSubmitting}
                     >
-                      {isSubmitting ? "Processing..." : "Place Order"}
+                      {isSubmitting
+                        ? getTranslation("processing", language)
+                        : getTranslation("placeOrder", language)}
                     </Button>
                   </div>
                 </form>
@@ -469,12 +505,18 @@ const CheckoutPage = () => {
             {/* Order Summary */}
             <div className="lg:col-span-1">
               <div className="bg-card rounded-lg shadow-sm p-6 sticky top-4">
-                <h2 className="text-xl font-medium mb-4">Order Summary</h2>
+                <h2 className="text-xl font-medium mb-4">
+                  {getTranslation("orderSummary", language)}
+                </h2>
                 <Separator className="mb-4" />
 
                 {/* Item count */}
                 <div className="text-sm text-muted-foreground mb-4">
-                  {items.length} {items.length === 1 ? "item" : "items"} in cart
+                  {items.length}{" "}
+                  {items.length === 1
+                    ? getTranslation("item", language)
+                    : getTranslation("items", language)}{" "}
+                  {getTranslation("inCart", language)}
                 </div>
 
                 {/* Item list */}
@@ -493,10 +535,11 @@ const CheckoutPage = () => {
                           {item.name}
                         </div>
                         <div className="text-sm text-muted-foreground">
-                          {formatPrice(item.price)} × {item.quantity}
+                          {formatCurrency(item.price, language)} ×{" "}
+                          {item.quantity}
                         </div>
                         <div className="text-sm font-medium">
-                          {formatPrice(item.price * item.quantity)}
+                          {formatCurrency(item.price * item.quantity, language)}
                         </div>
                       </div>
                     </div>
@@ -508,40 +551,61 @@ const CheckoutPage = () => {
                 {/* Price calculations */}
                 <div className="space-y-2">
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Subtotal</span>
-                    <span className="font-medium">{formatPrice(subtotal)}</span>
+                    <span className="text-muted-foreground">
+                      {getTranslation("subtotal", language)}
+                    </span>
+                    <span className="font-medium">
+                      {formatCurrency(subtotal, language)}
+                    </span>
                   </div>
 
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Shipping</span>
+                    <span className="text-muted-foreground">
+                      {getTranslation("shipping", language)}
+                    </span>
                     <span className="font-medium">
-                      {shippingCost === 0 ? "Free" : formatPrice(shippingCost)}
+                      {shippingCost === 0
+                        ? getTranslation("free", language)
+                        : formatCurrency(shippingCost, language)}
                     </span>
                   </div>
+
+                  {subtotal < 5000 && (
+                    <div className="text-xs text-muted-foreground">
+                      {getTranslation("addMore", language)}{" "}
+                      {formatCurrency(5000 - subtotal, language)}{" "}
+                      {getTranslation("forFreeShipping", language)}
+                    </div>
+                  )}
 
                   <Separator className="my-2" />
 
                   <div className="flex justify-between text-lg font-bold">
-                    <span>Total</span>
-                    <span className="text-primary">{formatPrice(total)}</span>
+                    <span>{getTranslation("total", language)}</span>
+                    <span className="text-primary">
+                      {formatCurrency(total, language)}
+                    </span>
                   </div>
-                </div>
 
-                {/* Place order button (desktop) */}
-                <div className="hidden lg:block mt-6">
-                  <Button
-                    onClick={form.handleSubmit(onSubmit)}
-                    className="w-full"
-                    size="lg"
-                    disabled={isSubmitting}
-                  >
-                    {isSubmitting ? "Processing..." : "Place Order"}
-                  </Button>
-                </div>
+                  {/* Place order button (desktop) */}
+                  <div className="hidden lg:block mt-6">
+                    <Button
+                      onClick={form.handleSubmit(onSubmit)}
+                      className="w-full"
+                      size="lg"
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting
+                        ? getTranslation("processing", language)
+                        : getTranslation("placeOrder", language)}
+                    </Button>
+                  </div>
 
-                {/* Secure checkout notice */}
-                <div className="mt-4 text-xs text-muted-foreground flex items-center justify-center">
-                  <Check className="h-3 w-3 mr-1" /> Secure checkout
+                  {/* Secure checkout notice */}
+                  <div className="mt-4 text-xs text-muted-foreground flex items-center justify-center">
+                    <Check className="h-3 w-3 mr-1" />{" "}
+                    {getTranslation("secureCheckout", language)}
+                  </div>
                 </div>
               </div>
             </div>

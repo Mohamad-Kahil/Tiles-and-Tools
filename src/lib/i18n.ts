@@ -188,11 +188,127 @@ export const translations: Translations = {
     en: "Place Order",
     ar: "إتمام الطلب",
   },
+  backToCart: {
+    en: "Back to Cart",
+    ar: "العودة إلى السلة",
+  },
+  needItemsBeforeCheckout: {
+    en: "You need to add items to your cart before checking out.",
+    ar: "تحتاج إلى إضافة منتجات إلى سلة التسوق قبل إتمام عملية الشراء.",
+  },
+  browseProducts: {
+    en: "Browse Products",
+    ar: "تصفح المنتجات",
+  },
+  firstName: {
+    en: "First Name",
+    ar: "الاسم الأول",
+  },
+  lastName: {
+    en: "Last Name",
+    ar: "اسم العائلة",
+  },
+  emailAddress: {
+    en: "Email Address",
+    ar: "البريد الإلكتروني",
+  },
+  phoneNumber: {
+    en: "Phone Number",
+    ar: "رقم الهاتف",
+  },
+  streetAddress: {
+    en: "Street Address",
+    ar: "عنوان الشارع",
+  },
+  city: {
+    en: "City",
+    ar: "المدينة",
+  },
+  governorate: {
+    en: "Governorate",
+    ar: "المحافظة",
+  },
+  selectGovernorate: {
+    en: "Select a governorate",
+    ar: "اختر محافظة",
+  },
+  postalCodeOptional: {
+    en: "Postal Code (Optional)",
+    ar: "الرمز البريدي (اختياري)",
+  },
+  orderNotesOptional: {
+    en: "Order Notes (Optional)",
+    ar: "ملاحظات الطلب (اختياري)",
+  },
+  specialInstructions: {
+    en: "Special instructions for delivery or installation",
+    ar: "تعليمات خاصة للتوصيل أو التركيب",
+  },
+  creditDebitCard: {
+    en: "Credit/Debit Card",
+    ar: "بطاقة ائتمان/خصم",
+  },
+  paySecurelyWithCard: {
+    en: "Pay securely with your card",
+    ar: "ادفع بأمان باستخدام بطاقتك",
+  },
+  cashOnDelivery: {
+    en: "Cash on Delivery",
+    ar: "الدفع عند الاستلام",
+  },
+  payWhenReceive: {
+    en: "Pay when you receive your order",
+    ar: "ادفع عند استلام طلبك",
+  },
+  payViaFawry: {
+    en: "Pay via Fawry at any service point",
+    ar: "ادفع عبر فوري في أي نقطة خدمة",
+  },
+  processing: {
+    en: "Processing...",
+    ar: "جاري المعالجة...",
+  },
+  orderSummary: {
+    en: "Order Summary",
+    ar: "ملخص الطلب",
+  },
+  item: {
+    en: "item",
+    ar: "منتج",
+  },
+  items: {
+    en: "items",
+    ar: "منتجات",
+  },
+  inCart: {
+    en: "in cart",
+    ar: "في السلة",
+  },
+  addMore: {
+    en: "Add",
+    ar: "أضف",
+  },
+  forFreeShipping: {
+    en: "more to qualify for free shipping",
+    ar: "أكثر للتأهل للشحن المجاني",
+  },
+  secureCheckout: {
+    en: "Secure checkout",
+    ar: "دفع آمن",
+  },
 
   // Order confirmation
   orderConfirmedTitle: {
     en: "Order Confirmed!",
     ar: "تم تأكيد الطلب!",
+  },
+  orderConfirmedDescription: {
+    en: "Your order has been successfully placed",
+    ar: "تم تقديم طلبك بنجاح",
+  },
+  orderConfirmedMessage: {
+    en: "Thank you for your purchase. Your order has been received and is being processed.",
+    ar: "شكرًا لشرائك. تم استلام طلبك وجاري معالجته.",
   },
   orderNumber: {
     en: "Order Number",
@@ -206,17 +322,57 @@ export const translations: Translations = {
     en: "Order Confirmed",
     ar: "تم تأكيد الطلب",
   },
+  orderReceivedMessage: {
+    en: "Your order has been received and is being processed.",
+    ar: "تم استلام طلبك وجاري معالجته.",
+  },
   orderProcessing: {
     en: "Order Processing",
     ar: "جاري تجهيز الطلب",
+  },
+  orderPreparingMessage: {
+    en: "Your order is being prepared for shipping.",
+    ar: "يتم تجهيز طلبك للشحن.",
+  },
+  estimatedDays: {
+    en: "Estimated: {days} business days",
+    ar: "تقديري: {days} أيام عمل",
   },
   orderShipped: {
     en: "Order Shipped",
     ar: "تم شحن الطلب",
   },
+  orderShippedMessage: {
+    en: "Your order has been shipped and is on its way to you.",
+    ar: "تم شحن طلبك وهو في طريقه إليك.",
+  },
+  trackingInformation: {
+    en: "Tracking information will be sent to your email.",
+    ar: "سيتم إرسال معلومات التتبع إلى بريدك الإلكتروني.",
+  },
   delivery: {
     en: "Delivery",
     ar: "التوصيل",
+  },
+  deliveryMessage: {
+    en: "Your order will be delivered to your address.",
+    ar: "سيتم توصيل طلبك إلى عنوانك.",
+  },
+  estimatedDelivery: {
+    en: "Estimated delivery",
+    ar: "موعد التسليم المتوقع",
+  },
+  viewOrderDetails: {
+    en: "View Order Details",
+    ar: "عرض تفاصيل الطلب",
+  },
+  orderQuestions: {
+    en: "Have questions about your order?",
+    ar: "هل لديك أسئلة حول طلبك؟",
+  },
+  contactSupport: {
+    en: "Contact our support team",
+    ar: "تواصل مع فريق الدعم",
   },
 
   // Footer
@@ -247,12 +403,26 @@ export const translations: Translations = {
 };
 
 // Function to get translation
-export const getTranslation = (key: string, language: Language): string => {
+export const getTranslation = (
+  key: string,
+  language: Language,
+  replacements?: Record<string, string>,
+): string => {
   if (!translations[key]) {
     console.warn(`Translation key not found: ${key}`);
     return key;
   }
-  return translations[key][language];
+
+  let text = translations[key][language];
+
+  // Replace placeholders if replacements are provided
+  if (replacements) {
+    Object.entries(replacements).forEach(([placeholder, value]) => {
+      text = text.replace(`{${placeholder}}`, value);
+    });
+  }
+
+  return text;
 };
 
 // Format currency based on language
