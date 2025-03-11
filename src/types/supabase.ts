@@ -11,45 +11,30 @@ export type Database = {
     Tables: {
       cart_items: {
         Row: {
-          cart_id: string
           created_at: string | null
           id: string
-          product_id: string
+          product_id: string | null
           quantity: number
           updated_at: string | null
+          user_id: string | null
         }
         Insert: {
-          cart_id: string
           created_at?: string | null
           id?: string
-          product_id: string
+          product_id?: string | null
           quantity?: number
           updated_at?: string | null
+          user_id?: string | null
         }
         Update: {
-          cart_id?: string
           created_at?: string | null
           id?: string
-          product_id?: string
+          product_id?: string | null
           quantity?: number
           updated_at?: string | null
+          user_id?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "cart_items_cart_id_fkey"
-            columns: ["cart_id"]
-            isOneToOne: false
-            referencedRelation: "carts"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "cart_items_product_id_fkey"
-            columns: ["product_id"]
-            isOneToOne: false
-            referencedRelation: "products"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       carts: {
         Row: {
@@ -528,6 +513,30 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      wishlist_items: {
+        Row: {
+          created_at: string | null
+          id: string
+          product_id: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          product_id?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          product_id?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
       }
       wishlists: {
         Row: {
