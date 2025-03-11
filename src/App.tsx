@@ -13,6 +13,7 @@ import { LanguageProvider } from "./contexts/LanguageContext";
 import Dashboard from "./components/cms/Dashboard";
 import SimpleChart from "./components/SimpleChart";
 import SimpleBarChart from "./components/SimpleBarChart";
+import { Toaster } from "./components/ui/toaster";
 
 // Lazy load pages for better performance
 const ProductListingPage = lazy(() => import("./pages/ProductListingPage"));
@@ -55,7 +56,7 @@ function App() {
                     <Routes>
                       <Route path="/" element={<Home />} />
                       <Route
-                        path="/category/:categoryId/*"
+                        path="/category/:categorySlug/*"
                         element={<ProductListingPage />}
                       />
                       <Route
@@ -63,7 +64,7 @@ function App() {
                         element={<ProductListingPage />}
                       />
                       <Route
-                        path="/product/:productId"
+                        path="/product/:slug"
                         element={<ProductDetailPage />}
                       />
                       <Route path="/cart" element={<CartPage />} />
@@ -142,6 +143,7 @@ function App() {
                       <Route path="*" element={<Home />} />
                     </Routes>
                     {import.meta.env.VITE_TEMPO === "true" && useRoutes(routes)}
+                    <Toaster />
                   </>
                 </Suspense>
               </ErrorBoundary>
