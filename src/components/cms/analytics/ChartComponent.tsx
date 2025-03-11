@@ -1,48 +1,33 @@
 import React from "react";
 import {
-  Chart,
+  Chart as ChartJS,
   CategoryScale,
   LinearScale,
-  BarElement,
-  LineElement,
   PointElement,
+  LineElement,
+  BarElement,
+  ArcElement,
   Title,
   Tooltip,
   Legend,
-  ArcElement,
-  DoughnutController,
-  PieController,
 } from "chart.js";
 import { Bar, Line, Pie, Doughnut } from "react-chartjs-2";
 
-// Register Chart.js components
-Chart.register(
+ChartJS.register(
   CategoryScale,
   LinearScale,
-  BarElement,
-  LineElement,
   PointElement,
+  LineElement,
+  BarElement,
+  ArcElement,
   Title,
   Tooltip,
   Legend,
-  ArcElement,
-  DoughnutController,
-  PieController,
 );
 
 interface ChartComponentProps {
   type: "bar" | "line" | "pie" | "doughnut";
-  data: {
-    labels: string[];
-    datasets: Array<{
-      label: string;
-      data: number[];
-      backgroundColor?: string | string[];
-      borderColor?: string | string[];
-      borderWidth?: number;
-      fill?: boolean;
-    }>;
-  };
+  data: any;
   options?: any;
   height?: number;
   width?: number;
@@ -52,10 +37,9 @@ const ChartComponent: React.FC<ChartComponentProps> = ({
   type,
   data,
   options = {},
-  height = 300,
-  width = 500,
+  height,
+  width,
 }) => {
-  // Default options
   const defaultOptions = {
     responsive: true,
     maintainAspectRatio: false,
@@ -63,35 +47,63 @@ const ChartComponent: React.FC<ChartComponentProps> = ({
       legend: {
         position: "top" as const,
       },
-      title: {
-        display: false,
-      },
     },
   };
 
-  // Merge default options with provided options
   const chartOptions = { ...defaultOptions, ...options };
 
-  // Render the appropriate chart based on type
   const renderChart = () => {
-    console.log(`Rendering ${type} chart with data:`, data);
-
     switch (type) {
       case "bar":
-        return <Bar data={data} options={chartOptions} />;
+        return (
+          <Bar
+            data={data}
+            options={chartOptions}
+            height={height}
+            width={width}
+          />
+        );
       case "line":
-        return <Line data={data} options={chartOptions} />;
+        return (
+          <Line
+            data={data}
+            options={chartOptions}
+            height={height}
+            width={width}
+          />
+        );
       case "pie":
-        return <Pie data={data} options={chartOptions} />;
+        return (
+          <Pie
+            data={data}
+            options={chartOptions}
+            height={height}
+            width={width}
+          />
+        );
       case "doughnut":
-        return <Doughnut data={data} options={chartOptions} />;
+        return (
+          <Doughnut
+            data={data}
+            options={chartOptions}
+            height={height}
+            width={width}
+          />
+        );
       default:
-        return <div>Invalid chart type</div>;
+        return (
+          <Bar
+            data={data}
+            options={chartOptions}
+            height={height}
+            width={width}
+          />
+        );
     }
   };
 
   return (
-    <div style={{ width: `${width}px`, height: `${height}px` }}>
+    <div style={{ height: height || "100%", width: width || "100%" }}>
       {renderChart()}
     </div>
   );

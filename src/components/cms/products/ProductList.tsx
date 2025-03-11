@@ -335,7 +335,7 @@ const ProductList = () => {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem asChild>
-                            <Link to={`/product/${product.slug}`}>
+                            <Link to={`/cms/products/${product.id}`}>
                               <Eye className="mr-2 h-4 w-4" /> View
                             </Link>
                           </DropdownMenuItem>
@@ -345,7 +345,9 @@ const ProductList = () => {
                             </Link>
                           </DropdownMenuItem>
                           <DropdownMenuItem asChild>
-                            <Link to={`/cms/products/${product.id}/duplicate`}>
+                            <Link
+                              to={`/cms/products/new?duplicate=${product.id}`}
+                            >
                               <Copy className="mr-2 h-4 w-4" /> Duplicate
                             </Link>
                           </DropdownMenuItem>

@@ -131,7 +131,7 @@ const ProductForm = () => {
       // First fetch the product
       const { data, error } = await supabase
         .from("products")
-        .select("*")
+        .select("*, category:categories(id, name)")
         .eq("id", productId)
         .single();
 
@@ -156,15 +156,15 @@ const ProductForm = () => {
         cost_price: data.cost_price || undefined,
         description: data.description || "",
         short_description: data.short_description || "",
-        inventory_quantity: data.inventory_quantity,
+        inventory_quantity: data.inventory_quantity || 0,
         weight: data.weight || undefined,
         dimensions: {
           length: data.dimensions?.length || undefined,
           width: data.dimensions?.width || undefined,
           height: data.dimensions?.height || undefined,
         },
-        is_active: data.is_active,
-        is_featured: data.is_featured,
+        is_active: data.is_active !== undefined ? data.is_active : true,
+        is_featured: data.is_featured !== undefined ? data.is_featured : false,
         meta_title: data.meta_title || "",
         meta_description: data.meta_description || "",
         meta_keywords: data.meta_keywords || "",
@@ -194,45 +194,79 @@ const ProductForm = () => {
     try {
       setLoading(true);
 
+      // Prepare data for submission
+      const productData = {
+        ...data,
+        // Ensure dimensions is properly formatted as JSON
+        dimensions: {
+          length: data.dimensions.length || null,
+          width: data.dimensions.width || null,
+          height: data.dimensions.height || null,
+        },
+        // Ensure inventory fields are properly set
+        inventory_quantity: data.inventory_quantity || 0,
+        weight: data.weight || null,
+        // Ensure SEO fields are properly set
+        meta_title: data.meta_title || null,
+        meta_description: data.meta_description || null,
+        meta_keywords: data.meta_keywords || null,
+        sku: data.sku || null,
+        barcode: data.barcode || null,
+      };
+
+      console.log("Submitting product data:", productData);
+
       // Create or update product
       let productId = id;
       if (isEditMode) {
         // Update existing product
         const { error } = await supabase
           .from("products")
-          .update(data)
+          .update(productData)
           .eq("id", id);
 
-        if (error) throw error;
+        if (error) {
+          console.error("Error updating product:", error);
+          throw error;
+        }
       } else {
         // Create new product
         const { data: newProduct, error } = await supabase
           .from("products")
-          .insert(data)
+          .insert(productData)
           .select()
           .single();
 
-        if (error) throw error;
+        if (error) {
+          console.error("Error creating product:", error);
+          throw error;
+        }
         productId = newProduct.id;
       }
 
       // Handle image uploads
       if (mainImage) {
-        // Upload main image
+        console.log("Uploading main image:", mainImage.name);
+        // Upload main image to Supabase Storage
         const mainImageFile = mainImage;
         const mainImageName = `${Date.now()}-${mainImageFile.name}`;
         const { error: uploadError } = await supabase.storage
-          .from("product-images")
+          .from("product-images") // This is the bucket name in Supabase Storage
           .upload(mainImageName, mainImageFile);
 
-        if (uploadError) throw uploadError;
+        if (uploadError) {
+          console.error("Error uploading main image:", uploadError);
+          throw uploadError;
+        }
 
-        // Get public URL
+        // Get public URL for the uploaded image
         const { data: publicUrlData } = supabase.storage
           .from("product-images")
           .getPublicUrl(mainImageName);
 
-        // Add to product_images table
+        console.log("Main image URL:", publicUrlData.publicUrl);
+
+        // Add image reference to product_images table in the database
         const { error: insertError } = await supabase
           .from("product_images")
           .insert({
@@ -241,24 +275,36 @@ const ProductForm = () => {
             is_primary: true,
           });
 
-        if (insertError) throw insertError;
+        if (insertError) {
+          console.error("Error inserting main image record:", insertError);
+          throw insertError;
+        }
       }
 
-      // Upload gallery images
+      // Upload gallery images one by one
       for (const image of galleryImages) {
-        const imageName = `${Date.now()}-${image.name}`;
+        console.log("Uploading gallery image:", image.name);
+        // Create a unique name for the image
+        const imageName = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}-${image.name}`;
+
+        // Upload to Supabase Storage
         const { error: uploadError } = await supabase.storage
           .from("product-images")
           .upload(imageName, image);
 
-        if (uploadError) throw uploadError;
+        if (uploadError) {
+          console.error("Error uploading gallery image:", uploadError);
+          throw uploadError;
+        }
 
         // Get public URL
         const { data: publicUrlData } = supabase.storage
           .from("product-images")
           .getPublicUrl(imageName);
 
-        // Add to product_images table
+        console.log("Gallery image URL:", publicUrlData.publicUrl);
+
+        // Add to product_images table in the database
         const { error: insertError } = await supabase
           .from("product_images")
           .insert({
@@ -267,7 +313,10 @@ const ProductForm = () => {
             is_primary: false,
           });
 
-        if (insertError) throw insertError;
+        if (insertError) {
+          console.error("Error inserting gallery image record:", insertError);
+          throw insertError;
+        }
       }
 
       toast({
@@ -294,20 +343,38 @@ const ProductForm = () => {
   const handleMainImageUpload = (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
+    // Prevent default behavior
+    event.preventDefault();
+    event.stopPropagation();
+
+    // Get the file
     const file = event.target.files?.[0];
     if (file) {
+      // Store the file in state for later upload
       setMainImage(file);
     }
+
+    // Reset the input value to allow selecting the same file again
+    event.target.value = "";
   };
 
   // Handle gallery image upload
   const handleGalleryImageUpload = (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
+    // Prevent default behavior
+    event.preventDefault();
+    event.stopPropagation();
+
+    // Get the files
     const files = event.target.files;
     if (files && files.length > 0) {
+      // Store the files in state for later upload
       setGalleryImages((prev) => [...prev, ...Array.from(files)]);
     }
+
+    // Reset the input value to allow selecting the same files again
+    event.target.value = "";
   };
 
   // Remove main image
@@ -353,12 +420,66 @@ const ProductForm = () => {
       .replace(/^-+|-+$/g, "");
   };
 
-  // Load data on component mount
+  // Check for duplicate parameter
   useEffect(() => {
-    fetchCategories();
-    if (isEditMode) {
-      fetchProduct(id);
-    }
+    const fetchDuplicateProduct = async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const duplicateId = urlParams.get("duplicate");
+
+      if (duplicateId) {
+        try {
+          setLoading(true);
+          const { data, error } = await supabase
+            .from("products")
+            .select("*")
+            .eq("id", duplicateId)
+            .single();
+
+          if (error) throw error;
+          if (!data) throw new Error("Product not found");
+
+          // Clear the ID to create a new product
+          const duplicatedData = { ...data };
+          delete duplicatedData.id;
+          duplicatedData.name = `${duplicatedData.name} (Copy)`;
+          duplicatedData.slug = `${duplicatedData.slug}-copy`;
+
+          // Set form values
+          form.reset(duplicatedData);
+
+          // Fetch product images to duplicate them later
+          const { data: imageData } = await supabase
+            .from("product_images")
+            .select("*")
+            .eq("product_id", duplicateId);
+
+          if (imageData && imageData.length > 0) {
+            setExistingImages(imageData);
+          }
+        } catch (error) {
+          console.error("Error fetching product to duplicate:", error);
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: "Failed to load product for duplication",
+          });
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    // Fetch initial data
+    const initializeForm = async () => {
+      await fetchCategories();
+      if (isEditMode) {
+        await fetchProduct(id);
+      } else {
+        await fetchDuplicateProduct();
+      }
+    };
+
+    initializeForm();
   }, [isEditMode, id]);
 
   return (
@@ -728,13 +849,23 @@ const ProductForm = () => {
                         className="hidden"
                         id="main-image-upload"
                         onChange={handleMainImageUpload}
+                        onClick={(e) => e.stopPropagation()}
                       />
                       <Button
                         variant="outline"
                         className="mt-4"
-                        onClick={() =>
-                          document.getElementById("main-image-upload")?.click()
-                        }
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          const input = document.getElementById(
+                            "main-image-upload",
+                          ) as HTMLInputElement;
+                          if (input) {
+                            input.value = ""; // Clear any previous selection
+                            input.click();
+                          }
+                        }}
+                        type="button"
                       >
                         Select Image
                       </Button>
@@ -796,16 +927,24 @@ const ProductForm = () => {
                         className="hidden"
                         id="gallery-image-upload"
                         onChange={handleGalleryImageUpload}
+                        onClick={(e) => e.stopPropagation()}
                       />
                       <Button
                         variant="ghost"
                         size="sm"
                         className="h-full w-full flex flex-col gap-2"
-                        onClick={() =>
-                          document
-                            .getElementById("gallery-image-upload")
-                            ?.click()
-                        }
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          const input = document.getElementById(
+                            "gallery-image-upload",
+                          ) as HTMLInputElement;
+                          if (input) {
+                            input.value = ""; // Clear any previous selection
+                            input.click();
+                          }
+                        }}
+                        type="button"
                       >
                         <Plus className="h-6 w-6 text-muted-foreground" />
                         <span className="text-xs text-muted-foreground">
@@ -888,6 +1027,11 @@ const ProductForm = () => {
                             onChange={(e) => {
                               const val = e.target.value;
                               onChange(val ? Number(val) : undefined);
+                              // Explicitly set the weight value in the form
+                              form.setValue(
+                                "weight",
+                                val ? Number(val) : undefined,
+                              );
                             }}
                             {...field}
                           />
@@ -917,6 +1061,13 @@ const ProductForm = () => {
                               onChange={(e) => {
                                 const val = e.target.value;
                                 onChange(val ? Number(val) : undefined);
+                                // Update the dimensions object in form data
+                                const currentDimensions =
+                                  form.getValues("dimensions");
+                                form.setValue("dimensions", {
+                                  ...currentDimensions,
+                                  length: val ? Number(val) : undefined,
+                                });
                               }}
                               {...field}
                             />
@@ -942,6 +1093,13 @@ const ProductForm = () => {
                               onChange={(e) => {
                                 const val = e.target.value;
                                 onChange(val ? Number(val) : undefined);
+                                // Update the dimensions object in form data
+                                const currentDimensions =
+                                  form.getValues("dimensions");
+                                form.setValue("dimensions", {
+                                  ...currentDimensions,
+                                  width: val ? Number(val) : undefined,
+                                });
                               }}
                               {...field}
                             />
@@ -967,6 +1125,13 @@ const ProductForm = () => {
                               onChange={(e) => {
                                 const val = e.target.value;
                                 onChange(val ? Number(val) : undefined);
+                                // Update the dimensions object in form data
+                                const currentDimensions =
+                                  form.getValues("dimensions");
+                                form.setValue("dimensions", {
+                                  ...currentDimensions,
+                                  height: val ? Number(val) : undefined,
+                                });
                               }}
                               {...field}
                             />

@@ -1,8 +1,10 @@
-import React from "react";
-import { useParams, Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
+import { useToast } from "@/components/ui/use-toast";
 import {
   Card,
   CardContent,
@@ -10,6 +12,17 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import {
   Edit,
   Trash2,
@@ -20,86 +33,8 @@ import {
   Copy,
   ArrowUpDown,
   Eye,
+  ArrowLeft,
 } from "lucide-react";
-
-// Mock product data
-const mockProducts = {
-  prod1: {
-    id: "prod1",
-    name: "Luxury Marble Flooring Tile",
-    sku: "MRBL-FLR-001",
-    category: "Flooring",
-    subcategory: "Marble",
-    price: 1299.99,
-    compareAtPrice: 1499.99,
-    costPrice: 899.99,
-    stock: 156,
-    status: "Active",
-    featured: true,
-    weight: 5.2,
-    dimensions: {
-      length: 60,
-      width: 60,
-      height: 1,
-    },
-    description:
-      "Elevate your space with our premium marble flooring tiles. These luxurious tiles feature natural veining patterns that make each piece unique. Perfect for entryways, bathrooms, and kitchens, these tiles add a touch of elegance to any room.",
-    shortDescription: "Premium marble flooring with natural veining patterns.",
-    metaTitle: "Luxury Marble Flooring Tile | Premium Quality | DecorEgypt",
-    metaDescription:
-      "Transform your space with our premium marble flooring tiles featuring natural veining patterns. Perfect for entryways, bathrooms, and kitchens.",
-    metaKeywords: "marble, flooring, tiles, luxury, home decor, premium",
-    image:
-      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80",
-    gallery: [
-      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80",
-      "https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=800&q=80",
-      "https://images.unsplash.com/photo-1615529328331-f8917597711f?w=800&q=80",
-      "https://images.unsplash.com/photo-1581858726788-75bc0f6a952d?w=800&q=80",
-    ],
-    createdAt: "2023-05-15T10:30:00Z",
-    updatedAt: "2023-08-20T14:45:00Z",
-    salesCount: 48,
-    viewCount: 1250,
-  },
-  prod2: {
-    id: "prod2",
-    name: "Premium Wall Paint - Desert Sand",
-    sku: "PNT-WLL-002",
-    category: "Wall Products",
-    subcategory: "Paint",
-    price: 349.99,
-    compareAtPrice: null,
-    costPrice: 199.99,
-    stock: 85,
-    status: "Active",
-    featured: false,
-    weight: 4.0,
-    dimensions: {
-      length: 20,
-      width: 20,
-      height: 25,
-    },
-    description:
-      "Transform your walls with our premium Desert Sand paint. This high-quality, low-VOC formula provides excellent coverage and a smooth, long-lasting finish. The warm, neutral tone creates a cozy and inviting atmosphere in any room.",
-    shortDescription: "Premium low-VOC wall paint in a warm Desert Sand tone.",
-    metaTitle: "Premium Wall Paint - Desert Sand | Low VOC | DecorEgypt",
-    metaDescription:
-      "Transform your walls with our premium Desert Sand paint. Low-VOC formula with excellent coverage and a smooth, long-lasting finish.",
-    metaKeywords: "wall paint, interior paint, desert sand, low voc, premium",
-    image:
-      "https://images.unsplash.com/photo-1562184552-997c461abbe6?w=800&q=80",
-    gallery: [
-      "https://images.unsplash.com/photo-1562184552-997c461abbe6?w=800&q=80",
-      "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&q=80",
-      "https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=800&q=80",
-    ],
-    createdAt: "2023-06-10T09:15:00Z",
-    updatedAt: "2023-08-15T11:30:00Z",
-    salesCount: 32,
-    viewCount: 980,
-  },
-};
 
 // Get status badge color
 const getStatusColor = (status: string) => {
@@ -125,8 +60,77 @@ const formatPrice = (price: number | null) => {
 };
 
 const ProductDetail = () => {
-  const { id } = useParams();
-  const product = mockProducts[id] || null;
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const [product, setProduct] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [salesCount, setSalesCount] = useState(0);
+  const [viewCount, setViewCount] = useState(0);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        setLoading(true);
+        const { data, error } = await supabase
+          .from("products")
+          .select("*, category:categories(id, name), product_images(*)")
+          .eq("id", id)
+          .single();
+
+        if (error) throw error;
+        setProduct(data);
+
+        // Set mock analytics data
+        setSalesCount(Math.floor(Math.random() * 100));
+        setViewCount(Math.floor(Math.random() * 2000));
+      } catch (error) {
+        console.error("Error fetching product:", error);
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to load product details.",
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (id) {
+      fetchProduct();
+    }
+  }, [id, toast]);
+
+  const handleDelete = async () => {
+    try {
+      const { error } = await supabase.from("products").delete().eq("id", id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Product deleted",
+        description: "The product has been successfully deleted.",
+      });
+
+      navigate("/cms/products");
+    } catch (error) {
+      console.error("Error deleting product:", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to delete product.",
+      });
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-96">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   if (!product) {
     return (
@@ -145,19 +149,59 @@ const ProductDetail = () => {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold tracking-tight">{product.name}</h2>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="icon" asChild>
+            <Link to="/cms/products">
+              <ArrowLeft className="h-4 w-4" />
+            </Link>
+          </Button>
+          <h2 className="text-2xl font-bold tracking-tight">{product.name}</h2>
+          <Badge
+            variant="outline"
+            className={`ml-2 ${product.is_active ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}
+          >
+            {product.is_active ? "Active" : "Inactive"}
+          </Badge>
+        </div>
         <div className="flex gap-2">
           <Button variant="outline" asChild>
-            <Link to="/cms/products">Back</Link>
-          </Button>
-          <Button variant="outline" asChild>
-            <Link to={`/cms/products/${product.id}/edit`}>
+            <Link to={`/cms/products/edit/${product.id}`}>
               <Edit className="mr-2 h-4 w-4" /> Edit
             </Link>
           </Button>
-          <Button variant="destructive">
-            <Trash2 className="mr-2 h-4 w-4" /> Delete
+          <Button variant="outline" asChild>
+            <Link to={`/cms/products/new?duplicate=${product.id}`}>
+              <Copy className="mr-2 h-4 w-4" /> Duplicate
+            </Link>
           </Button>
+          <AlertDialog
+            open={deleteDialogOpen}
+            onOpenChange={setDeleteDialogOpen}
+          >
+            <AlertDialogTrigger asChild>
+              <Button variant="destructive">
+                <Trash2 className="mr-2 h-4 w-4" /> Delete
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Delete Product</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Are you sure you want to delete this product? This action
+                  cannot be undone.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={handleDelete}
+                  className="bg-red-600 hover:bg-red-700 text-white"
+                >
+                  Delete
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       </div>
 
@@ -172,28 +216,42 @@ const ProductDetail = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div className="border rounded-md overflow-hidden">
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="w-full h-auto"
-                  />
-                </div>
+                {product.product_images && product.product_images.length > 0 ? (
+                  <>
+                    <div className="border rounded-md overflow-hidden">
+                      <img
+                        src={
+                          product.product_images.find((img) => img.is_primary)
+                            ?.url || product.product_images[0].url
+                        }
+                        alt={product.name}
+                        className="w-full h-auto"
+                      />
+                    </div>
 
-                {product.gallery && product.gallery.length > 1 && (
-                  <div className="grid grid-cols-4 gap-4">
-                    {product.gallery.map((image, index) => (
-                      <div
-                        key={index}
-                        className="border rounded-md overflow-hidden"
-                      >
-                        <img
-                          src={image}
-                          alt={`${product.name} - Gallery ${index + 1}`}
-                          className="w-full h-24 object-cover"
-                        />
+                    {product.product_images.length > 1 && (
+                      <div className="grid grid-cols-4 gap-4">
+                        {product.product_images.map((image, index) => (
+                          <div
+                            key={image.id}
+                            className="border rounded-md overflow-hidden"
+                          >
+                            <img
+                              src={image.url}
+                              alt={`${product.name} - Gallery ${index + 1}`}
+                              className="w-full h-24 object-cover"
+                            />
+                          </div>
+                        ))}
                       </div>
-                    ))}
+                    )}
+                  </>
+                ) : (
+                  <div className="text-center py-8 bg-muted rounded-md">
+                    <Package className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                    <p className="text-muted-foreground">
+                      No product images available
+                    </p>
                   </div>
                 )}
               </div>
@@ -206,12 +264,14 @@ const ProductDetail = () => {
               <CardTitle>Product Description</CardTitle>
             </CardHeader>
             <CardContent>
-              {product.shortDescription && (
+              {product.short_description && (
                 <div className="mb-4 font-medium">
-                  {product.shortDescription}
+                  {product.short_description}
                 </div>
               )}
-              <div className="whitespace-pre-line">{product.description}</div>
+              <div className="whitespace-pre-line">
+                {product.description || "No description provided."}
+              </div>
             </CardContent>
           </Card>
 
@@ -230,9 +290,7 @@ const ProductDetail = () => {
                     <ShoppingCart className="h-4 w-4" />
                     <span>Total Sales</span>
                   </div>
-                  <div className="text-2xl font-bold">
-                    {product.salesCount} units
-                  </div>
+                  <div className="text-2xl font-bold">{salesCount} units</div>
                 </div>
 
                 <div className="bg-muted/30 p-4 rounded-md">
@@ -241,7 +299,7 @@ const ProductDetail = () => {
                     <span>Total Views</span>
                   </div>
                   <div className="text-2xl font-bold">
-                    {product.viewCount.toLocaleString()}
+                    {viewCount.toLocaleString()}
                   </div>
                 </div>
               </div>
@@ -262,11 +320,13 @@ const ProductDetail = () => {
                 </div>
                 <Badge
                   variant="secondary"
-                  className={getStatusColor(product.status)}
+                  className={getStatusColor(
+                    product.is_active ? "active" : "inactive",
+                  )}
                 >
-                  {product.status}
+                  {product.is_active ? "Active" : "Inactive"}
                 </Badge>
-                {product.featured && (
+                {product.is_featured && (
                   <Badge
                     variant="outline"
                     className="ml-2 bg-yellow-100 text-yellow-800"
@@ -280,16 +340,14 @@ const ProductDetail = () => {
                 <div className="text-sm font-medium text-muted-foreground mb-1">
                   SKU
                 </div>
-                <div>{product.sku}</div>
+                <div>{product.sku || "—"}</div>
               </div>
 
               <div>
                 <div className="text-sm font-medium text-muted-foreground mb-1">
                   Category
                 </div>
-                <div>
-                  {product.category} / {product.subcategory}
-                </div>
+                <div>{product.category?.name || "Uncategorized"}</div>
               </div>
 
               <div>
@@ -298,10 +356,10 @@ const ProductDetail = () => {
                 </div>
                 <div className="text-sm">
                   <div>
-                    Created: {new Date(product.createdAt).toLocaleString()}
+                    Created: {new Date(product.created_at).toLocaleString()}
                   </div>
                   <div>
-                    Updated: {new Date(product.updatedAt).toLocaleString()}
+                    Updated: {new Date(product.updated_at).toLocaleString()}
                   </div>
                 </div>
               </div>
@@ -323,13 +381,13 @@ const ProductDetail = () => {
                 </div>
               </div>
 
-              {product.compareAtPrice && (
+              {product.compare_at_price && (
                 <div>
                   <div className="text-sm font-medium text-muted-foreground mb-1">
                     Compare At Price
                   </div>
                   <div className="text-muted-foreground line-through">
-                    {formatPrice(product.compareAtPrice)}
+                    {formatPrice(product.compare_at_price)}
                   </div>
                 </div>
               )}
@@ -338,17 +396,17 @@ const ProductDetail = () => {
                 <div className="text-sm font-medium text-muted-foreground mb-1">
                   Cost Price
                 </div>
-                <div>{formatPrice(product.costPrice)}</div>
+                <div>{formatPrice(product.cost_price || 0)}</div>
               </div>
 
-              {product.compareAtPrice && (
+              {product.cost_price && (
                 <div>
                   <div className="text-sm font-medium text-muted-foreground mb-1">
                     Profit Margin
                   </div>
                   <div>
                     {(
-                      ((product.price - product.costPrice) / product.price) *
+                      ((product.price - product.cost_price) / product.price) *
                       100
                     ).toFixed(2)}
                     %
@@ -370,7 +428,7 @@ const ProductDetail = () => {
                 </div>
                 <div className="flex items-center gap-2">
                   <Package className="h-4 w-4 text-muted-foreground" />
-                  <span>{product.stock} units available</span>
+                  <span>{product.inventory_quantity || 0} units available</span>
                 </div>
               </div>
 
@@ -380,7 +438,7 @@ const ProductDetail = () => {
                 </div>
                 <div className="flex items-center gap-2">
                   <ArrowUpDown className="h-4 w-4 text-muted-foreground" />
-                  <span>{product.weight} kg</span>
+                  <span>{product.weight || 0} kg</span>
                 </div>
               </div>
 
@@ -391,8 +449,9 @@ const ProductDetail = () => {
                 <div className="flex items-center gap-2">
                   <Truck className="h-4 w-4 text-muted-foreground" />
                   <span>
-                    {product.dimensions.length} × {product.dimensions.width} ×{" "}
-                    {product.dimensions.height} cm
+                    {product.dimensions?.length || "—"} ×{" "}
+                    {product.dimensions?.width || "—"} ×{" "}
+                    {product.dimensions?.height || "—"} cm
                   </span>
                 </div>
               </div>
@@ -410,7 +469,7 @@ const ProductDetail = () => {
                 className="w-full justify-start"
                 asChild
               >
-                <Link to={`/cms/products/${product.id}/edit`}>
+                <Link to={`/cms/products/edit/${product.id}`}>
                   <Edit className="mr-2 h-4 w-4" /> Edit Product
                 </Link>
               </Button>
@@ -419,7 +478,7 @@ const ProductDetail = () => {
                 className="w-full justify-start"
                 asChild
               >
-                <Link to={`/cms/products/${product.id}/duplicate`}>
+                <Link to={`/cms/products/new?duplicate=${product.id}`}>
                   <Copy className="mr-2 h-4 w-4" /> Duplicate Product
                 </Link>
               </Button>
@@ -435,6 +494,7 @@ const ProductDetail = () => {
               <Button
                 variant="outline"
                 className="w-full justify-start text-red-500 hover:text-red-600 hover:bg-red-50"
+                onClick={() => setDeleteDialogOpen(true)}
               >
                 <Trash2 className="mr-2 h-4 w-4" /> Delete Product
               </Button>
