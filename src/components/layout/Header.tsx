@@ -1,259 +1,380 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "@/components/auth/AuthContext";
+import { useCart } from "../cart/CartContext";
+import { useWishlist } from "../wishlist/WishlistContext";
+import { useAuth } from "../auth/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { getTranslation } from "@/lib/i18n";
-import {
-  Menu,
-  ShoppingCart,
-  Home,
-  Package,
-  ShoppingBag,
-  User,
-  Heart,
-} from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { cn } from "@/lib/utils";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetClose,
+} from "@/components/ui/sheet";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Search,
+  ShoppingCart,
+  Heart,
+  User,
+  Menu,
+  X,
+  LogOut,
+  Settings,
+  Package,
+  Globe,
+  LayoutDashboard,
+} from "lucide-react";
 
-import CategoryMenu from "@/components/navigation/CategoryMenu";
-import SearchBar from "@/components/search/SearchBar";
-import CartPreview from "@/components/cart/CartPreview";
-import LanguageSwitcher from "@/components/layout/LanguageSwitcher";
-
-interface HeaderProps {}
-
-const Header = ({}: HeaderProps) => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const navigate = useNavigate();
+const Header = () => {
+  const { itemCount: cartItemCount } = useCart();
+  const { itemCount: wishlistItemCount } = useWishlist();
   const { isAuthenticated, user, logout } = useAuth();
   const { language, setLanguage, direction } = useLanguage();
-  const isRtl = direction === "rtl";
+  const [searchQuery, setSearchQuery] = useState("");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
-  const handleLanguageChange = (newLanguage) => {
-    setLanguage(newLanguage);
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/products?search=${encodeURIComponent(searchQuery)}`);
+      setMobileMenuOpen(false);
+    }
   };
 
-  const navigationLinks = [
-    {
-      name: getTranslation("home", language),
-      href: "/",
-      icon: <Home className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />,
-    },
-    {
-      name: getTranslation("products", language),
-      href: "/products",
-      icon: <Package className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />,
-    },
-    {
-      name: getTranslation("cart", language),
-      href: "/cart",
-      icon: <ShoppingBag className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />,
-    },
-    {
-      name: getTranslation("wishlist", language),
-      href: "/wishlist",
-      icon: <Heart className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />,
-    },
-    ...(!isAuthenticated
-      ? [
-          {
-            name: getTranslation("signIn", language),
-            href: "/login",
-            icon: <User className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />,
-          },
-        ]
-      : [
-          {
-            name: getTranslation("account", language),
-            href: "/account",
-            icon: <User className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />,
-          },
-          {
-            name: getTranslation("logout", language),
-            href: "#",
-            icon: <User className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />,
-            onClick: () => {
-              logout();
-              navigate("/");
-            },
-          },
-        ]),
-  ];
+  const handleLanguageChange = () => {
+    setLanguage(language === "en" ? "ar" : "en");
+  };
 
   return (
-    <header
-      className={cn(
-        "sticky top-0 z-50 w-full bg-background border-b",
-        direction,
-      )}
-    >
+    <header className={`bg-white border-b ${direction}`}>
       <div className="container mx-auto px-4">
-        <div className="flex h-20 items-center justify-between">
+        <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link
-            to="/"
-            className="flex items-center space-x-2"
-            onClick={() => window.scrollTo(0, 0)}
-          >
-            <img
-              src="/DELogo.png"
-              alt="DecorEgypt Logo"
-              className="h-16 max-h-11"
-            />
+          <Link to="/" className="flex-shrink-0">
+            <img src="/DELogo.png" alt="DecorEgypt" className="h-10 w-auto" />
           </Link>
 
-          {/* Category Links in a single row */}
-          <div className="hidden lg:flex items-center space-x-6 rtl:space-x-reverse">
-            <CategoryMenu />
-          </div>
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center space-x-6">
+            <Link
+              to="/products"
+              className="text-sm font-medium hover:text-primary transition-colors"
+            >
+              All Products
+            </Link>
+            <Link
+              to="/category/flooring"
+              className="text-sm font-medium hover:text-primary transition-colors"
+            >
+              Flooring
+            </Link>
+            <Link
+              to="/category/wall-products"
+              className="text-sm font-medium hover:text-primary transition-colors"
+            >
+              Wall Products
+            </Link>
+            <Link
+              to="/category/lighting"
+              className="text-sm font-medium hover:text-primary transition-colors"
+            >
+              Lighting
+            </Link>
+          </nav>
 
-          {/* Search, Language, Cart */}
-          <div className="flex items-center space-x-4 rtl:space-x-reverse ml-auto rtl:mr-auto rtl:ml-0">
-            <div className="hidden md:block w-full max-w-sm">
-              <SearchBar placeholder={getTranslation("search", language)} />
-            </div>
-
-            <LanguageSwitcher
-              currentLanguage={language}
-              onLanguageChange={handleLanguageChange}
-              variant="icon"
-              className="hidden sm:flex"
-            />
-
-            {/* Cart and Sign In */}
-            <div className="hidden md:flex items-center space-x-4 rtl:space-x-reverse">
-              {navigationLinks.slice(2).map((link) => (
-                <Button
-                  key={link.href || link.name}
-                  variant="ghost"
-                  className="flex items-center"
-                  onClick={() =>
-                    link.onClick ? link.onClick() : navigate(link.href)
-                  }
-                >
-                  {link.icon}
-                  <span>{link.name}</span>
-                </Button>
-              ))}
-
-              {/* CMS Link - Always visible for demo purposes */}
-              <Button variant="outline" asChild>
-                <Link to="/cms">CMS</Link>
+          {/* Search, Cart, Wishlist, Account */}
+          <div className="flex items-center space-x-4">
+            {/* Search */}
+            <form onSubmit={handleSearch} className="hidden md:flex relative">
+              <Input
+                type="search"
+                placeholder="Search products..."
+                className="w-[200px] lg:w-[300px]"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <Button
+                type="submit"
+                variant="ghost"
+                size="icon"
+                className="absolute right-0 top-0 h-full"
+              >
+                <Search className="h-4 w-4" />
               </Button>
-            </div>
+            </form>
+
+            {/* Language Switcher */}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleLanguageChange}
+              title={`Switch to ${language === "en" ? "Arabic" : "English"}`}
+            >
+              <Globe className="h-5 w-5" />
+            </Button>
+
+            {/* Wishlist */}
+            <Link to="/wishlist" className="relative">
+              <Button variant="ghost" size="icon">
+                <Heart className="h-5 w-5" />
+                {wishlistItemCount > 0 && (
+                  <Badge
+                    variant="destructive"
+                    className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs"
+                  >
+                    {wishlistItemCount}
+                  </Badge>
+                )}
+              </Button>
+            </Link>
+
+            {/* Cart */}
+            <Link to="/cart" className="relative">
+              <Button variant="ghost" size="icon">
+                <ShoppingCart className="h-5 w-5" />
+                {cartItemCount > 0 && (
+                  <Badge
+                    variant="destructive"
+                    className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs"
+                  >
+                    {cartItemCount}
+                  </Badge>
+                )}
+              </Button>
+            </Link>
+
+            {/* Account */}
+            {isAuthenticated ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon">
+                    <User className="h-5 w-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <div className="flex items-center justify-start p-2">
+                    <div className="flex flex-col space-y-1">
+                      <p className="font-medium text-sm">
+                        {user?.firstName} {user?.lastName}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {user?.email}
+                      </p>
+                    </div>
+                  </div>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link to="/account" className="cursor-pointer w-full">
+                      <User className="mr-2 h-4 w-4" />
+                      <span>My Account</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link
+                      to="/account/orders"
+                      className="cursor-pointer w-full"
+                    >
+                      <Package className="mr-2 h-4 w-4" />
+                      <span>My Orders</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link
+                      to="/account/settings"
+                      className="cursor-pointer w-full"
+                    >
+                      <Settings className="mr-2 h-4 w-4" />
+                      <span>Settings</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/cms" className="cursor-pointer w-full">
+                      <LayoutDashboard className="mr-2 h-4 w-4" />
+                      <span>CMS Dashboard</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={logout} className="cursor-pointer">
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Logout</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Link to="/login">
+                <Button variant="ghost" size="icon">
+                  <User className="h-5 w-5" />
+                </Button>
+              </Link>
+            )}
 
             {/* Mobile Menu Button */}
-            <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+            <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
               <SheetTrigger asChild>
-                <Button variant="outline" size="icon" className="lg:hidden">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="md:hidden"
+                  aria-label="Open Menu"
+                >
                   <Menu className="h-5 w-5" />
-                  <span className="sr-only">Open menu</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="left" className="w-[300px] sm:w-[400px]">
-                <div className="flex flex-col h-full py-6">
-                  <div className="px-4 mb-6">
-                    <SearchBar
-                      placeholder={getTranslation("search", language)}
-                      className="w-full"
-                    />
+              <SheetContent side="right" className="w-[300px] sm:w-[350px]">
+                <div className="flex flex-col h-full">
+                  <div className="flex items-center justify-between py-4">
+                    <Link to="/" onClick={() => setMobileMenuOpen(false)}>
+                      <img
+                        src="/DELogo.png"
+                        alt="DecorEgypt"
+                        className="h-8 w-auto"
+                      />
+                    </Link>
+                    <SheetClose asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        aria-label="Close Menu"
+                      >
+                        <X className="h-5 w-5" />
+                      </Button>
+                    </SheetClose>
                   </div>
 
-                  <div className="flex-1 overflow-auto">
-                    <nav className="flex flex-col space-y-6">
-                      {/* Main Navigation Links (Mobile) */}
-                      <div className="px-6">
-                        <h3 className="mb-2 text-lg font-semibold">
-                          {getTranslation("navigation", language)}
-                        </h3>
-                        <div className="space-y-3">
-                          {navigationLinks.map((link) =>
-                            link.onClick ? (
-                              <button
-                                key={link.name}
-                                className="flex items-center py-2 text-base hover:text-primary w-full text-left"
-                                onClick={() => {
-                                  setIsMobileMenuOpen(false);
-                                  link.onClick && link.onClick();
-                                }}
-                              >
-                                {link.icon}
-                                <span>{link.name}</span>
-                              </button>
-                            ) : (
-                              <Link
-                                key={link.href}
-                                to={link.href}
-                                className="flex items-center py-2 text-base hover:text-primary"
-                                onClick={() => setIsMobileMenuOpen(false)}
-                              >
-                                {link.icon}
-                                <span>{link.name}</span>
-                              </Link>
-                            ),
-                          )}
-                        </div>
-                      </div>
+                  <div className="py-4">
+                    <form
+                      onSubmit={handleSearch}
+                      className="flex relative mb-6"
+                    >
+                      <Input
+                        type="search"
+                        placeholder="Search products..."
+                        className="w-full"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                      />
+                      <Button
+                        type="submit"
+                        variant="ghost"
+                        size="icon"
+                        className="absolute right-0 top-0 h-full"
+                      >
+                        <Search className="h-4 w-4" />
+                      </Button>
+                    </form>
 
-                      <div className="px-6">
-                        <h3 className="mb-2 text-lg font-semibold">
-                          {getTranslation("categories", language)}
-                        </h3>
-                        <div className="space-y-3">
-                          {/* Mobile category links */}
-                          {[
-                            {
-                              name: getTranslation("flooring", language),
-                              href: "/category/flooring",
-                            },
-                            {
-                              name: getTranslation("wallProducts", language),
-                              href: "/category/wall-products",
-                            },
-                            {
-                              name: getTranslation("lighting", language),
-                              href: "/category/lighting",
-                            },
-                            {
-                              name: getTranslation("furniture", language),
-                              href: "/category/furniture",
-                            },
-                          ].map((category) => (
-                            <Link
-                              key={category.href}
-                              to={category.href}
-                              className="block py-2 text-base hover:text-primary"
-                              onClick={() => setIsMobileMenuOpen(false)}
-                            >
-                              {category.name}
-                            </Link>
-                          ))}
-                        </div>
-                      </div>
-                    </nav>
+                    <div className="space-y-4">
+                      <Link
+                        to="/products"
+                        className="block py-2 text-base font-medium hover:text-primary transition-colors"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        All Products
+                      </Link>
+                      <Link
+                        to="/category/flooring"
+                        className="block py-2 text-base font-medium hover:text-primary transition-colors"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        Flooring
+                      </Link>
+                      <Link
+                        to="/category/wall-products"
+                        className="block py-2 text-base font-medium hover:text-primary transition-colors"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        Wall Products
+                      </Link>
+                      <Link
+                        to="/category/lighting"
+                        className="block py-2 text-base font-medium hover:text-primary transition-colors"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        Lighting
+                      </Link>
+                    </div>
                   </div>
 
-                  <div className="mt-auto border-t pt-4 px-6">
-                    <LanguageSwitcher
-                      currentLanguage={language}
-                      onLanguageChange={handleLanguageChange}
-                      variant="full"
-                      className="w-full"
-                    />
+                  <div className="mt-auto pt-6 border-t">
+                    <div className="flex flex-col space-y-4">
+                      <Link
+                        to="/wishlist"
+                        className="flex items-center py-2 hover:text-primary transition-colors"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        <Heart className="mr-3 h-5 w-5" />
+                        <span>Wishlist</span>
+                        {wishlistItemCount > 0 && (
+                          <Badge className="ml-auto">{wishlistItemCount}</Badge>
+                        )}
+                      </Link>
+                      <Link
+                        to="/cart"
+                        className="flex items-center py-2 hover:text-primary transition-colors"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        <ShoppingCart className="mr-3 h-5 w-5" />
+                        <span>Cart</span>
+                        {cartItemCount > 0 && (
+                          <Badge className="ml-auto">{cartItemCount}</Badge>
+                        )}
+                      </Link>
+                      {isAuthenticated ? (
+                        <>
+                          <Link
+                            to="/account"
+                            className="flex items-center py-2 hover:text-primary transition-colors"
+                            onClick={() => setMobileMenuOpen(false)}
+                          >
+                            <User className="mr-3 h-5 w-5" />
+                            <span>My Account</span>
+                          </Link>
+                          <Link
+                            to="/cms"
+                            className="flex items-center py-2 hover:text-primary transition-colors"
+                            onClick={() => setMobileMenuOpen(false)}
+                          >
+                            <LayoutDashboard className="mr-3 h-5 w-5" />
+                            <span>CMS Dashboard</span>
+                          </Link>
+                          <Button
+                            variant="outline"
+                            className="w-full"
+                            onClick={() => {
+                              logout();
+                              setMobileMenuOpen(false);
+                            }}
+                          >
+                            <LogOut className="mr-2 h-4 w-4" />
+                            <span>Logout</span>
+                          </Button>
+                        </>
+                      ) : (
+                        <Button
+                          className="w-full"
+                          onClick={() => setMobileMenuOpen(false)}
+                          asChild
+                        >
+                          <Link to="/login">Sign In</Link>
+                        </Button>
+                      )}
+                    </div>
                   </div>
                 </div>
               </SheetContent>
             </Sheet>
           </div>
         </div>
-      </div>
-      {/* Mobile Search (visible only on small screens) */}
-      <div className="md:hidden border-t py-2 px-4">
-        <SearchBar
-          placeholder={getTranslation("search", language)}
-          className="w-full"
-        />
       </div>
     </header>
   );

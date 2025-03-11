@@ -200,13 +200,13 @@ const FeaturedProducts = ({
                 {currentProducts.map((product) => (
                   <ProductCard
                     key={product.id}
-                    id={product.id}
-                    name={product.name}
-                    price={product.price}
-                    image={product.image}
-                    rating={product.rating}
-                    onAddToCart={() => onAddToCart(product.id)}
-                    onQuickView={() => onQuickView(product.id)}
+                    product={{
+                      id: product.id,
+                      name: product.name,
+                      slug: product.id,
+                      price: product.price,
+                      imageUrl: product.image,
+                    }}
                   />
                 ))}
               </div>
